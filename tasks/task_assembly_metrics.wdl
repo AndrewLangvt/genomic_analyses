@@ -51,9 +51,11 @@ task stats_n_coverage {
 }
 
 task ampli_multicov {
-  Array[File] bamfiles
-  Array[File] baifiles
-  String?     primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
+  Array[File]  bamfiles
+  Array[File]  baifiles
+  Array[File]  primtrim_bamfiles
+  Array[File]  primtrim_baifiles
+  String?      primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
 
   command{
     # date and version control
@@ -61,9 +63,11 @@ task ampli_multicov {
     bedtools --version | tee VERSION
     cp ${sep=" " bamfiles} ./
     cp ${sep=" " baifiles} ./
+    cp ${sep=" " primtrim_bamfiles} ./
+    cp ${sep=" " primtrim_baifiles} ./
 
     echo "primer" $(ls *bam) | tr ' ' '\t' > multicov.txt
-    bedtools multicov -bams $(ls *bam) -bed ${primer_bed} | cut -f 4,6- >> multicov.txt
+    bedtools multicov -bams $(ls *bam) -bed ${primer_bed} | cut -f 4,7- >> multicov.txt
   }
 
   output {

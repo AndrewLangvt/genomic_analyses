@@ -76,7 +76,9 @@ workflow refbased_viral_assembly {
   call assembly_metrics.ampli_multicov {
     input:
       bamfiles = bwa.sorted_bam,
-      baifiles = bwa.sorted_bai
+      baifiles = bwa.sorted_bai,
+      primtrim_bamfiles = primer_trim.trim_sorted_bam,
+      primtrim_baifiles = primer_trim.trim_sorted_bai
   }
 }
    
