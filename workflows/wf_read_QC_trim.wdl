@@ -5,22 +5,22 @@ import "../tasks/task_taxonID.wdl" as taxonID
 workflow read_QC_trim {
   input {
     String  sample_name
-    File    left_read
-    File    right_read 
+    File    read1_raw
+    File    read2_raw 
     Array[Array[String]] workflow_params
   }
 
   call read_clean.seqyclean {
     input:
       samplename = sample_name,
-      read1 = left_read,
-      read2 = right_read,
+      read1 = read1_raw,
+      read2 = read2_raw,
       adapters = workflow_params[0][1]
   }
   call qc_utils.fastqc as fastqc_raw {
     input:
-      read1 = left_read,
-      read2 = right_read,
+      read1 = read1_raw,
+      read2 = read2_raw,
   }
   call qc_utils.fastqc as fastqc_clean {
     input:

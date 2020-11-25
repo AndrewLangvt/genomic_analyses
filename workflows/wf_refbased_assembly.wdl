@@ -40,83 +40,9 @@ workflow refbased_viral_assembly {
 
   output {
     File  consensus_seq = consensus.consensus_seq
+    File  sorted_bam = bwa.sorted_bam
+    File  sorted_bai = bwa.sorted_bai
+    File  primtrim_bam = primer_trim.trim_sorted_bam
+    File  primtrim_bai = primer_trim.trim_sorted_bai
   }
 }
-#   call assembly_metrics.ampli_multicov {
-#     input:
-#       bamfiles = bwa.sorted_bam,
-#       baifiles = bwa.sorted_bai,
-#       primtrim_bamfiles = primer_trim.trim_sorted_bam,
-#       primtrim_baifiles = primer_trim.trim_sorted_bai
-#   }
-# }
-   
-# task sampleIDs {
-#   String      samplename
-#   String      submission_id 
-#   String      collection
-
-#   command {
-#     echo ${collection} | tee COLLECTIONDATE
-#     echo ${submission_id} | tee SUBMISSION_ID
-#     echo ${samplename} | tee SAMPLENAME
-#   }
-
-#   output { 
-#     String    collectiondate=read_string("COLLECTIONDATE")
-#     String    submissionID=read_string("SUBMISSION_ID")
-#     String    sample=read_string("SAMPLENAME")
-#   }
-
-#   runtime {
-#       docker:       "staphb/seqyclean:1.10.09"
-#       memory:       "8 GB"
-#       cpu:          2
-#       disks:        "local-disk 100 SSD"
-#       preemptible:  0
-#   }  
-# }
-
-# task {
-#   File        something
-#   String      samplename
-
-#   command{
-#     # date and version control
-#     date | tee DATE
-#     toolanme --version | tee VERSION
-
-#   }
-
-#   output {
-#     String     date = read_string("DATE")
-#     String     version = read_string("VERSION") 
-#   }
-
-#   runtime {
-#     docker:       "staphb/seqyclean:1.10.09"
-#     memory:       "8 GB"
-#     cpu:          2
-#     disks:        "local-disk 100 SSD"
-#     preemptible:  0      
-#   }
-# }
-
-#  seqyclean
-#  bwa
-#  ivar_trim
-#  samtools_sort
-#  ivar_variants
-#  ivar_consensus
-#  fastqc
-#  samtools_stats
-#  samtools_coverage
-#  samtools_flagstat
-#  kraken2 - > sub metaphlan? 
-#  bedtools
-#  summary
-#  combine_summary
-#  file_submission
-#  multifasta
-
-

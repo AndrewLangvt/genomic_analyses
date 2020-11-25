@@ -1,5 +1,5 @@
-import "wf_refbased_assembly.wdl" as assembly
-import "wf_read_QC_trim.wdl" as read_qc
+import "wf_viral_pipeline.wdl" as viral_pipe
+import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 
 workflow local_deployment {
   input {
@@ -7,19 +7,20 @@ workflow local_deployment {
     Array[Array[String]] inputConfig
   }
   scatter (sample_info in inputSamples) {
-	call read_qc.read_QC_trim {
+	call viral_pipe.QC_n_assemble as viral_pipeline {
 	  input:
 	    sample_name = sample_info.left[0],
-	    left_read = sample_info.right.left,
-	    right_read = sample_info.right.right,
-	    workflow_params = inputConfig
+	    read1_raw = sample_info.right.left,
+	    read2_raw = sample_info.right.right,
+	    workflow_config = inputConfig
 	}
-	call assembly.refbased_viral_assembly {
-	  input:
-	    sample_name = sample_info.left[0],
-	    read1_clean = read_QC_trim.read1_clean,
-	    read2_clean = read_QC_trim.read2_clean,
-	    workflow_params = inputConfig
-	}
+  }
+
+  call assembly_metrics.ampli_multicov {
+  	input:
+  	  bamfiles = viral_pipeline.sorted_bamfiles,
+  	  baifiles = viral_pipeline.sorted_baifiles,
+  	  primtrim_bamfiles = viral_pipeline.primertrim_bamfiles,
+  	  primtrim_baifiles = viral_pipeline.primertrim_baifiles
   }
 }
