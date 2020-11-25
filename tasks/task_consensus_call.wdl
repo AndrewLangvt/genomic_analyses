@@ -1,8 +1,10 @@
 task primer_trim {
-  File        bamfile
-  String      samplename
-  String?     primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
-  Boolean?    keep_primer_reads=true
+  input {
+    File        bamfile
+    String      samplename
+    String?     primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
+    Boolean?    keep_primer_reads=true
+  }
 
   command {
     # date and version control
@@ -44,17 +46,19 @@ task primer_trim {
 }
 
 task variant_call {
-  File        bamfile
-  String      samplename
-  String? 	  ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
-  String? 	  ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
-  Boolean?    count_orphans = true
-  String?     max_depth = "600000"
-  Boolean?    disable_baq = true
-  String?     min_bq = "0"
-  String?     min_qual = "20"
-  String?     min_freq = "0.6"
-  String?     min_depth = "10"
+  input {
+    File        bamfile
+    String      samplename
+    String? 	  ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
+    String? 	  ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
+    Boolean?    count_orphans = true
+    String?     max_depth = "600000"
+    Boolean?    disable_baq = true
+    String?     min_bq = "0"
+    String?     min_qual = "20"
+    String?     min_freq = "0.6"
+    String?     min_depth = "10"
+  }
 
   command {
     # date and version control
@@ -101,19 +105,21 @@ task variant_call {
 }
 
 task consensus {
-  File        bamfile
-  String      samplename
-  String?     ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
-  String?     ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
-  Boolean?    count_orphans = true
-  String?     max_depth = "600000"
-  Boolean?    disable_baq = true
-  String?     min_bq = "0"
-  String?     min_qual = "20"
-  String?     min_freq = "0.6"
-  String?     min_depth = "10"
-  String?     char_unknown = "N"
-
+  input {
+    File        bamfile
+    String      samplename
+    String?     ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
+    String?     ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
+    Boolean?    count_orphans = true
+    String?     max_depth = "600000"
+    Boolean?    disable_baq = true
+    String?     min_bq = "0"
+    String?     min_qual = "20"
+    String?     min_freq = "0.6"
+    String?     min_depth = "10"
+    String?     char_unknown = "N"
+  }
+  
   command {
     # date and version control
     date | tee DATE

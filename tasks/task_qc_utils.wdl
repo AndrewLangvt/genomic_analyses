@@ -1,10 +1,12 @@
 task fastqc {
-  File        read1
-  File        read2
-  String      read1_name = basename(basename(basename(read1, ".gz"), ".fastq"), ".fq")
-  String      read2_name = basename(basename(basename(read2, ".gz"), ".fastq"), ".fq")
-  String?     cpus = 2
-
+  input {
+    File        read1
+    File        read2
+    String      read1_name = basename(basename(basename(read1, ".gz"), ".fastq"), ".fq")
+    String      read2_name = basename(basename(basename(read2, ".gz"), ".fastq"), ".fq")
+    String?     cpus = 2
+  }
+  
   command {
     # capture date and version
     date | tee DATE

@@ -1,6 +1,8 @@
 task stats_n_coverage {
-  File        bamfile
-  String      samplename
+  input {
+    File        bamfile
+    String      samplename
+  }
 
   command{
     date | tee DATE
@@ -51,12 +53,14 @@ task stats_n_coverage {
 }
 
 task ampli_multicov {
-  Array[File]  bamfiles
-  Array[File]  baifiles
-  Array[File]  primtrim_bamfiles
-  Array[File]  primtrim_baifiles
-  String?      primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
-
+  input {
+    Array[File]  bamfiles
+    Array[File]  baifiles
+    Array[File]  primtrim_bamfiles
+    Array[File]  primtrim_baifiles
+    String?      primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
+  }
+  
   command{
     # date and version control
     date | tee DATE

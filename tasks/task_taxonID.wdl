@@ -1,9 +1,11 @@
 task kraken2 {
-  File        read1
-  File 		  read2
-  String      samplename
-  String?     kraken2_db = "/kraken2-db"
-  String? 	  cpus = "4"
+  input {
+	File        read1
+	File 		read2
+	String      samplename
+	String?     kraken2_db = "/kraken2-db"
+	String? 	cpus = "4"
+  }
 
   command{
     # date and version control
