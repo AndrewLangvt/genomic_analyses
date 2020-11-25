@@ -41,37 +41,37 @@ workflow refbased_viral_assembly {
         samplename = sample.left[0],
         bamfile = bwa.sorted_bam
     }
-    # call consensus_call.variant_call {
-    #   input:
-    #     samplename = sample.left[0],
-    #     bamfile = primer_trim.trim_sorted_bam
-    # }
-    # call consensus_call.consensus {
-    #   input:
-    #     samplename = sample.left[0],
-    #     bamfile = primer_trim.trim_sorted_bam
-    # }
-    # call qc_utils.fastqc as fastqc_raw {
-    #   input:
-    #     read1 = sample.right.left,
-    #     read2 = sample.right.right
-    # }
-    # call qc_utils.fastqc as fastqc_clean {
-    #   input:
-    #     read1 = seqyclean.read1_clean,
-    #     read2 = seqyclean.read2_clean
-    # }
-    # call assembly_metrics.stats_n_coverage {
-    #   input:
-    #     samplename = sample.left[0],
-    #     bamfile = bwa.sorted_bam
-    # }
-    # call taxonID.kraken2 {
-    #   input:
-    #     samplename = sample.left[0],
-    #     read1 = seqyclean.read1_clean, 
-    #     read2 = seqyclean.read2_clean
-    # }
+    call consensus_call.variant_call {
+      input:
+        samplename = sample.left[0],
+        bamfile = primer_trim.trim_sorted_bam
+    }
+    call consensus_call.consensus {
+      input:
+        samplename = sample.left[0],
+        bamfile = primer_trim.trim_sorted_bam
+    }
+    call qc_utils.fastqc as fastqc_raw {
+      input:
+        read1 = sample.right.left,
+        read2 = sample.right.right
+    }
+    call qc_utils.fastqc as fastqc_clean {
+      input:
+        read1 = seqyclean.read1_clean,
+        read2 = seqyclean.read2_clean
+    }
+    call assembly_metrics.stats_n_coverage {
+      input:
+        samplename = sample.left[0],
+        bamfile = bwa.sorted_bam
+    }
+    call taxonID.kraken2 {
+      input:
+        samplename = sample.left[0],
+        read1 = seqyclean.read1_clean, 
+        read2 = seqyclean.read2_clean
+    }
   }
   call assembly_metrics.ampli_multicov {
     input:

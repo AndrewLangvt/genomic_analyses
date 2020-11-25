@@ -1,12 +1,14 @@
 task bwa {
+
+  input {
   File        read1
   File        read2
   String      samplename
   File?       reference_genome="/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
   String?     cpus=6
+  }
 
-
-  command{
+  command {
     # date and version control
     date | tee DATE
     echo "BWA $(bwa 2>&1 | grep Version )" | tee BWA_VERSION
