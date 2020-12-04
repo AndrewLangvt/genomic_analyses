@@ -1,4 +1,5 @@
 task primer_trim {
+
   input {
     File        bamfile
     String      samplename
@@ -29,8 +30,8 @@ task primer_trim {
 
   output {
     File      trimmed_bam = "${samplename}.primertrim.bam"
-    File 	    trim_sorted_bam = "${samplename}.primertrim.sorted.bam"
-    File 	    trim_sorted_bai = "${samplename}.primertrim.sorted.bam.bai"
+    File 	  trim_sorted_bam = "${samplename}.primertrim.sorted.bam"
+    File 	  trim_sorted_bai = "${samplename}.primertrim.sorted.bam.bai"
     String    ivar_version = read_string("IVAR_VERSION") 
     String 	  samtools_version = read_string("SAMTOOLS_VERSION")
     String    pipeline_date = read_string("DATE")
@@ -46,18 +47,19 @@ task primer_trim {
 }
 
 task variant_call {
+
   input {
     File        bamfile
     String      samplename
-    String? 	  ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
-    String? 	  ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
+    String? 	ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
+    String? 	ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
     Boolean?    count_orphans = true
     String?     max_depth = "600000"
     Boolean?    disable_baq = true
     String?     min_bq = "0"
     String?     min_qual = "20"
     String?     min_freq = "0.6"
-    String?     min_depth = "10"
+#    String?     min_depth = "0"
   }
 
   command {
@@ -68,9 +70,9 @@ task variant_call {
 
     # call variants
     samtools mpileup \
-    ${true = "--count-orphans" false = "" count_orphans} \
+    ${true = "-A" false = "" count_orphans} \
     -d ${max_depth} \
-    ${true = "--no-BAQ" false = "" disable_baq} \
+    ${true = "-B" false = "" disable_baq} \
     -Q ${min_bq} \
     --reference ${ref_genome} \
     ${bamfile} | \
@@ -78,18 +80,17 @@ task variant_call {
     -p ${samplename}.variants \
     -q ${min_qual} \
     -t ${min_freq} \
-    -m ${min_depth} \
     -r ${ref_genome} \
     -g ${ref_gff}
-
+ 
     variants_num=$(grep "TRUE" ${samplename}.variants.tsv | wc -l)
     if [ -z "$variants_num" ] ; then variants_num="0" ; fi
     echo $variants_num | tee VARIANT_NUM
 	}
 
   output {
- 	  String 		variant_num = read_string("VARIANT_NUM")
- 	  File  		sample_variants = "${samplename}.variants.tsv"
+ 	String    variant_num = read_string("VARIANT_NUM")
+ 	File  	  sample_variants = "${samplename}.variants.tsv"
     String    ivar_version = read_string("IVAR_VERSION") 
     String    samtools_version = read_string("SAMTOOLS_VERSION")
     String    pipeline_date = read_string("DATE")	
@@ -105,6 +106,7 @@ task variant_call {
 }
 
 task consensus {
+    
   input {
     File        bamfile
     String      samplename

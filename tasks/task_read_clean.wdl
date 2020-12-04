@@ -1,16 +1,18 @@
 task seqyclean {
-  File        read1
-  File        read2
-  String      samplename
-  String?     adapters = "/Adapters_plus_PhiX_174.fasta"
-  Int?        seqyclean_minlen = 25
-  String?     seqyclean_qual = ""
-  Boolean?    compress = true
-  Boolean?    seqyclean_dup = false
-  Boolean?    seqyclean_no_adapter_trim = false
-
+  input {
+    File        read1
+    File        read2
+    String      samplename
+    String?     adapters = "/Adapters_plus_PhiX_174.fasta"
+    Int?        seqyclean_minlen = 25
+    String?     seqyclean_qual = ""
+    Boolean?    compress = true
+    Boolean?    seqyclean_dup = false
+    Boolean?    seqyclean_no_adapter_trim = false
+  }
+  
   command {
-    # date and version controlll
+    # date and version control
     date | tee DATE
     echo "Seqyclean $(seqyclean -h | grep Version)" | tee VERSION
 
@@ -33,6 +35,8 @@ task seqyclean {
   output {
     File       read1_clean = "${samplename}_PE1.fastq.gz"
     File       read2_clean = "${samplename}_PE2.fastq.gz"
+    # File       read1_clean = "${samplename}_PE1.fastq"
+    # File       read2_clean = "${samplename}_PE2.fastq"
     String     version = read_string("VERSION")
     String     pipeline_date = read_string("DATE")
     String     seqy_pairs = read_string("PAIRS_KEPT")

@@ -1,10 +1,10 @@
 task kraken2 {
   input {
-	File        read1
-	File 		read2
-	String      samplename
-	String?     kraken2_db = "/kraken2-db"
-	String? 	cpus = "4"
+  	File        read1
+	  File 		    read2
+	  String      samplename
+	  String?     kraken2_db = "/kraken2-db"
+    String?     cpus=4
   }
 
   command{
@@ -32,9 +32,9 @@ task kraken2 {
   output {
     String     date = read_string("DATE")
     String     version = read_string("VERSION") 
-    File 	   kraken_out = "${samplename}_kraken2_report.txt"
+    File 	     kraken_out = "${samplename}_kraken2_report.txt"
     String 	   percent_human = read_string("PERCENT_HUMAN")
-    String 	   percnet_sc2 = read_string("PERCENT_SC2")
+    String 	   percent_sc2 = read_string("PERCENT_SC2")
   }
 
   runtime {
@@ -46,7 +46,53 @@ task kraken2 {
   }
 }
 
+task pangolin {
+  input {
+    File        fasta
+    String      samplename
+    String?     cpus=40
+  }
 
+  command{
+    # date and version control
+    date | tee DATE
+    pangolin --version | head -n1 | tee VERSION
+
+    pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
+    pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
+
+    while [ -z "$pangolin_lineage" ]
+    do
+      pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
+      pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
+    done
+
+    pangolin_aLRT=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
+    pangolin_stats=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 4 -d "," )
+    mv ${samplename}/lineage_report.csv ${samplename}_lineage.csv
+    
+    echo $pangolin_lineage | tee PANGOLIN_LINEAGE
+    echo $pangolin_aLRT | tee PANGOLIN_aLRT
+    echo $pangolin_stats | tee PANGOLIN_STATS
+  }
+
+  output {
+    String     date = read_string("DATE")
+    String     version = read_string("VERSION") 
+    String     pangolin_lineage = read_string("PANGOLIN_LINEAGE")
+    String     pangolin_aLRT = read_string("PANGOLIN_aLRT")
+    String     pangolin_stats = read_string("PANGOLIN_STATS")
+    File       lineage_report = "${samplename}_lineage.csv"
+  }
+
+  runtime {
+    docker:       "staphb/pangolin:1.1.14"
+    memory:       "8 GB"
+    cpu:          40
+    disks:        "local-disk 100 SSD"
+    preemptible:  0      
+  }
+}
 
 
 

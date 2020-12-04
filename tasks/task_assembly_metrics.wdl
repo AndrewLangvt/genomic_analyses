@@ -1,4 +1,5 @@
 task stats_n_coverage {
+
   input {
     File        bamfile
     String      samplename
@@ -53,6 +54,7 @@ task stats_n_coverage {
 }
 
 task ampli_multicov {
+  
   input {
     Array[File]  bamfiles
     Array[File]  baifiles

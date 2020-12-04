@@ -3,8 +3,9 @@ import "../tasks/task_read_clean.wdl" as read_clean
 import "../tasks/task_taxonID.wdl" as taxonID
 
 workflow read_QC_trim {
+  
   input {
-    String  sample_name
+    String  samplename
     File    read1_raw
     File    read2_raw 
     Array[Array[String]] workflow_params
@@ -12,7 +13,7 @@ workflow read_QC_trim {
 
   call read_clean.seqyclean {
     input:
-      samplename = sample_name,
+      samplename = samplename,
       read1 = read1_raw,
       read2 = read2_raw,
       adapters = workflow_params[0][1]
@@ -29,13 +30,22 @@ workflow read_QC_trim {
   }
   call taxonID.kraken2 {
     input:
-      samplename = sample_name,
+      samplename = samplename,
       read1 = seqyclean.read1_clean, 
       read2 = seqyclean.read2_clean
   }
 
   output {
-  	File 	read1_clean = seqyclean.read1_clean
-  	File 	read2_clean = seqyclean.read2_clean
+  	File 	   read1_clean = seqyclean.read1_clean
+  	File 	   read2_clean = seqyclean.read2_clean
+    String   seqy_pairs = seqyclean.seqy_pairs
+    String   seqy_percent = seqyclean.seqy_percent
+    String   fastqc_raw1 = fastqc_raw.read1_seq
+    String   fastqc_raw2 = fastqc_raw.read2_seq
+    String   fastqc_clean1 = fastqc_clean.read1_seq
+    String   fastqc_clean2 = fastqc_clean.read2_seq
+    String   kraken_human = kraken2.percent_human
+    String   kraken_sc2 = kraken2.percent_sc2
+
   }
 }

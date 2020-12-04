@@ -4,13 +4,33 @@ import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 import "../tasks/task_sample_metrics.wdl" as summary
 
-
-workflow viral_pipeline {
+workflow {
   input {
-    # File inputSamplesFile
+        # File inputSamplesFile
     # Array[Array[String]] inputSamples = read_tsv(inputSamplesFile)
     Array[Pair[Array[String], Pair[File,File]]] inputSamples
     Array[Array[String]] inputConfig
+  }
+  call {
+    parse-json
+  }
+  output{
+    id
+    read1_clean
+    read2_clean
+  }
+}
+scatter{
+  
+sub-workflow viral_pipeline {
+  input {
+    pj.id
+    pj.read1_clean
+    pj.reads2
+
+  }
+
+  
 
   scatter (sample in inputSamples) {
     call read_qc.read_QC_trim {
@@ -32,7 +52,7 @@ workflow viral_pipeline {
     #     samplename = sample.left[0],
     #     fasta = refbased_viral_assembly.consensus_seq
     # }
-    call summary.sample_metrics {
+    sub-workf summary.sample_metrics {
       input:
         samplename = sample.left[0],
         seqy_pairs = read_QC_trim.seqy_pairs,

@@ -1,4 +1,5 @@
 task fastqc {
+  
   input {
     File        read1
     File        read2
