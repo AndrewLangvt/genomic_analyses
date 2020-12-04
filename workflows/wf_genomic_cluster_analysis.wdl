@@ -110,10 +110,10 @@ task iqtree {
     iqtree --version | grep version | sed 's/.*version/version/;s/ for Linux.*//' | tee VERSION
 
     numGenomes=`grep -o '>' ${alignment} | wc -l`
-    if [ $numGenomes -gt 4 ]
+    if [ $numGenomes -gt 3 ]
     then
       iqtree -nt AUTO -s ${alignment} -m ${iqtree_model} -bb ${iqtree_bootstraps}
-      cp $(date +%m%d%y)_msa.fasta.contree ${clustername}_$(date +%m%d%y)_msa.tree
+      cp msa.fasta.contree ${clustername}_$(date +%m%d%y)_msa.tree
     fi
   }
 
