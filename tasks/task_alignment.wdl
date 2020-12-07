@@ -41,3 +41,35 @@ task bwa {
   }
 }
 
+task mafft {
+  
+  input {
+    Array[File]  genomes
+    String?       cpus = 16
+  }
+  
+  command{
+    # date and version control
+    date | tee DATE
+    mafft_vers=$(mafft --version)
+    echo Mafft $(mafft_vers) | tee VERSION
+
+    cat ${sep=" " genomes} | sed 's/Consensus_//;s/.consensus_threshold.*//' > assemblies.fasta
+    mafft --thread -${cpus} assemblies.fasta > $(date +%m%d%y)_msa.fasta
+  }
+
+  output {
+    String     date = read_string("DATE")
+    String     version = read_string("VERSION") 
+    File       msa = select_first(glob("*_msa.fasta"))
+  }
+
+  runtime {
+    docker:       "staphb/mafft:7.450"
+    memory:       "32 GB"
+    cpu:          16
+    disks:        "local-disk 100 SSD"
+    preemptible:  0      
+  }
+}
+
