@@ -3,6 +3,7 @@ import "../tasks/task_alignment.wdl" as align
 import "../tasks/task_consensus_call.wdl" as consensus_call
 import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 import "../tasks/task_taxonID.wdl" as taxon_ID
+import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
 
 workflow refbased_viral_assembly {
 
@@ -10,15 +11,14 @@ workflow refbased_viral_assembly {
     String  samplename
     File    read1_raw
     File    read2_raw 
-    Array[Array[String]] workflow_params
   }
+  # Get rid of all params 
 
   call read_qc.read_QC_trim {
     input:
       samplename = samplename,
       read1_raw = read1_raw,
-      read2_raw = read2_raw,
-      workflow_params = workflow_params
+      read2_raw = read2_raw
   }
   call align.bwa {
     input:
@@ -55,6 +55,11 @@ workflow refbased_viral_assembly {
     input:
       samplename = samplename,
       fasta = consensus.consensus_seq
+  }
+  call amplicon_metrics.failed_amplicons {
+    input:
+      bamfile = bwa.sorted_bam,
+      baifile = bwa.sorted_bai
   }
   output {
     File     read1_clean = read_QC_trim.read1_clean
@@ -94,5 +99,8 @@ workflow refbased_viral_assembly {
     String  pangolin_aLRT = pangolin.pangolin_aLRT
     String  pangolin_stats = pangolin.pangolin_stats
     File    lineage_report = pangolin.lineage_report
+
+    String  amp_fail = failed_amplicons.amp_fail
+    File    amp_file = failed_amplicons.amp_file
   }
 }

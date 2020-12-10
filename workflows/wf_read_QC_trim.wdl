@@ -8,7 +8,6 @@ workflow read_QC_trim {
     String  samplename
     File    read1_raw
     File    read2_raw 
-    Array[Array[String]] workflow_params
   }
 
   call read_clean.seqyclean {
