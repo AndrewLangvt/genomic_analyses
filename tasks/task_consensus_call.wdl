@@ -22,7 +22,7 @@ task primer_trim {
 
     # sorting and indexing the trimmed bams
     samtools sort \
-    ${bamfile} \
+    ${samplename}.primertrim.bam \
     -o ${samplename}.primertrim.sorted.bam 
 
     samtools index ${samplename}.primertrim.sorted.bam
