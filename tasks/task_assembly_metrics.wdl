@@ -60,7 +60,7 @@ task ampli_multicov {
     Array[File]  baifiles
     Array[File]  primtrim_bamfiles
     Array[File]  primtrim_baifiles
-    String?      primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
+    String?      primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019_amplicon.bed"
   }
   
   command{
@@ -73,7 +73,7 @@ task ampli_multicov {
     cp ${sep=" " primtrim_baifiles} ./
 
     echo "primer" $(ls *bam) | tr ' ' '\t' > multicov.txt
-    bedtools multicov -bams $(ls *bam) -bed ${primer_bed} | cut -f 4,7- >> multicov.txt
+    bedtools multicov -bams $(ls *bam) -bed ${primer_bed} | cut -f 4,6- >> multicov.txt
   }
 
   output {
