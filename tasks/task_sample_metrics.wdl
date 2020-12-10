@@ -2,6 +2,9 @@ task sample_metrics {
 
   input {
     String    samplename
+    String    pangolin_lineage
+    String    pangolin_aLRT
+    String    pangolin_stats
     String    seqy_pairs
     String    seqy_percent
     String    fastqc_raw1
@@ -17,25 +20,29 @@ task sample_metrics {
     String    number_Total
     String    coverage
     String    depth
-    String    meanbaseq
-    String    meanmapq
+    String    meanbaseq_trim
+    String    meanmapq_trim
+    String    coverage_trim
+    String    depth_trim
   }
 
   command {
-    echo 
-    sample_id,deidentified_id,collection_date,\
+    echo "sample_id,deidentified_id,collection_date,\
     pangolin_lineage,pangolin_aLRT,pangolin_stats,\
     fastqc_raw_reads_1,fastqc_raw_reads_2,fastqc_clean_reads_PE1,fastqc_clean_reads_PE2,\
     pairs_kept_after_cleaning,percent_kept_after_cleaning,\
     depth_before_trimming,depth_after_trimming,coverage_before_trimming,coverage_after_trimming,\
     %_human_reads,%_SARS-COV-2_reads,num_failed_amplicons,num_variants,\
-    num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim,assembly_status
+    num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim,assembly_status"
 
-    echo "${samplename},${seqy_pairs},${seqy_percent},\
+    echo "${samplename},MASPHL_ID,COLLECTIONDATE,\
+    ${pangolin_lineage},${pangolin_aLRT},${pangolin_stats},\
     ${fastqc_raw1},${fastqc_raw2},${fastqc_clean1},${fastqc_clean2},\
-    ${kraken_human},${kraken_sc2},${variant_num},\
-    ${number_N},${number_ATCG},${number_Degenerate},${number_Total},\
-    ${coverage},${depth},${meanbaseq},${meanmapq}" | tee SAMPLE_METRICS
+    ${seqy_pairs},${seqy_percent},\
+    ${depth},${depth_trim},${coverage},${coverage_trim},\
+    ${kraken_human},${kraken_sc2},FAILEDAMP,${variant_num},\
+    ${number_N},${number_Degenerate},${number_ATCG},${number_Total},\
+    ,${meanbaseq_trim},${meanmapq_trim},ASSEMBLY_STATUS" | tee SAMPLE_METRICS
   }
 
   output {
@@ -58,6 +65,15 @@ task merge_metrics {
   }
 
   command {
+    echo "sample_id,deidentified_id,collection_date,\
+    pangolin_lineage,pangolin_aLRT,pangolin_stats,\
+    fastqc_raw_reads_1,fastqc_raw_reads_2,fastqc_clean_reads_PE1,fastqc_clean_reads_PE2,\
+    pairs_kept_after_cleaning,percent_kept_after_cleaning,\
+    depth_before_trimming,depth_after_trimming,coverage_before_trimming,coverage_after_trimming,\
+    %_human_reads,%_SARS-COV-2_reads,num_failed_amplicons,num_variants,\
+    num_N,num_degenerate,num_ACTG,num_total,\
+    meanbaseq_trim,meanmapq_trim,assembly_status" >> run_results.csv
+
     echo ${sep="END" all_metrics} >> run_results.csv
     sed -i "s/END/\n/g" run_results.csv
   }
