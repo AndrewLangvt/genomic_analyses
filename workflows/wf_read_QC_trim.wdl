@@ -15,7 +15,6 @@ workflow read_QC_trim {
       samplename = samplename,
       read1 = read1_raw,
       read2 = read2_raw,
-      adapters = workflow_params[0][1]
   }
   call qc_utils.fastqc as fastqc_raw {
     input:
