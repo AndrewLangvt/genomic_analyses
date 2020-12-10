@@ -5,10 +5,11 @@ task seqyclean {
     String      samplename
     String?     adapters = "/Adapters_plus_PhiX_174.fasta"
     Int?        seqyclean_minlen = 25
-    String?     seqyclean_qual = ""
+    String?     seqyclean_qual = "20 20"
     Boolean?    compress = true
     Boolean?    seqyclean_dup = false
     Boolean?    seqyclean_no_adapter_trim = false
+    String?     cpus = 16
   }
   
   command {
@@ -23,6 +24,7 @@ task seqyclean {
     ${true="-dup" false="" seqyclean_dup} \
     ${true="-no_adapter_trim" false="" seqyclean_no_adapter_trim} \
     ${true="-gz" false="" compress} \
+    -t ${cpus} \
     -1 ${read1} \
     -2 ${read2} \
     -o ${samplename}
@@ -35,8 +37,6 @@ task seqyclean {
   output {
     File       read1_clean = "${samplename}_PE1.fastq.gz"
     File       read2_clean = "${samplename}_PE2.fastq.gz"
-    # File       read1_clean = "${samplename}_PE1.fastq"
-    # File       read2_clean = "${samplename}_PE2.fastq"
     String     version = read_string("VERSION")
     String     pipeline_date = read_string("DATE")
     String     seqy_pairs = read_string("PAIRS_KEPT")
