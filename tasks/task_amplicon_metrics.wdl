@@ -14,8 +14,8 @@ task failed_amplicons {
     cp ${bamfile} ./
     cp ${baifile} ./
 
-    bedtools coverage -a ~{primer_bed} -b $(ls *bam) > amplicon_coverage.txt
-    bedtools coverage -a ~{primer_bed} -b $(ls *bam) | cut -f 6 | awk '{ if ( $1 < 20 ) print $0 }' | wc -l | tee AMP_FAIL
+    bedtools coverage -a ${primer_bed} -b $(ls *bam) > amplicon_coverage.txt
+    bedtools coverage -a ${primer_bed} -b $(ls *bam) | cut -f 6 | awk '{ if ( $1 < 20 ) print $0 }' | wc -l | tee AMP_FAIL
   >>>
 
   output {
@@ -33,8 +33,6 @@ task failed_amplicons {
     preemptible:  0      
   }
 }
-
-
 
 task ampli_multicov {
   

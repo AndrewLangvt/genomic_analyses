@@ -17,6 +17,16 @@ task fastqc {
 
     unzip -p ${read1_name}_fastqc.zip */fastqc_data.txt | grep "Total Sequences" | cut -f 2 | tee READ1_SEQS
     unzip -p ${read2_name}_fastqc.zip */fastqc_data.txt | grep "Total Sequences" | cut -f 2 | tee READ2_SEQS
+
+    READ1_SEQS=$(unzip -p ${read1_name}_fastqc.zip */fastqc_data.txt | grep "Total Sequences" | cut -f 2 )
+    READ2_SEQS=$(unzip -p ${read2_name}_fastqc.zip */fastqc_data.txt | grep "Total Sequences" | cut -f 2 )
+
+    if [ $READ1_SEQS == $READ2_SEQS ]; then
+      read_pairs=$READ1_SEQS
+    else
+      read_pairs="ERROR:Unequal number of L and R reads"
+    fi
+    echo $read_pairs | tee READ_PAIRS
   }
 
   output {
@@ -26,6 +36,7 @@ task fastqc {
     File       fastqc2_zip = "${read2_name}_fastqc.zip"
     String     read1_seq = read_string("READ1_SEQS")
     String     read2_seq = read_string("READ2_SEQS")
+    String     read_pairs = read_string("READ_PAIRS")
     String     version = read_string("VERSION") 
     String     pipeline_date = read_string("DATE")
   }
