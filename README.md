@@ -1,1 +1,1 @@
-# refbased_assembly_wdl
+# WDL scripts for genomic analyses
