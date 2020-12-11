@@ -57,7 +57,7 @@ task sample_metrics {
 task merge_metrics {
 
   input {
-  Array[String]   all_metrics
+    Array[String]   all_metrics
   }
 
   command {
