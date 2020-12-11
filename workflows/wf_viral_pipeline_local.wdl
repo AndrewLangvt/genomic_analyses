@@ -5,8 +5,6 @@ import "../tasks/task_sample_metrics.wdl" as summary
 
 workflow nCoV19_pipeline {
   input {
-    # File inputSamplesFile
-    # Array[Array[String]] inputSamples = read_tsv(inputSamplesFile)
     Array[Pair[Array[String], Pair[File,File]]] inputSamples
     Array[Array[String]] inputConfig
   }
@@ -25,12 +23,9 @@ workflow nCoV19_pipeline {
         pangolin_lineage = refbased_viral_assembly.pangolin_lineage,
         pangolin_aLRT = refbased_viral_assembly.pangolin_aLRT,
         pangolin_stats = refbased_viral_assembly.pangolin_stats,
+        fastqc_raw_pairs = refbased_viral_assembly.fastqc_raw_pairs,
         seqy_pairs = refbased_viral_assembly.seqy_pairs,
         seqy_percent = refbased_viral_assembly.seqy_percent,
-        fastqc_raw1 = refbased_viral_assembly.fastqc_raw1,
-        fastqc_raw2 = refbased_viral_assembly.fastqc_raw2,
-        fastqc_clean1 = refbased_viral_assembly.fastqc_clean1,
-        fastqc_clean2 = refbased_viral_assembly.fastqc_clean2,
         kraken_human = refbased_viral_assembly.kraken_human,
         kraken_sc2 = refbased_viral_assembly.kraken_sc2,
         variant_num = refbased_viral_assembly.variant_num,
