@@ -12,7 +12,6 @@ workflow refbased_viral_assembly {
     File    read1_raw
     File    read2_raw 
   }
-  # Get rid of all params 
 
   call read_qc.read_QC_trim {
     input:

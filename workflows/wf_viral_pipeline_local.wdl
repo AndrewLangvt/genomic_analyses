@@ -1,7 +1,7 @@
 import "wf_refbased_assembly.wdl" as assembly
 import "../tasks/task_amplicon_metrics.wdl" as assembly_metrics
 import "../tasks/task_sample_metrics.wdl" as summary
-import "../tasks/task_pub_repo_submission.wdl" as submission
+import "wf_publicRepo_submission.wdl" as submission
 
 
 workflow nCoV19_pipeline {
@@ -21,6 +21,8 @@ workflow nCoV19_pipeline {
     call summary.sample_metrics {
       input:
         samplename = sample.left[0],
+        submission_id = sample.left[1],
+        collection_date = sample.left[2],
         pangolin_lineage = refbased_viral_assembly.pangolin_lineage,
         pangolin_aLRT = refbased_viral_assembly.pangolin_aLRT,
         pangolin_stats = refbased_viral_assembly.pangolin_stats,
@@ -43,7 +45,7 @@ workflow nCoV19_pipeline {
         amp_fail = refbased_viral_assembly.amp_fail
     }
 
-    call submission.deID_assmebly {
+    call submission.submission_files {
       input:
         samplename = sample.left[0],
         submission_id = sample.left[1],
@@ -51,7 +53,6 @@ workflow nCoV19_pipeline {
         sequence = refbased_viral_assembly.consensus_seq,
         read1 = sample.right.left, 
         read2 = sample.right.right
-
     }
   }
 

@@ -2,6 +2,8 @@ task sample_metrics {
 
   input {
     String    samplename
+    String    submission_id
+    String    collection_date
     String    pangolin_lineage
     String    pangolin_aLRT
     String    pangolin_stats
@@ -32,7 +34,7 @@ task sample_metrics {
     %_human_reads,%_SARS-COV-2_reads,num_failed_amplicons,num_variants,\
     num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim,assembly_status"
 
-    echo "${samplename},MASPHL_ID,COLLECTIONDATE,\
+    echo "${samplename},${submission_id},${collection_date},\
     ${pangolin_lineage},${pangolin_aLRT},${pangolin_stats},\
     ${fastqc_raw_pairs},${seqy_pairs},${seqy_percent},\
     ${depth},${depth_trim},${coverage},${coverage_trim},\
