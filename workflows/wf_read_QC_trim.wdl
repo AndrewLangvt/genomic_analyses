@@ -36,12 +36,18 @@ workflow read_QC_trim {
   output {
   	File 	   read1_clean = seqyclean.read1_clean
   	File 	   read2_clean = seqyclean.read2_clean
-    String   seqy_pairs = seqyclean.seqy_pairs
-    String   seqy_percent = seqyclean.seqy_percent
+
     String   fastqc_raw1 = fastqc_raw.read1_seq
     String   fastqc_raw2 = fastqc_raw.read2_seq
+    String   fastqc_raw_pairs = fastqc_raw.read_pairs
+
+    String   seqy_pairs = seqyclean.seqy_pairs
+    String   seqy_percent = seqyclean.seqy_percent
+
     String   fastqc_clean1 = fastqc_clean.read1_seq
     String   fastqc_clean2 = fastqc_clean.read2_seq
+    String   fastqc_clean_pairs = fastqc_clean.read_pairs
+
     String   kraken_human = kraken2.percent_human
     String   kraken_sc2 = kraken2.percent_sc2
 

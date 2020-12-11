@@ -64,12 +64,14 @@ workflow refbased_viral_assembly {
   output {
     File     read1_clean = read_QC_trim.read1_clean
     File     read2_clean = read_QC_trim.read2_clean
-    String   seqy_pairs = read_QC_trim.seqy_pairs
-    String   seqy_percent = read_QC_trim.seqy_percent
     String   fastqc_raw1 = read_QC_trim.fastqc_raw1
     String   fastqc_raw2 = read_QC_trim.fastqc_raw2
+    String   fastqc_raw_pairs = read_QC_trim.fastqc_raw_pairs
+    String   seqy_pairs = read_QC_trim.seqy_pairs
+    String   seqy_percent = read_QC_trim.seqy_percent
     String   fastqc_clean1 = read_QC_trim.fastqc_clean1
     String   fastqc_clean2 = read_QC_trim.fastqc_clean2
+    String   fastqc_clean_pairs = read_QC_trim.fastqc_clean_pairs
     String   kraken_human = read_QC_trim.kraken_human
     String   kraken_sc2 = read_QC_trim.kraken_sc2
 
@@ -101,6 +103,6 @@ workflow refbased_viral_assembly {
     File    lineage_report = pangolin.lineage_report
 
     String  amp_fail = failed_amplicons.amp_fail
-    File    amp_file = failed_amplicons.amp_file
+    File    amp_coverage = failed_amplicons.amp_coverage
   }
 }
