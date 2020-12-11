@@ -1,6 +1,7 @@
 import "wf_refbased_assembly.wdl" as assembly
 import "../tasks/task_amplicon_metrics.wdl" as assembly_metrics
 import "../tasks/task_sample_metrics.wdl" as summary
+import "../tasks/task_pub_repo_submission.wdl" as submission
 
 
 workflow nCoV19_pipeline {
@@ -40,6 +41,17 @@ workflow nCoV19_pipeline {
         coverage_trim = refbased_viral_assembly.coverage_trim, 
         depth_trim = refbased_viral_assembly.depth_trim,
         amp_fail = refbased_viral_assembly.amp_fail
+    }
+
+    call submission.deID_assmebly {
+      input:
+        samplename = sample.left[0],
+        submission_id = sample.left[1],
+        collection_date = sample.left[2],
+        sequence = refbased_viral_assembly.consensus_seq,
+        read1 = sample.right.left, 
+        read2 = sample.right.right
+
     }
   }
 
