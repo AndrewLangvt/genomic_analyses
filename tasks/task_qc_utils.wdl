@@ -24,7 +24,7 @@ task fastqc {
     if [ $READ1_SEQS == $READ2_SEQS ]; then
       read_pairs=$READ1_SEQS
     else
-      read_pairs="ERROR:Unequal number of L and R reads"
+      read_pairs="ERROR:Unequal number of L and R reads- $READ1_SEQS and $READ2_SEQS"
     fi
     echo $read_pairs | tee READ_PAIRS
   }

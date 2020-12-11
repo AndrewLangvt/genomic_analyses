@@ -56,7 +56,7 @@ workflow nCoV19_pipeline {
     }
   }
 
-  call assembly_metrics.ampli_multicov {
+  call assembly_metrics.bedtools_multicov {
   	input:
   	  bamfiles = refbased_viral_assembly.sorted_bam,
   	  baifiles = refbased_viral_assembly.sorted_bai,

@@ -55,35 +55,52 @@ workflow refbased_viral_assembly {
       samplename = samplename,
       fasta = consensus.consensus_seq
   }
-  call amplicon_metrics.failed_amplicons {
+  call amplicon_metrics.bedtools_cov {
     input:
       bamfile = bwa.sorted_bam,
       baifile = bwa.sorted_bai
   }
   output {
-    File     read1_clean = read_QC_trim.read1_clean
-    File     read2_clean = read_QC_trim.read2_clean
-    String   fastqc_raw1 = read_QC_trim.fastqc_raw1
-    String   fastqc_raw2 = read_QC_trim.fastqc_raw2
-    String   fastqc_raw_pairs = read_QC_trim.fastqc_raw_pairs
-    String   seqy_pairs = read_QC_trim.seqy_pairs
-    String   seqy_percent = read_QC_trim.seqy_percent
-    String   fastqc_clean1 = read_QC_trim.fastqc_clean1
-    String   fastqc_clean2 = read_QC_trim.fastqc_clean2
-    String   fastqc_clean_pairs = read_QC_trim.fastqc_clean_pairs
-    String   kraken_human = read_QC_trim.kraken_human
-    String   kraken_sc2 = read_QC_trim.kraken_sc2
+    File    read1_clean = read_QC_trim.read1_clean
+    File    read2_clean = read_QC_trim.read2_clean
+    String  fastqc_raw1 = read_QC_trim.fastqc_raw1
+    String  fastqc_raw2 = read_QC_trim.fastqc_raw2
+    String  fastqc_raw_pairs = read_QC_trim.fastqc_raw_pairs
+    String  fastqc_version = read_QC_trim.fastqc_version
+
+    String  seqy_pairs = read_QC_trim.seqy_pairs
+    String  seqy_percent = read_QC_trim.seqy_percent
+    String  fastqc_clean1 = read_QC_trim.fastqc_clean1
+    String  fastqc_clean2 = read_QC_trim.fastqc_clean2
+    String  fastqc_clean_pairs = read_QC_trim.fastqc_clean_pairs
+    String  seqyclean_version = read_QC_trim.seqyclean_version
+   
+    String  kraken_human = read_QC_trim.kraken_human
+    String  kraken_sc2 = read_QC_trim.kraken_sc2
+    String  kraken_version = read_QC_trim.kraken_version
 
     File    sorted_bam = bwa.sorted_bam
     File    sorted_bai = bwa.sorted_bai
+    String  bwa_version = bwa.bwa_version
+    String  sam_version = bwa.sam_version
+
     File    primtrim_bam = primer_trim.trim_sorted_bam
     File    primtrim_bai = primer_trim.trim_sorted_bai
+    String  ivar_version_primtrim = primer_trim.ivar_version
+    String  samtools_version_primtrim = primer_trim.samtools_version
+
     String  variant_num = variant_call.variant_num
+    String  ivar_version_variants = variant_call.ivar_version
+    String  samtools_version_variants = variant_call.samtools_version
+
     File    consensus_seq = consensus.consensus_seq
     String  number_N = consensus.number_N
     String  number_ATCG = consensus.number_ATCG
     String  number_Degenerate = consensus.number_Degenerate
     String  number_Total = consensus.number_Total
+    String  ivar_version_consensus = consensus.ivar_version
+    String  samtools_version_consensus = consensus.samtools_version    
+
     # File    consensus_stats = stats_n_coverage.stats
     # File    cov_hist = stats_n_coverage.cov_hist
     # File    cov_stats = stats_n_coverage.cov_stats
@@ -94,14 +111,16 @@ workflow refbased_viral_assembly {
     String  meanmapq_trim = stats_n_coverage_primtrim.meanmapq
     String  coverage_trim = stats_n_coverage_primtrim.coverage
     String  depth_trim = stats_n_coverage_primtrim.depth
-
+    String  samtools_version_stats = stats_n_coverage.samtools_version
 
     String  pangolin_lineage = pangolin.pangolin_lineage
     String  pangolin_aLRT = pangolin.pangolin_aLRT
     String  pangolin_stats = pangolin.pangolin_stats
     File    lineage_report = pangolin.lineage_report
+    String  panglin_version = pangolin.version
 
-    String  amp_fail = failed_amplicons.amp_fail
-    File    amp_coverage = failed_amplicons.amp_coverage
+    String  amp_fail = bedtools_cov.amp_fail
+    File    amp_coverage = bedtools_cov.amp_coverage
+    String  bedtools_version = bedtools_cov.version
   }
 }

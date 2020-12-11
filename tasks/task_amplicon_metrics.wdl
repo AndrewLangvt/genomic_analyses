@@ -1,4 +1,4 @@
-task failed_amplicons {
+task bedtools_cov {
   
   input {
     File       bamfile
@@ -34,7 +34,7 @@ task failed_amplicons {
   }
 }
 
-task ampli_multicov {
+task bedtools_multicov {
   
   input {
     Array[File]  bamfiles

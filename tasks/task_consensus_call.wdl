@@ -59,7 +59,7 @@ task variant_call {
     String?     min_bq = "0"
     String?     min_qual = "20"
     String?     min_freq = "0.6"
-#    String?     min_depth = "0"
+    String?     min_depth = "0"
   }
 
   command {
@@ -80,6 +80,7 @@ task variant_call {
     -p ${samplename}.variants \
     -q ${min_qual} \
     -t ${min_freq} \
+    -m ${min_depth} \
     -r ${ref_genome} \
     -g ${ref_gff}
  

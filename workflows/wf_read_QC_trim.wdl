@@ -51,5 +51,8 @@ workflow read_QC_trim {
     String   kraken_human = kraken2.percent_human
     String   kraken_sc2 = kraken2.percent_sc2
 
+    String   fastqc_version = fastqc_raw.version 
+    String   seqyclean_version = seqyclean.version
+    String   kraken_version = kraken2.version
   }
 }
