@@ -1,7 +1,6 @@
 version: 1.2
 workflows:
-   - name: wf_refbased_assembly.wdl
-     subclass: WDL
+   - subclass: WDL
      primaryDescriptorPath: /workflows/wf_refbased_assembly.wdl
      testParameterFiles: 
       - empty.json
