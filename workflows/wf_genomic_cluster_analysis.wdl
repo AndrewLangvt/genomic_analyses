@@ -1,8 +1,13 @@
+version 1.0 
+
 import "../tasks/task_alignment.wdl" as align
 import "../tasks/task_phylo.wdl" as phylo
 import "../tasks/task_data_vis.wdl" as vis
 
 workflow genomic_cluster_analysis {
+  meta {
+    description: "Generates PDF for a list of genomes containing Pass/Fail status, SNP matrix, and Phylogenetic Tree."
+  }
 
   input {
     Array[File]   genomes

@@ -5,6 +5,9 @@ import "../tasks/task_read_clean.wdl" as read_clean
 import "../tasks/task_taxonID.wdl" as taxonID
 
 workflow read_QC_trim {
+  meta {
+    description: "Runs basic QC (FastQC), trimming (SeqyClean), and taxonomic ID (Kraken2) on illumina PE reads"
+  }
   
   input {
     String  samplename
