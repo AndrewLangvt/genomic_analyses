@@ -63,7 +63,7 @@ task merge_metrics {
 
   command {
     echo "sample_id,deidentified_id,collection_date,\
-    pangolin_lineage,pangolin_aLRT,pangolin_stats,\
+    pangolin_lineage,pangolin_aLRT,\
     raw_pairs,pairs_after_cleaning,percent_kept_after_cleaning,\
     depth_before_trimming,depth_after_trimming,coverage_before_trimming,coverage_after_trimming,\
     %_human_reads,%_SARS-COV-2_reads,num_failed_amplicons,num_variants,\
