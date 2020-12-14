@@ -9,7 +9,7 @@ task seqyclean {
     Boolean?    compress = true
     Boolean?    seqyclean_dup = false
     Boolean?    seqyclean_no_adapter_trim = false
-    String?     cpus = 16
+    Int?        cpus = 16
   }
   
   command {

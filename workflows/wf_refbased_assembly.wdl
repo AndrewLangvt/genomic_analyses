@@ -50,7 +50,7 @@ workflow refbased_viral_assembly {
       samplename = samplename,
       bamfile = primer_trim.trim_sorted_bam
   } 
-  call taxon_ID.pangolin {
+  call taxon_ID.pangolin2 {
     input:
       samplename = samplename,
       fasta = consensus.consensus_seq
@@ -113,11 +113,13 @@ workflow refbased_viral_assembly {
     String  depth_trim = stats_n_coverage_primtrim.depth
     String  samtools_version_stats = stats_n_coverage.samtools_version
 
-    String  pangolin_lineage = pangolin.pangolin_lineage
-    String  pangolin_aLRT = pangolin.pangolin_aLRT
-    String  pangolin_stats = pangolin.pangolin_stats
-    File    lineage_report = pangolin.lineage_report
-    String  panglin_version = pangolin.version
+    # String  pangolin_lineage = pangolin.pangolin_lineage
+    # String  pangolin_aLRT = pangolin.pangolin_aLRT
+    # String  pangolin_stats = pangolin.pangolin_stats
+    String  pangolin_lineage = pangolin2.pangolin_lineage
+    String  pangolin_aLRT = pangolin2.pangolin_aLRT
+    File    lineage_report = pangolin2.lineage_report
+    String  pangolin_version = pangolin2.version
 
     String  amp_fail = bedtools_cov.amp_fail
     File    amp_coverage = bedtools_cov.amp_coverage

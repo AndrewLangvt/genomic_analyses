@@ -6,7 +6,6 @@ task sample_metrics {
     String    collection_date
     String    pangolin_lineage
     String    pangolin_aLRT
-    String    pangolin_stats
     String    fastqc_raw_pairs
     String    seqy_pairs
     String    seqy_percent
@@ -28,14 +27,14 @@ task sample_metrics {
 
   command {
     echo "sample_id,deidentified_id,collection_date,\
-    pangolin_lineage,pangolin_aLRT,pangolin_stats,\
+    pangolin_lineage,pangolin_probability,\
     fastqc_raw_pairs,pairs_after_cleaning,percent_kept_after_cleaning,\
     depth_before_trimming,depth_after_trimming,coverage_before_trimming,coverage_after_trimming,\
     %_human_reads,%_SARS-COV-2_reads,num_failed_amplicons,num_variants,\
     num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim,assembly_status"
 
     echo "${samplename},${submission_id},${collection_date},\
-    ${pangolin_lineage},${pangolin_aLRT},${pangolin_stats},\
+    ${pangolin_lineage},${pangolin_aLRT},\
     ${fastqc_raw_pairs},${seqy_pairs},${seqy_percent},\
     ${depth},${depth_trim},${coverage},${coverage_trim},\
     ${kraken_human},${kraken_sc2},${amp_fail},${variant_num},\

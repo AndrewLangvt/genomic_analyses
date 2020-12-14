@@ -4,7 +4,7 @@ task primer_trim {
     File        bamfile
     String      samplename
     String?     primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.bed"
-    Boolean?    keep_primer_reads=true
+    Boolean?    keep_noprimer_reads=true
   }
 
   command {
@@ -15,7 +15,7 @@ task primer_trim {
 
     # trimming primers
     ivar trim \
-    ${true="-e" false="" keep_primer_reads} \
+    ${true="-e" false="" keep_noprimer_reads} \
     -i ${bamfile} \
     -b ${primer_bed} \
     -p ${samplename}.primertrim
@@ -54,12 +54,12 @@ task variant_call {
     String? 	ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
     String? 	ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
     Boolean?    count_orphans = true
-    String?     max_depth = "600000"
+    Int?        max_depth = "600000"
     Boolean?    disable_baq = true
-    String?     min_bq = "0"
-    String?     min_qual = "20"
-    String?     min_freq = "0.6"
-    String?     min_depth = "0"
+    Int?        min_bq = "0"
+    Int?        min_qual = "20"
+    Float?      min_freq = "0.6"
+    Int?        min_depth = "0"
   }
 
   command {
@@ -114,12 +114,12 @@ task consensus {
     String?     ref_genome = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
     String?     ref_gff = "/reference/GCF_009858895.2_ASM985889v3_genomic.gff"
     Boolean?    count_orphans = true
-    String?     max_depth = "600000"
+    Int?        max_depth = "600000"
     Boolean?    disable_baq = true
-    String?     min_bq = "0"
-    String?     min_qual = "20"
-    String?     min_freq = "0.6"
-    String?     min_depth = "10"
+    Int?        min_bq = "0"
+    Int?        min_qual = "20"
+    Float?      min_freq = "0.6"
+    Int?        min_depth = "10"
     String?     char_unknown = "N"
   }
   

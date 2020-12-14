@@ -25,7 +25,6 @@ workflow nCoV19_pipeline {
         collection_date = sample.left[2],
         pangolin_lineage = refbased_viral_assembly.pangolin_lineage,
         pangolin_aLRT = refbased_viral_assembly.pangolin_aLRT,
-        pangolin_stats = refbased_viral_assembly.pangolin_stats,
         fastqc_raw_pairs = refbased_viral_assembly.fastqc_raw_pairs,
         seqy_pairs = refbased_viral_assembly.seqy_pairs,
         seqy_percent = refbased_viral_assembly.seqy_percent,

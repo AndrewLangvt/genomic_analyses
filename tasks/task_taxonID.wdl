@@ -4,7 +4,7 @@ task kraken2 {
 	  File 		    read2
 	  String      samplename
 	  String?     kraken2_db = "/kraken2-db"
-    String?     cpus=4
+    Int?        cpus=4
   }
 
   command{
@@ -50,7 +50,7 @@ task pangolin {
   input {
     File        fasta
     String      samplename
-    String?     cpus=40
+    Int?        cpus=40
   }
 
   command{
@@ -87,6 +87,51 @@ task pangolin {
 
   runtime {
     docker:       "staphb/pangolin:1.1.14"
+    memory:       "8 GB"
+    cpu:          40
+    disks:        "local-disk 100 SSD"
+    preemptible:  0      
+  }
+}
+
+task pangolin2 {
+  input {
+    File        fasta
+    String      samplename
+    Int?        cpus=40
+  }
+
+  command{
+    # date and version control
+    date | tee DATE
+    pangolin --version | head -n1 | tee VERSION
+
+    pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
+    pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
+
+    while [ -z "$pangolin_lineage" ]
+    do
+      pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
+      pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
+    done
+
+    PANGOLIN_PROBABILITY=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
+    mv ${samplename}/lineage_report.csv ${samplename}_lineage.csv
+    
+    echo $pangolin_lineage | tee PANGOLIN_LINEAGE
+    echo $pangolin_probability | tee PANGOLIN_PROBABILITY
+  }
+
+  output {
+    String     date = read_string("DATE")
+    String     version = read_string("VERSION") 
+    String     pangolin_lineage = read_string("PANGOLIN_LINEAGE")
+    String     pangolin_aLRT = read_string("PANGOLIN_PROBABILITY")
+    File       lineage_report = "${samplename}_lineage.csv"
+  }
+
+  runtime {
+    docker:       "staphb/pangolin:2.0.5"
     memory:       "8 GB"
     cpu:          40
     disks:        "local-disk 100 SSD"
