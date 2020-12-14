@@ -6,7 +6,6 @@ import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
 
 workflow refbased_viral_assembly {
-
   input {
     String  samplename
     File    read1_raw
