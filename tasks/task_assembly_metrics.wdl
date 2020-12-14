@@ -1,3 +1,5 @@
+version 1.0 
+
 task stats_n_coverage {
 
   input {
@@ -33,7 +35,7 @@ task stats_n_coverage {
 
   output {
     String     date = read_string("DATE")
-    String     version = read_string("VERSION") 
+    String     samtools_version = read_string("VERSION") 
     File       stats = "${samplename}.stats.txt"
     File       cov_hist = "${samplename}.cov.hist"
     File       cov_stats = "${samplename}.cov.txt"

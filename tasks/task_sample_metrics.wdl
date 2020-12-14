@@ -1,3 +1,5 @@
+version 1.0
+
 task sample_metrics {
 
   input {

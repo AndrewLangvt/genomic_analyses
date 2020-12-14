@@ -1,3 +1,5 @@
+version 1.0
+
 task kraken2 {
   input {
   	File        read1
@@ -115,7 +117,7 @@ task pangolin2 {
       pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
     done
 
-    PANGOLIN_PROBABILITY=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
+    pangolin_probability=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
     mv ${samplename}/lineage_report.csv ${samplename}_lineage.csv
     
     echo $pangolin_lineage | tee PANGOLIN_LINEAGE

@@ -1,3 +1,5 @@
+version 1.0 
+
 task primer_trim {
 
   input {
