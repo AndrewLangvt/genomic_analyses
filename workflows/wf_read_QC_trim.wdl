@@ -1,3 +1,5 @@
+version 1.0
+
 import "../tasks/task_qc_utils.wdl" as qc_utils
 import "../tasks/task_read_clean.wdl" as read_clean 
 import "../tasks/task_taxonID.wdl" as taxonID

@@ -1,3 +1,4 @@
+version 1.0 
 import "../tasks/task_pub_repo_submission.wdl" as submission
 
 workflow submission_files {
