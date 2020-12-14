@@ -1,3 +1,5 @@
+version 1.0
+
 import "wf_read_QC_trim.wdl" as read_qc
 import "../tasks/task_alignment.wdl" as align
 import "../tasks/task_consensus_call.wdl" as consensus_call
