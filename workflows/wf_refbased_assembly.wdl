@@ -9,7 +9,7 @@ import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
 
 workflow refbased_viral_assembly {
   meta {
-    description: "Reference-based consensus calling for viral amplicon sequencing"
+    description: "Reference-based consensus calling for viral amplicon sequencing data"
   }
 
   input {
