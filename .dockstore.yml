@@ -1,0 +1,6 @@
+version: 1.2
+test:
+workflows:
+   - subclass: WDL
+     primaryDescriptorPath: /workflows/wf_refbased_assembly.wdl
+     testParameterFiles:
