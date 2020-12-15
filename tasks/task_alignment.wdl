@@ -62,9 +62,8 @@ task mafft {
 
   output {
     String      date = read_string("DATE")
-    String      version = read_string("VERSION") 
-    Array[File] msa_array = glob("*_msa.fasta")
-    File        msa = select_first(msa_array)
+    String      version = read_string("VERSION")
+    File        msa = select_first(glob("*_msa.fasta"))
   }
 
   runtime {
