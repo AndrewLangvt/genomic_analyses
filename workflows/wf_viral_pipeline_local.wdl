@@ -1,4 +1,4 @@
-import "wf_refbased_assembly.wdl" as assembly
+import "wf_viral_refbased_assembly.wdl" as assembly
 import "../tasks/task_amplicon_metrics.wdl" as assembly_metrics
 import "../tasks/task_sample_metrics.wdl" as summary
 import "wf_publicRepo_submission.wdl" as submission
