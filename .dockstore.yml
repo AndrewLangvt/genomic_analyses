@@ -1,5 +1,5 @@
 version: 1.2
 workflows:
- - name: refbased_assembly
+ - name: viral_refbased_assembly
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_viral_refbased_assembly.wdl

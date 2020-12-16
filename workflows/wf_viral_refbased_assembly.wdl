@@ -7,7 +7,7 @@ import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
 
-workflow refbased_viral_assembly {
+workflow viral_refbased_assembly {
   meta {
     description: "Reference-based consensus calling for viral amplicon sequencing data"
   }
