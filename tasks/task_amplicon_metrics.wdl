@@ -13,11 +13,11 @@ task bedtools_cov {
     # date and version control
     date | tee DATE
     bedtools --version | tee VERSION
-    cp ${bamfile} ./
-    cp ${baifile} ./
+    cp ~{bamfile} ./
+    cp ~{baifile} ./
 
-    bedtools coverage -a ${primer_bed} -b $(ls *bam) > amplicon_coverage.txt
-    bedtools coverage -a ${primer_bed} -b $(ls *bam) | cut -f 6 | awk '{ if ( $1 < 20 ) print $0 }' | wc -l | tee AMP_FAIL
+    bedtools coverage -a ~{primer_bed} -b $(ls *bam) > amplicon_coverage.txt
+    bedtools coverage -a ~{primer_bed} -b $(ls *bam) | cut -f 6 | awk '{if ( $1 < 20 ) print $0 }' | wc -l | tee AMP_FAIL
   >>>
 
   output {
