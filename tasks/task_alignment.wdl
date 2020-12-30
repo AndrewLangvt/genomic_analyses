@@ -6,7 +6,7 @@ task bwa {
     File        read1
     File        read2
     String      samplename
-    String?       reference_genome="/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
+    String?     reference_genome="/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019.reference.fasta"
     Int?        cpus=6
   }
 
@@ -46,7 +46,7 @@ task bwa {
 task mafft {
   
   input {
-    Array[File]  genomes
+    Array[File]   genomes
     String?       cpus = 16
   }
   

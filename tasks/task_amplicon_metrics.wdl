@@ -23,7 +23,7 @@ task bedtools_cov {
   output {
     String     date = read_string("DATE")
     String     version = read_string("VERSION") 
-    String     amp_fail = read_string("AMP_FAIL")
+    Int        amp_fail = read_string("AMP_FAIL")
     File       amp_coverage = "amplicon_coverage.txt"
   }
 

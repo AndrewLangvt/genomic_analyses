@@ -21,8 +21,8 @@ workflow viral_refbased_assembly {
   call read_qc.read_QC_trim {
     input:
       samplename = samplename,
-      read1_raw = read1_raw,
-      read2_raw = read2_raw
+      read1_raw  = read1_raw,
+      read2_raw  = read2_raw
   }
   call align.bwa {
     input:
@@ -60,74 +60,84 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       fasta = consensus.consensus_seq
   }
+  call taxon_ID.nextclade_one_sample {
+    input:
+      genome_fasta = consensus.consensus_seq
+  }
   call amplicon_metrics.bedtools_cov {
     input:
       bamfile = bwa.sorted_bam,
       baifile = bwa.sorted_bai
   }
   output {
-    File    read1_clean = read_QC_trim.read1_clean
-    File    read2_clean = read_QC_trim.read2_clean
-    String  fastqc_raw1 = read_QC_trim.fastqc_raw1
-    String  fastqc_raw2 = read_QC_trim.fastqc_raw2
-    String  fastqc_raw_pairs = read_QC_trim.fastqc_raw_pairs
-    String  fastqc_version = read_QC_trim.fastqc_version
-
-    String  seqy_pairs = read_QC_trim.seqy_pairs
-    String  seqy_percent = read_QC_trim.seqy_percent
-    String  fastqc_clean1 = read_QC_trim.fastqc_clean1
-    String  fastqc_clean2 = read_QC_trim.fastqc_clean2
-    String  fastqc_clean_pairs = read_QC_trim.fastqc_clean_pairs
-    String  seqyclean_version = read_QC_trim.seqyclean_version
+    File    read1_clean        = read_QC_trim.read1_clean
+    File    read2_clean        = read_QC_trim.read2_clean
+    Int     fastqc_raw1        = read_QC_trim.fastqc_raw1
+    Int     fastqc_raw2        = read_QC_trim.fastqc_raw2
+    Int     fastqc_raw_pairs   = read_QC_trim.fastqc_raw_pairs
+    String  fastqc_version     = read_QC_trim.fastqc_version
+ 
+    Int     seqy_pairs         = read_QC_trim.seqy_pairs
+    Float   seqy_percent       = read_QC_trim.seqy_percent
+    Int     fastqc_clean1      = read_QC_trim.fastqc_clean1
+    Int     fastqc_clean2      = read_QC_trim.fastqc_clean2
+    Int     fastqc_clean_pairs = read_QC_trim.fastqc_clean_pairs
+    String  seqyclean_version  = read_QC_trim.seqyclean_version
    
-    String  kraken_human = read_QC_trim.kraken_human
-    String  kraken_sc2 = read_QC_trim.kraken_sc2
-    String  kraken_version = read_QC_trim.kraken_version
+    Float   kraken_human       = read_QC_trim.kraken_human
+    Float   kraken_sc2         = read_QC_trim.kraken_sc2
+    String  kraken_version     = read_QC_trim.kraken_version
+    String  kraken_report      = read_QC_trim.kraken_report
 
-    File    sorted_bam = bwa.sorted_bam
-    File    sorted_bai = bwa.sorted_bai
-    String  bwa_version = bwa.bwa_version
-    String  sam_version = bwa.sam_version
+    File    sorted_bam         = bwa.sorted_bam
+    File    sorted_bai         = bwa.sorted_bai
+    String  bwa_version        = bwa.bwa_version
+    String  sam_version        = bwa.sam_version
 
-    File    primtrim_bam = primer_trim.trim_sorted_bam
-    File    primtrim_bai = primer_trim.trim_sorted_bai
-    String  ivar_version_primtrim = primer_trim.ivar_version
-    String  samtools_version_primtrim = primer_trim.samtools_version
+    File    trim_sorted_bam            = primer_trim.trim_sorted_bam
+    File    trim_sorted_bai            = primer_trim.trim_sorted_bai
+    String  ivar_version_primtrim      = primer_trim.ivar_version
+    String  samtools_version_primtrim  = primer_trim.samtools_version
 
-    String  variant_num = variant_call.variant_num
-    String  ivar_version_variants = variant_call.ivar_version
-    String  samtools_version_variants = variant_call.samtools_version
+    Int     variant_num                = variant_call.variant_num
+    String  ivar_version_variants      = variant_call.ivar_version
+    String  samtools_version_variants  = variant_call.samtools_version
 
-    File    consensus_seq = consensus.consensus_seq
-    String  number_N = consensus.number_N
-    String  number_ATCG = consensus.number_ATCG
-    String  number_Degenerate = consensus.number_Degenerate
-    String  number_Total = consensus.number_Total
-    String  ivar_version_consensus = consensus.ivar_version
+    File    consensus_seq              = consensus.consensus_seq
+    Int     number_N                   = consensus.number_N
+    Int     number_ATCG                = consensus.number_ATCG
+    Int     number_Degenerate          = consensus.number_Degenerate
+    Int     number_Total               = consensus.number_Total
+    String  ivar_version_consensus     = consensus.ivar_version
     String  samtools_version_consensus = consensus.samtools_version    
 
-    # File    consensus_stats = stats_n_coverage.stats
-    # File    cov_hist = stats_n_coverage.cov_hist
-    # File    cov_stats = stats_n_coverage.cov_stats
-    # File    consensus_flagstat = stats_n_coverage.flagstat
-    String  coverage = stats_n_coverage.coverage
-    String  depth = stats_n_coverage.depth
-    String  meanbaseq_trim = stats_n_coverage_primtrim.meanbaseq
-    String  meanmapq_trim = stats_n_coverage_primtrim.meanmapq
-    String  coverage_trim = stats_n_coverage_primtrim.coverage
-    String  depth_trim = stats_n_coverage_primtrim.depth
+    File    consensus_stats        = stats_n_coverage.stats
+    File    cov_hist               = stats_n_coverage.cov_hist
+    File    cov_stats              = stats_n_coverage.cov_stats
+    File    consensus_flagstat     = stats_n_coverage.flagstat
+    Float   coverage               = stats_n_coverage.coverage
+    Float   depth                  = stats_n_coverage.depth
+    Float   meanbaseq_trim         = stats_n_coverage_primtrim.meanbaseq
+    Float   meanmapq_trim          = stats_n_coverage_primtrim.meanmapq
+    Float   coverage_trim          = stats_n_coverage_primtrim.coverage
+    Float   depth_trim             = stats_n_coverage_primtrim.depth
     String  samtools_version_stats = stats_n_coverage.samtools_version
 
-    # String  pangolin_lineage = pangolin.pangolin_lineage
-    # String  pangolin_aLRT = pangolin.pangolin_aLRT
-    # String  pangolin_stats = pangolin.pangolin_stats
-    String  pangolin_lineage = pangolin2.pangolin_lineage
-    String  pangolin_aLRT = pangolin2.pangolin_aLRT
-    File    lineage_report = pangolin2.lineage_report
-    String  pangolin_version = pangolin2.version
+    String  pangolin_lineage       = pangolin2.pangolin_lineage
+    Float   pangolin_aLRT          = pangolin2.pangolin_aLRT
+    File    pango_lineage_report   = pangolin2.pango_lineage_report
+    String  pangolin_version       = pangolin2.version
 
-    String  amp_fail = bedtools_cov.amp_fail
-    File    amp_coverage = bedtools_cov.amp_coverage
-    String  bedtools_version = bedtools_cov.version
+    File    nextclade_json         = nextclade_one_sample.nextclade_json
+    File    auspice_json           = nextclade_one_sample.auspice_json
+    File    nextclade_tsv          = nextclade_one_sample.nextclade_tsv
+    String  nextclade_clade        = nextclade_one_sample.nextclade_clade
+    String  nextclade_aa_subs      = nextclade_one_sample.nextclade_aa_subs
+    String  nextclade_aa_dels      = nextclade_one_sample.nextclade_aa_dels
+    String  nextclade_version      = nextclade_one_sample.nextclade_version
+
+    Int     amp_fail               = bedtools_cov.amp_fail
+    File    amp_coverage           = bedtools_cov.amp_coverage
+    String  bedtools_version       = bedtools_cov.version
   }
 }

@@ -7,7 +7,7 @@ task cluster_render {
     File      snp_matrix
     File      ml_tree
     String    clustername = basename(basename(basename(cluster_samples)), "_cluster.tsv")
-    File?     render_template
+    File?     render_template 
   }
   
   command{
@@ -16,8 +16,7 @@ task cluster_render {
     Rscript --version | tee RSCRIPT_VERSION
     R --version | head -n1 | sed 's/).*/)/' | tee R_VERSION
 
-
-    cp ${render_template} report_template.Rmd
+    if [[ -z ~{render_template} ]]; then cp ${render_template} report_template.Rmd; fi
     Rscript --verbose /report_render.R ${snp_matrix} ${ml_tree} ${cluster_samples} report_template.Rmd .
     cp report.pdf ${clustername}_$(date +%m%d%y)_cluster_analysis.pdf
     cp SNP_heatmap.png ${clustername}_$(date +%m%d%y)_SNP_heatmap.png

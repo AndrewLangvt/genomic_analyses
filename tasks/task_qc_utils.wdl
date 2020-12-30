@@ -7,7 +7,7 @@ task fastqc {
     File        read2
     String      read1_name = basename(basename(basename(read1, ".gz"), ".fastq"), ".fq")
     String      read2_name = basename(basename(basename(read2, ".gz"), ".fastq"), ".fq")
-    String?     cpus = 2
+    Int?        cpus = 2
   }
   
   command {
@@ -36,9 +36,9 @@ task fastqc {
     File       fastqc1_zip = "${read1_name}_fastqc.zip"
     File       fastqc2_html = "${read2_name}_fastqc.html"
     File       fastqc2_zip = "${read2_name}_fastqc.zip"
-    String     read1_seq = read_string("READ1_SEQS")
-    String     read2_seq = read_string("READ2_SEQS")
-    String     read_pairs = read_string("READ_PAIRS")
+    Int        read1_seq = read_string("READ1_SEQS")
+    Int        read2_seq = read_string("READ2_SEQS")
+    Int        read_pairs = read_string("READ_PAIRS")
     String     version = read_string("VERSION") 
     String     pipeline_date = read_string("DATE")
   }

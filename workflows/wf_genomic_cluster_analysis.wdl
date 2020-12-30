@@ -12,7 +12,7 @@ workflow genomic_cluster_analysis {
   input {
     Array[File]   genomes
     File          cluster_samples
-    File?         render_template = "/cluster_report_template.Rmd"
+    File?         render_template
   }
 
   call align.mafft {
@@ -39,7 +39,7 @@ workflow genomic_cluster_analysis {
   
   output {
     File      analysis_doc = cluster_render.analysis_doc
-    File      snp_list =cluster_render.snp_list
+    File      snp_list     = cluster_render.snp_list
   }
 }
 

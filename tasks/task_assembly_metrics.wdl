@@ -40,10 +40,10 @@ task stats_n_coverage {
     File       cov_hist = "${samplename}.cov.hist"
     File       cov_stats = "${samplename}.cov.txt"
     File       flagstat = "${samplename}.flagstat.txt"
-    String     coverage = read_string("COVERAGE")
-    String     depth = read_string("DEPTH")
-    String     meanbaseq = read_string("MEANBASEQ")
-    String     meanmapq = read_string("MEANMAPQ")
+    Float      coverage = read_string("COVERAGE")
+    Float      depth = read_string("DEPTH")
+    Float      meanbaseq = read_string("MEANBASEQ")
+    Float      meanmapq = read_string("MEANMAPQ")
   }
 
   runtime {

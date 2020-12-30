@@ -92,7 +92,7 @@ task variant_call {
 	}
 
   output {
- 	String    variant_num = read_string("VARIANT_NUM")
+ 	Int       variant_num = read_string("VARIANT_NUM")
  	File  	  sample_variants = "${samplename}.variants.tsv"
     String    ivar_version = read_string("IVAR_VERSION") 
     String    samtools_version = read_string("SAMTOOLS_VERSION")
@@ -165,10 +165,10 @@ task consensus {
 
   output {
     File      consensus_seq = "${samplename}.consensus.fa"
-    String    number_N = read_string("NUM_N")
-    String    number_ATCG = read_string("NUM_ACTG")
-    String    number_Degenerate = read_string("NUM_DEGENERATE")
-    String    number_Total = read_string("NUM_TOTAL")
+    Int       number_N = read_string("NUM_N")
+    Int       number_ATCG = read_string("NUM_ACTG")
+    Int       number_Degenerate = read_string("NUM_DEGENERATE")
+    Int       number_Total = read_string("NUM_TOTAL")
     String    ivar_version = read_string("IVAR_VERSION") 
     String    samtools_version = read_string("SAMTOOLS_VERSION")
     String    pipeline_date = read_string("DATE")

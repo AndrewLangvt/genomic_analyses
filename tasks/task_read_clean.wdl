@@ -41,8 +41,8 @@ task seqyclean {
     File       read2_clean = "${samplename}_PE2.fastq.gz"
     String     version = read_string("VERSION")
     String     pipeline_date = read_string("DATE")
-    String     seqy_pairs = read_string("PAIRS_KEPT")
-    String     seqy_percent = read_string("PERCENT_KEPT")
+    Int        seqy_pairs = read_string("PAIRS_KEPT")
+    Float      seqy_percent = read_string("PERCENT_KEPT")
   }
 
   runtime {
