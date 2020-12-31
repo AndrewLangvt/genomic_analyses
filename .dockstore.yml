@@ -5,4 +5,4 @@ workflows:
    primaryDescriptorPath: /workflows/wf_viral_refbased_assembly.wdl
  - name: sc2_pubRepo_submission
    subclass: WDL
-   primaryDesriptorPath: /workflows/wf_sc2_pubRepo_submission.wdl
+   primaryDescriptorPath: /workflows/wf_sc2_pubRepo_submission.wdl
