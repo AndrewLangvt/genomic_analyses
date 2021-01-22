@@ -45,7 +45,7 @@ task read_filtering {
   }
 
   output {
-    File       filtered_reads = select_first(glob("${run_prefix}_.fastq"))
+    File       filtered_reads = "${run_prefix}_.fastq"
   }
 
   runtime {
