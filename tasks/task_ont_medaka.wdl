@@ -94,8 +94,8 @@ task consensus {
 
   output {
     File    consensus_seq = "${samplename}.consensus.fasta"
-    File    trim_sorted_bam = select_first(glob("*.primertrimmed.rg.sorted.bam"))
-    File    trim_sorted_bai = select_first(glob("*.primertrimmed.rg.sorted.bam.bai"))
+    File    trim_sorted_bam = "${samplename}.primertrimmed.rg.sorted.bam"
+    File    trim_sorted_bai = "${samplename}.primertrimmed.rg.sorted.bam.bai"
     Int     number_N = read_string("NUM_N")
     Int     number_ATCG = read_string("NUM_ACTG")
     Int     number_Degenerate = read_string("NUM_DEGENERATE")
