@@ -2,7 +2,7 @@ version 1.0
 
 import "wf_clear_labs_viral_refbased_assembly.wdl" as assembly
 import "../tasks/task_amplicon_metrics.wdl" as assembly_metrics
-import "../tasks/task_sample_metrics.wdl" as summary
+import "../tasks/task_clear_labs_sample_metrics.wdl" as summary
 import "wf_ont_sc2_pubRepo_submission.wdl" as submission
 
 
