@@ -6,9 +6,9 @@ workflows:
  - name: sc2_pubRepo_submission
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_sc2_pubRepo_submission.wdl
- - name: clear_labs_viral_refbased_assembly
+ - name: clearlabs_viral_refbased_assembly
    subclass: WDL
-   primaryDescriptorPath: /workflows/wf_clear_labs_viral_refbased_assembly.wdl
+   primaryDescriptorPath: /workflows/wf_clearlabs_viral_refbased_assembly.wdl
  - name: ont_sc2_pubRepo_submission
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_ont_sc2_pubRepo_submission.wdl
