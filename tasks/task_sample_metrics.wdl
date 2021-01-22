@@ -8,11 +8,11 @@ task sample_metrics_v1 {
     String    collection_date
     String    pangolin_lineage
     String    pangolin_aLRT
-    String    fastqc_raw_pairs
-    String    seqy_pairs
-    String    seqy_percent
-    String    kraken_human
-    String    kraken_sc2
+    String?    fastqc_raw_pairs
+    String?    seqy_pairs
+    String?    seqy_percent
+    String?    kraken_human
+    String?    kraken_sc2
     String    variant_num
     String    number_N
     String    number_ATCG
@@ -48,9 +48,9 @@ task sample_metrics_v1 {
     mapq=$(echo "${meanmapq_trim} >= ${meanmapq_threshold}" | bc)
     if (($mapq == 0)); then mapq_status="Mean map quality < ${meanmapq_threshold}"; else mapq_status=""; fi
 
-    if (($cov == 1)) && (($baseq == 1)) && (($mapq == 1)); then 
+    if (($cov == 1)) && (($baseq == 1)) && (($mapq == 1)); then
       assembly_status="PASS"
-    else 
+    else
       assembly_status=`echo "WARNING: $(cov_status)$(baseq_status)$(mapq_status)"`
     fi
 
@@ -87,11 +87,11 @@ task sample_metrics {
     String    nextclade_clade
     String    nextclade_aa_subs
     String    nextclade_aa_dels
-    Int       fastqc_raw_pairs
-    Int       seqy_pairs
-    Float     seqy_percent
-    Float     kraken_human
-    Float     kraken_sc2
+    Int?       fastqc_raw_pairs
+    Int?       seqy_pairs
+    Float?     seqy_percent
+    Float?     kraken_human
+    Float?     kraken_sc2
     Int       variant_num
     Int       number_N
     Int       number_ATCG
