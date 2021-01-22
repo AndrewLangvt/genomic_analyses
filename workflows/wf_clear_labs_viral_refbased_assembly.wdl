@@ -8,7 +8,7 @@ import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
 
 workflow viral_refbased_assembly {
   meta {
-    description: "Reference-based consensus calling for viral amplicon ont sequencing data generated on the Clear Labs platform"
+    description: "Reference-based consensus calling for viral amplicon ont sequencing data generated on the Clear Labs platform."
   }
 
   input {
