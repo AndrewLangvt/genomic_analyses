@@ -101,7 +101,7 @@ task pangolin {
 
 task pangolin2 {
   input {
-    File        fastad
+    File        fasta
     String      samplename
     Int?        cpus=40
   }
