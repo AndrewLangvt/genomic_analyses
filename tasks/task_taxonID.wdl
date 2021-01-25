@@ -3,7 +3,7 @@ version 1.0
 task kraken2 {
   input {
   	File        read1
-	  File 		    read2
+	  File? 		    read2="NA"
 	  String      samplename
 	  String?     kraken2_db = "/kraken2-db"
     Int?        cpus=4
@@ -13,8 +13,13 @@ task kraken2 {
     # date and version control
     date | tee DATE
     kraken2 --version | head -n1 | tee VERSION
-
-    kraken2 --paired \
+    if [ -f ${read2} ]; then
+      mode="--paired"
+    else
+      mode=""
+    fi
+    echo "mode: $mode"
+    kraken2 $mode \
       --classified-out cseqs#.fq \
       --threads ${cpus} \
       --db ${kraken2_db} \
@@ -33,7 +38,7 @@ task kraken2 {
 
   output {
     String     date          = read_string("DATE")
-    String     version       = read_string("VERSION") 
+    String     version       = read_string("VERSION")
     File 	     kraken_report = "${samplename}_kraken2_report.txt"
     Float 	   percent_human = read_string("PERCENT_HUMAN")
     Float 	   percent_sc2   = read_string("PERCENT_SC2")
@@ -44,7 +49,7 @@ task kraken2 {
     memory:       "8 GB"
     cpu:          4
     disks:        "local-disk 100 SSD"
-    preemptible:  0      
+    preemptible:  0
   }
 }
 
@@ -72,7 +77,7 @@ task pangolin {
     pangolin_aLRT=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
     pangolin_stats=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 4 -d "," )
     mv ${samplename}/lineage_report.csv ${samplename}_pango_lineage.csv
-    
+
     echo $pangolin_lineage | tee PANGOLIN_LINEAGE
     echo $pangolin_aLRT | tee PANGOLIN_aLRT
     echo $pangolin_stats | tee PANGOLIN_STATS
@@ -80,7 +85,7 @@ task pangolin {
 
   output {
     String     date                 = read_string("DATE")
-    String     version              = read_string("VERSION") 
+    String     version              = read_string("VERSION")
     String     pangolin_lineage     = read_string("PANGOLIN_LINEAGE")
     Float      pangolin_aLRT        = read_string("PANGOLIN_aLRT")
     Float      pangolin_stats       = read_string("PANGOLIN_STATS")
@@ -92,7 +97,7 @@ task pangolin {
     memory:       "8 GB"
     cpu:          40
     disks:        "local-disk 100 SSD"
-    preemptible:  0      
+    preemptible:  0
   }
 }
 
@@ -119,14 +124,14 @@ task pangolin2 {
 
     pangolin_probability=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
     mv ${samplename}/lineage_report.csv ${samplename}_pango2_lineage.csv
-    
+
     echo $pangolin_lineage | tee PANGOLIN_LINEAGE
     echo $pangolin_probability | tee PANGOLIN_PROBABILITY
   }
 
   output {
     String     date                 = read_string("DATE")
-    String     version              = read_string("VERSION") 
+    String     version              = read_string("VERSION")
     String     pangolin_lineage     = read_string("PANGOLIN_LINEAGE")
     String     pangolin_aLRT        = read_string("PANGOLIN_PROBABILITY")
     File       pango_lineage_report = "${samplename}_pango2_lineage.csv"
@@ -137,7 +142,7 @@ task pangolin2 {
     memory:       "8 GB"
     cpu:          40
     disks:        "local-disk 100 SSD"
-    preemptible:  0      
+    preemptible:  0
   }
 }
 

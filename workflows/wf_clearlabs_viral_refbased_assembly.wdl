@@ -43,6 +43,11 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       fasta = consensus.consensus_seq
   }
+  call taxon_ID.kraken2 {
+    input:
+      samplename = samplename,
+      read1 = clear_lab_fastq
+  }
   call taxon_ID.nextclade_one_sample {
     input:
       genome_fasta = consensus.consensus_seq
@@ -53,6 +58,11 @@ workflow viral_refbased_assembly {
       baifile = consensus.trim_sorted_bai
   }
   output {
+
+    Float   kraken_human       = kraken2.percent_human
+    Float   kraken_sc2         = kraken2.percent_sc2
+    String  kraken_version     = kraken2.version
+    String  kraken_report      = kraken2.kraken_report
 
     File    trim_sorted_bam         = consensus.trim_sorted_bam
     File    trim_sorted_bai         = consensus.trim_sorted_bai

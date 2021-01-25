@@ -29,6 +29,8 @@ workflow nCoV19_pipeline {
         nextclade_clade   = viral_refbased_assembly.nextclade_clade,
         nextclade_aa_subs = viral_refbased_assembly.nextclade_aa_subs,
         nextclade_aa_dels = viral_refbased_assembly.nextclade_aa_dels,
+        kraken_human      = viral_refbased_assembly.kraken_human,
+        kraken_sc2        = viral_refbased_assembly.kraken_sc2,
         variant_num       = viral_refbased_assembly.variant_num,
         number_N          = viral_refbased_assembly.number_N,
         number_ATCG       = viral_refbased_assembly.number_ATCG,
@@ -71,6 +73,7 @@ workflow nCoV19_pipeline {
   }
 
   output {
+    Array[File]    kraken_report        = viral_refbased_assembly.kraken_report
     Array[File]    trim_sorted_bam      = viral_refbased_assembly.trim_sorted_bam
     Array[File]    trim_sorted_bai      = viral_refbased_assembly.trim_sorted_bai
     Array[File]    consensus_seq        = viral_refbased_assembly.consensus_seq
