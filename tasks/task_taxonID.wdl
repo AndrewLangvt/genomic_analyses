@@ -138,7 +138,7 @@ task pangolin2 {
   }
 
   runtime {
-    docker:       "staphb/pangolin:2.1.1"
+    docker:       "staphb/pangolin:latest"
     memory:       "8 GB"
     cpu:          40
     disks:        "local-disk 100 SSD"
@@ -185,7 +185,7 @@ task nextclade_one_sample {
         grep ^aaDeletions transposed.tsv | cut -f 2 | grep -v aaDeletions | sed 's/,/|/g' > NEXTCLADE_AADELS
     }
     runtime {
-        docker: "neherlab/nextclade:0.10.0"
+        docker: "neherlab/nextclade:latest"
         memory: "3 GB"
         cpu:    2
         disks: "local-disk 50 HDD"
