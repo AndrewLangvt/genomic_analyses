@@ -3,7 +3,7 @@ version 1.0
 task kraken2 {
   input {
   	File        read1
-	  File? 		    read2="NA"
+	  File? 		  read2
 	  String      samplename
 	  String?     kraken2_db = "/kraken2-db"
     Int?        cpus=4
@@ -13,12 +13,10 @@ task kraken2 {
     # date and version control
     date | tee DATE
     kraken2 --version | head -n1 | tee VERSION
-    if [ -f ${read2} ]; then
+    num_reads=$(ls *fastq.gz 2> /dev/nul | wc -l)
+    if [$num_reads > 1 ]; then
       mode="--paired"
-    else
-      mode=""
     fi
-    echo "mode: $mode"
     kraken2 $mode \
       --classified-out cseqs#.fq \
       --threads ${cpus} \
