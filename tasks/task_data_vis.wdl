@@ -18,18 +18,22 @@ task cluster_render {
 
     if [[ -z ~{render_template} ]]; then cp ${render_template} report_template.Rmd; fi
     Rscript --verbose /report_render.R ${snp_matrix} ${ml_tree} ${cluster_samples} report_template.Rmd .
-    cp report.pdf ${clustername}_$(date +%m%d%y)_cluster_analysis.pdf
-    cp SNP_heatmap.png ${clustername}_$(date +%m%d%y)_SNP_heatmap.png
-    cp pairwise_snp_list.csv ${clustername}_$(date +%m%d%y)_pairwise_snp_list.csv
-  }
+#    cp report.pdf ${clustername}_$(date +%m%d%y)_cluster_analysis.pdf
+#    cp SNP_heatmap.png ${clustername}_$(date +%m%d%y)_SNP_heatmap.png
+#    cp pairwise_snp_list.csv ${clustername}_$(date +%m%d%y)_pairwise_snp_list.csv
+    cp report.pdf ${clustername}_cluster_analysis.pdf
+    cp SNP_heatmap.png ${clustername}_SNP_heatmap.png
+    cp pairwise_snp_list.csv ${clustername}_pairwise_snp_list.csv
+
+}
 
   output {
     String     date = read_string("DATE")
     String     rscript_version = read_string("RSCRIPT_VERSION") 
     String     r_version = read_string("R_VERSION") 
-    File       analysis_doc = select_first(glob("*_cluster_analysis.pdf"))
-    File       snp_heatmap = select_first(glob("*_SNP_heatmap.png"))
-    File       snp_list = select_first(glob("*_pairwise_snp_list.csv"))
+    File       analysis_doc = "${clustername}_cluster_analysis.pdf"
+    File       snp_heatmap = "${clustername}_SNP_heatmap.png"
+    File       snp_list = "${clustername}_pairwise_snp_list.csv"
   }
 
   runtime {
