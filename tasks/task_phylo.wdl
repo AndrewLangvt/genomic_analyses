@@ -13,13 +13,15 @@ task snp_dists {
     date | tee DATE
     snp-dists -v | tee VERSION
 
-    snp-dists ${alignment} > ${clustername}_$(date +%m%d%y)_snp_distance_matrix.tsv
-  }
+    #snp-dists ${alignment} > ${clustername}_$(date +%m%d%y)_snp_distance_matrix.tsv
+    #snp-dists ${alignment} > ${clustername}_snp_distance_matrix.tsv
+
+}
 
   output {
     String     date = read_string("DATE")
     String     version = read_string("VERSION") 
-    File       snp_matrix = select_first(glob("*snp_distance_matrix.tsv"))
+    File       snp_matrix = "${clustername}_snp_distance_matrix.tsv"
   }
 
   runtime {
@@ -51,14 +53,15 @@ task iqtree {
     then
       cp ${alignment} msa.fasta
       iqtree -nt AUTO -s msa.fasta -m ${iqtree_model} -bb ${iqtree_bootstraps}
-      cp msa.fasta.contree ${clustername}_$(date +%m%d%y)_msa.tree
+  #    cp msa.fasta.contree ${clustername}_$(date +%m%d%y)_msa.tree
+      cp msa.fasta.contree ${clustername}_msa.tree
     fi
   }
 
   output {
     String     date = read_string("DATE")
     String     version = read_string("VERSION") 
-    File       ml_tree = select_first(glob("*_msa.tree"))
+    File       ml_tree = ${clustername}_msa.tree
   }
 
   runtime {
