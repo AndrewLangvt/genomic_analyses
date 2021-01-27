@@ -12,3 +12,6 @@ workflows:
  - name: ont_sc2_pubRepo_submission
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_ont_sc2_pubRepo_submission.wdl
+ - name: genomic_cluster_analysis
+   subclass: WDL
+   primaryDescriptorPath: /workflows/wf_genomic_cluster_analysis.wdl
