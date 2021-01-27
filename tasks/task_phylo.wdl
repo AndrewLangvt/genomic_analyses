@@ -14,7 +14,7 @@ task snp_dists {
     snp-dists -v | tee VERSION
 
     #snp-dists ${alignment} > ${clustername}_$(date +%m%d%y)_snp_distance_matrix.tsv
-    #snp-dists ${alignment} > ${clustername}_snp_distance_matrix.tsv
+    snp-dists ${alignment} > ${clustername}_snp_distance_matrix.tsv
 
 }
 
