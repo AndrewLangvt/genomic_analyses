@@ -94,6 +94,7 @@ task consensus {
 
   output {
     File    consensus_seq = "${samplename}.consensus.fasta"
+    File    sorted_bam = "${samplename}.trimmed.rg.sorted.bam"
     File    trim_sorted_bam = "${samplename}.primertrimmed.rg.sorted.bam"
     File    trim_sorted_bai = "${samplename}.primertrimmed.rg.sorted.bam.bai"
     Int     number_N = read_string("NUM_N")

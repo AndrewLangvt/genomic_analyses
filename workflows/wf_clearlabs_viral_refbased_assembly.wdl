@@ -31,7 +31,7 @@ workflow viral_refbased_assembly {
   call assembly_metrics.stats_n_coverage {
     input:
       samplename = samplename,
-      bamfile = consensus.trim_sorted_bam
+      bamfile = consensus.sorted_bam
   }
   call assembly_metrics.stats_n_coverage as stats_n_coverage_primtrim {
     input:
