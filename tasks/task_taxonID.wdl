@@ -14,9 +14,10 @@ task kraken2 {
     date | tee DATE
     kraken2 --version | head -n1 | tee VERSION
     num_reads=$(ls *fastq.gz 2> /dev/nul | wc -l)
-    if [$num_reads > 1 ]; then
+    if ! [ -z ${read2} ]; then
       mode="--paired"
     fi
+    echo $mode
     kraken2 $mode \
       --classified-out cseqs#.fq \
       --threads ${cpus} \
