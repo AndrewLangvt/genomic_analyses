@@ -1,4 +1,4 @@
-version 1.0 
+version 1.0
 
 import "../tasks/task_alignment.wdl" as align
 import "../tasks/task_phylo.wdl" as phylo
@@ -6,12 +6,12 @@ import "../tasks/task_data_vis.wdl" as vis
 
 workflow genomic_cluster_analysis {
   meta {
-    description: "Generates PDF for a list of genomes containing Pass/Fail status, SNP matrix, and Phylogenetic Tree."
+    description: "Generates PDF for SNP matrix and Phylogenetic Tree."
   }
 
   input {
     Array[File]   genomes
-    File          cluster_samples
+    String          cluster_name="SC2_Cluster_Analysis"
     File?         render_template
   }
 
@@ -21,27 +21,24 @@ workflow genomic_cluster_analysis {
   }
   call phylo.snp_dists {
     input:
-      cluster_samples = cluster_samples,
+      cluster_name = cluster_name,
       alignment = mafft.msa
   }
   call phylo.iqtree {
     input:
-      cluster_samples = cluster_samples,
-      alignment = mafft.msa      
+      cluster_name = cluster_name,
+      alignment = mafft.msa
   }
   call vis.cluster_render {
     input:
-      cluster_samples = cluster_samples,
+      cluster_name = cluster_name,
       snp_matrix = snp_dists.snp_matrix,
       ml_tree = iqtree.ml_tree,
       render_template = render_template
   }
-  
+
   output {
     File      analysis_doc = cluster_render.analysis_doc
     File      snp_list     = cluster_render.snp_list
   }
 }
-
-
-

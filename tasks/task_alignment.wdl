@@ -57,14 +57,13 @@ task mafft {
     echo Mafft $(mafft_vers) | tee VERSION
 
     cat ${sep=" " genomes} | sed 's/Consensus_//;s/.consensus_threshold.*//' > assemblies.fasta
-    mafft --thread -${cpus} assemblies.fasta > $(date +%m%d%y)_msa.fasta
+    mafft --thread -${cpus} assemblies.fasta > msa.fasta
   }
 
   output {
     String        date = read_string("DATE")
     String        version = read_string("VERSION")
-    Array[File?]  msa_array = glob("*_msa.fasta")
-    File          msa = select_first(msa_array)
+    File          msa = "msa.fasta"
   }
 
   runtime {
