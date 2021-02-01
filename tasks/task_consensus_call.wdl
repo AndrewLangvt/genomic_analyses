@@ -61,7 +61,7 @@ task variant_call {
     Int?        min_bq = "0"
     Int?        min_qual = "20"
     Float?      min_freq = "0.6"
-    Int?        min_depth = "0"
+    Int?        min_depth = "10"
   }
 
   command {
