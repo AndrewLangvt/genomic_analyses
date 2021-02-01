@@ -9,24 +9,36 @@ workflow SC2_submission_files {
 		String 		collection_date
 		File 		sequence
 		File 		read1
-		File 		read2
-		Int 		number_ATCG 
-		Int 		number_ATCG_gisaid = 25000
-		Int 		number_ATCG_genbank = 15000
+		File? 		read2
+
 
 	    String    	organism = "Severe acute respiratory syndrome coronavirus 2"
 	    String    	iso_org = "SARS-CoV-2"
 	    String    	iso_host = "Human"
 	    String    	iso_country = "USA"
+	    String      specimen_type = ""
 	    String    	assembly_or_consensus = "consensus"
+
+		String    	gisaid_submitter
+        String    	iso_state
+        String    	iso_continent 
+        String    	seq_platform
+        String    	bwa_version = ""
+        String    	ivar_version = ""
+        String    	originating_lab
+        String    	origLab_address
+        String      BioProject
+        String    	submitting_lab 
+        String    	subLab_address 
+        String    	Authors
 
 	    # Optional inputs/user-defined thresholds for generating submission files
 		Float		coverage = 100.00
-		Int 		number_N = 0
-		Int 		number_Total = 30000
 		Float		coverage_threshold = 85.00
 		Int 		number_N_threshold = 15000
 		Int 		number_Total_threshold = 25000
+		Int 		number_ATCG_gisaid = 25000
+		Int 		number_ATCG_genbank = 15000
 	}
 
 	call submission.sra {
@@ -44,20 +56,35 @@ workflow SC2_submission_files {
 	}
 
 	if (coverage >= coverage_threshold) {
-		if (number_N <= number_N_threshold) {
-			if (number_Total >= number_Total_threshold) {
-				if (number_ATCG >= number_ATCG_gisaid) {
+		if (deidentify.number_N <= number_N_threshold) {
+			if (deidentify.number_Total >= number_Total_threshold) {
+				if (deidentify.number_ATCG >= number_ATCG_gisaid) {
 					call submission.gisaid {
 						input:
-							samplename      = samplename,
-							submission_id   = submission_id,
-							collection_date = collection_date,
-							sequence        = sequence,
-							iso_host        = iso_host,
-							iso_country     = iso_country
+							samplename       = samplename,
+							submission_id    = submission_id,
+							collection_date  = collection_date,
+							sequence         = sequence,
+							iso_host         = iso_host,
+							iso_country      = iso_country,
+							specimen_type    = specimen_type,
+					        gisaid_submitter = gisaid_submitter,
+					        iso_state        = gisaid_submitter,
+					        iso_continent    = iso_continent,
+					        seq_platform     = seq_platform,
+					        bwa_version      = bwa_version,
+					        ivar_version     = ivar_version,
+					        originating_lab  = originating_lab,
+					        origLab_address  = origLab_address,
+					        submitting_lab   = submitting_lab, 
+					        subLab_address   = subLab_address, 
+					        Authors          = Authors
+
+
+
 					}
 				}
-				if (number_ATCG >= number_ATCG_genbank) {
+				if (deidentify.number_ATCG >= number_ATCG_genbank) {
 					call submission.genbank {
 						input:
 							samplename      = samplename,
@@ -67,7 +94,9 @@ workflow SC2_submission_files {
 							organism        = organism, 
 							iso_org	        = iso_org,
 							iso_host        = iso_host,
-							iso_country     = iso_country
+							iso_country     = iso_country,
+							specimen_type   = specimen_type,
+					        BioProject      = BioProject
 					}
 				}
 			}
@@ -75,11 +104,14 @@ workflow SC2_submission_files {
 	}
 
 	output {
-	    File      read1_submission = sra.read1_submission
-	    File      read2_submission = sra.read2_submission
-	    File      deID_assembly    = deidentify.deID_assembly
-	    File?     genbank_assembly = genbank.genbank_assembly
-	    File?     gisaid_assembly  = gisaid.gisaid_assembly
+	    File?     read1_submission   = sra.read1_submission
+	    File?     read2_submission   = sra.read2_submission
+	    File?     SE_read_submission = sra.SE_read_submission
+	    File      deID_assembly      = deidentify.deID_assembly
+	    File?     genbank_assembly   = genbank.genbank_assembly
+	    File?     genbank_metadata   = genbank.genbank_metadata
+	    File?     gisaid_assembly    = gisaid.gisaid_assembly
+	    File?     gisaid_metadata    = gisaid.gisaid_metadata
 	}
 }
 
