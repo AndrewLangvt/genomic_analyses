@@ -13,12 +13,12 @@ workflow batch_fasta_repo_submission {
 		input:
 			single_submission_fasta=single_submission_fasta,
 	    single_submission_meta=single_submission_meta,
-	    repository=r"GenBank"
+	    repository= "GISAID"
 	}
 
 	output {
-	    File      GenBank_upload_meta  = SC2_submission_files.deID_assembly
-	    File      GenBank_upload_fasta = SC2_submission_files.read1_submission
+	    File      GISAID_upload_meta  = SC2_submission_files.deID_assembly
+	    File      GISAID_upload_fasta = SC2_submission_files.read1_submission
 
 	}
 }
