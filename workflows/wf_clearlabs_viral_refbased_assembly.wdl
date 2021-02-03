@@ -5,6 +5,7 @@ import "../tasks/task_consensus_call.wdl" as consensus_call
 import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
+import "wf_ont_sc2_pubRepo_submission.wdl" as submission
 
 workflow viral_refbased_assembly {
   meta {
@@ -15,6 +16,26 @@ workflow viral_refbased_assembly {
     String  samplename
     String? artic_primer_version="V3"
     File    clear_lab_fastq
+
+    String	   	submission_id
+    String 		  collection_date
+    String    	gisaid_submitter
+    String    	iso_state
+    String    	iso_continent
+    String    	originating_lab
+    String    	origLab_address
+    String      BioProject
+    String    	submitting_lab
+    String    	subLab_address
+    String    	Authors
+    String    	organism = "Severe acute respiratory syndrome coronavirus 2"
+    String    	iso_org = "SARS-CoV-2"
+    String    	iso_host = "Human"
+    String    	iso_country = "USA"
+    String      specimen_type = ""
+    String    	assembly_or_consensus = "consensus"
+    String    	seq_platform = "Nanopore via Clear Labs Dx WGS SARS-CoV-2"
+
   }
 
   call medaka.consensus {
@@ -56,6 +77,33 @@ workflow viral_refbased_assembly {
     input:
       bamfile = consensus.trim_sorted_bam,
       baifile = consensus.trim_sorted_bai
+  }
+  call submission.SC2_submission_files {
+  	input:
+      samplename = samplename,
+		 	submission_id = submission_id,
+		  collection_date = collection_date,
+		  sequence = consensus.consensus_seq,
+		  reads = clear_lab_fastq,
+
+	  	organism = organism,
+	  	iso_org = iso_org,
+	  	iso_host = iso_host,
+	  	iso_country = iso_country,
+	    specimen_type = specimen_type,
+	  	assembly_or_consensus = assembly_or_consensus,
+
+		 	gisaid_submitter = gisaid_submitter,
+     	iso_state = iso_state,
+     	iso_continent = iso_continent,
+     	seq_platform = seq_platform,
+     	artic_pipeline_version = consensus.artic_pipeline_version,
+    	originating_lab = originating_lab,
+    	origLab_address = origLab_address,
+      BioProject = BioProject,
+    	submitting_lab = submitting_lab,
+    	subLab_address = subLab_address,
+    	Authors = Authors
   }
   output {
 
@@ -103,5 +151,12 @@ workflow viral_refbased_assembly {
     Int     amp_fail               = bedtools_cov.amp_fail
     File    amp_coverage           = bedtools_cov.amp_coverage
     String  bedtools_version       = bedtools_cov.version
+
+    File?     reads_submission   = SC2_submission_files.reads_submission
+    File      deID_assembly      = SC2_submission_files.deID_assembly
+    File?     genbank_assembly   = SC2_submission_files.genbank_assembly
+    File?     genbank_metadata   = SC2_submission_files.genbank_metadata
+    File?     gisaid_assembly    = SC2_submission_files.gisaid_assembly
+    File?     gisaid_metadata    = SC2_submission_files.gisaid_metadata
   }
 }

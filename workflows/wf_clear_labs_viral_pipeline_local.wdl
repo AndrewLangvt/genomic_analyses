@@ -45,18 +45,6 @@ workflow nCoV19_pipeline {
         amp_fail          = viral_refbased_assembly.amp_fail
     }
 
-    call submission.SC2_submission_files {
-      input:
-        samplename      = sample.left[0],
-        submission_id   = sample.left[1],
-        collection_date = sample.left[2],
-        sequence        = viral_refbased_assembly.consensus_seq,
-        read            = sample.right,
-        coverage        = viral_refbased_assembly.coverage,
-        number_N        = viral_refbased_assembly.number_N,
-        number_ATCG     = viral_refbased_assembly.number_ATCG,
-        number_Total    = viral_refbased_assembly.number_Total
-    }
   }
 
   call assembly_metrics.bedtools_multicov {
@@ -86,10 +74,10 @@ workflow nCoV19_pipeline {
     File           amp_multicov         = bedtools_multicov.amp_coverage
     File           merged_metrics       = merge_metrics.run_results
 
-    Array[File?]   read_submission      = SC2_submission_files.read_submission
-    Array[File]    deID_assembly        = SC2_submission_files.deID_assembly
-    Array[File?]   genbank_assembly     = SC2_submission_files.genbank_assembly
-    Array[File?]   gisaid_assembly      = SC2_submission_files.gisaid_assembly
+    Array[File?]   reads_submission      = viral_refbased_assembly.reads_submission
+    Array[File]    deID_assembly        = viral_refbased_assembly.deID_assembly
+    Array[File?]   genbank_assembly     = viral_refbased_assembly.genbank_assembly
+    Array[File?]   gisaid_assembly      = viral_refbased_assembly.gisaid_assembly
 
   }
 }
