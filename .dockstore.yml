@@ -18,3 +18,4 @@ workflows:
  - name: sc2_batch_repo_submission
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_sc2_batch_repo_submission.wdl
+   
