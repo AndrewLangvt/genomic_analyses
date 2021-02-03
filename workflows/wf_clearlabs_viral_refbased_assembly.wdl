@@ -5,6 +5,7 @@ import "../tasks/task_consensus_call.wdl" as consensus_call
 import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
+import "../tasks/task_ncbi.wdl" as ncbi
 import "wf_ont_sc2_pubRepo_submission.wdl" as submission
 
 workflow viral_refbased_assembly {
@@ -105,6 +106,10 @@ workflow viral_refbased_assembly {
     	subLab_address = subLab_address,
     	Authors = Authors
   }
+  call ncbi.vadr {
+    input:
+      genome_fasta=consensus.consensus_seq
+  }
   output {
 
     Float   kraken_human       = kraken2.percent_human
@@ -158,5 +163,8 @@ workflow viral_refbased_assembly {
     File?     genbank_metadata   = SC2_submission_files.genbank_metadata
     File?     gisaid_assembly    = SC2_submission_files.gisaid_assembly
     File?     gisaid_metadata    = SC2_submission_files.gisaid_metadata
+
+    File vadr_alterts_list = vadr.alerts_list
+    Int  vadr_num_alerts = vadr.num_alerts
   }
 }
