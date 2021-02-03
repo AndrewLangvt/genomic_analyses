@@ -15,7 +15,7 @@ workflows:
  - name: genomic_cluster_analysis
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_genomic_cluster_analysis.wdl
- - name: sc2_batch_repo_submission
+ - name: sc2_batch_submission
    subclass: WDL
-   primaryDescriptorPath: /workflows/wf_sc2_batch_repo_submission.wdl
+   primaryDescriptorPath: /workflows/wf_sc2_batch_submission.wdl
    
