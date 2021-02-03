@@ -4,10 +4,10 @@ import "../tasks/task_pub_repo_submission.wdl" as submission
 
 workflow batch_fasta_repo_submission {
 	input {
-		Array[File?] genbank_single_submission_fasta
-		Array[File?] genbank_single_submission_meta
-		Array[File?] gisaid_single_submission_fasta
-		Array[File?] gisaid_single_submission_meta
+		Array[File] genbank_single_submission_fasta
+		Array[File] genbank_single_submission_meta
+		Array[File] gisaid_single_submission_fasta
+		Array[File] gisaid_single_submission_meta
 
 	}
 
@@ -23,7 +23,7 @@ workflow batch_fasta_repo_submission {
 	  		single_submission_meta=gisaid_single_submission_meta,
 	    		repository="GISAID"
 	}
-	
+
 
 	output {
 	    File      GenBank_upload_meta  = genbank_compile.upload_meta
