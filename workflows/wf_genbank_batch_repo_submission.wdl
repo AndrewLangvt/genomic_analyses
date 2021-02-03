@@ -6,7 +6,6 @@ workflow batch_fasta_repo_submission {
 	input {
 		Array[File?] single_submission_fasta
 		Array[File?] single_submission_meta
-		String       repository
 
 	}
 
