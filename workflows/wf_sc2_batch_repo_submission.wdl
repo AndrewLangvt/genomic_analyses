@@ -7,7 +7,7 @@ workflow batch_fasta_repo_submission {
 		Array[File?] genbank_single_submission_fasta
 		Array[File?] genbank_single_submission_meta
 		Array[File?] gisaid_single_submission_fasta
-		Arry[File?]  gisaid_single_submission_meta
+		Array[File?] gisaid_single_submission_meta
 
 	}
 
