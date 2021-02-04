@@ -70,7 +70,7 @@ task consensus {
 
   command{
     # version control
-    artic -v | tee VERSION
+    echo "$(artic -v); Medaka" | tee VERSION
     artic minion --medaka --normalise ${normalise} --threads ${cpu} --scheme-directory /artic-ncov2019/primer_schemes --read-file ${filtered_reads} nCoV-2019/${artic_primer_version} ${samplename}
 
     num_N=$( grep -v ">" *.consensus.fasta | grep -o 'N' | wc -l )
