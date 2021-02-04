@@ -189,6 +189,8 @@ task compile {
   input {
     Array[File?] single_submission_fasta
     Array[File?] single_submission_meta
+    Array[Int] vadr_num_alerts
+    Int = vadr_threshold
     String       repository
     String    docker_image = "staphb/seqyclean:1.10.09"
     Int       mem_size_gb = 1
@@ -199,6 +201,14 @@ task compile {
 
   command {
   head -n -1 ~{single_submission_meta[1]} > ${repository}_upload_meta.csv
+
+  for i in ~{vadr_num_alerts}
+  do
+    if $i > 0
+    then
+    rm ~{single_submission_meta[$i]} ~{single_submission_fasta[$i]}
+  done
+
   for i in ~{sep=" " single_submission_meta}; do
       tail -n1 $i >> ${repository}_upload_meta.csv
   done
