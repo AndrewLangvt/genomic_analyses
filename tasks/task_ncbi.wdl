@@ -822,14 +822,6 @@ task vadr {
      cp ~{genome_fasta} "~{samplename}_failed.fasta"
     fi
 
-    if ! awk '{exit \${1}<1}' NUM_ALERTS; then
-      echo "if block works"
-      cp ~{genome_fasta} "~{samplename}_passed.fasta"
-    else
-      echo "don't work, man"
-      touch vdr_fail.txt
-      echo "cat NUM_ALERTS"
-    fi
   >>>
   output {
     File feature_tbl  = "~{out_base}/~{out_base}.vadr.pass.tbl"
