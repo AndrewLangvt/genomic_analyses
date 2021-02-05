@@ -814,6 +814,14 @@ task vadr {
     # prep alerts into a tsv file for parsing
     cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
     cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
+
+    read -r num < NUM_ALERTS
+    if [[ "$num" -lt 1 ]]; then
+      cp ~{genome_fasta} "~{samplename}_passed.fasta"
+    else
+     cp ~{genome_fasta} "~{samplename}_failed.fasta"
+    fi
+
     if ! awk '{exit \${1}<1}' NUM_ALERTS; then
       echo "if block works"
       cp ~{genome_fasta} "~{samplename}_passed.fasta"
@@ -829,7 +837,7 @@ task vadr {
     File alerts_list = "~{out_base}/~{out_base}.vadr.alt.list"
     Array[Array[String]] alerts = read_tsv("~{out_base}.vadr.alerts.tsv")
     File outputs_tgz = "~{out_base}.vadr.tar.gz"
-    File? vadr_failed = "vadr_fail.txt"
+    File? vadr_failed = "~{samplename}_failed.fasta"
     File? vadr_passed = "~{samplename}_passed.fasta"
   }
   runtime {
