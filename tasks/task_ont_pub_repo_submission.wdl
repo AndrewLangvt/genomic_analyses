@@ -93,7 +93,7 @@ task gisaid {
 
   output {
     File     gisaid_assembly = "${submission_id}.gisaid.fa"
-    File     gisaid_metadata = "${submissino_id}.gisaidMeta.csv"
+    File     gisaid_metadata = "${submission_id}.gisaidMeta.csv"
   }
 
   runtime {
