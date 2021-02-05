@@ -815,7 +815,10 @@ task vadr {
     cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
     cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
     if cat NUM_ALERTS == 0; then
+      echo "if block works"
       cp ~{genome_fasta} "~{samplename}_passed.fasta"
+    else
+      echo "don't work, man"
     fi
   >>>
   output {
