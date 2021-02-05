@@ -193,14 +193,12 @@ workflow viral_refbased_assembly {
     File vadr_alterts_list = vadr.alerts_list
     Int vadr_num_alerts = vadr.num_alerts
 
-    File?     vadr_passed_reads_submission   = vadr_passed_submissions.reads_submission
     File?      vadr_passed_deID_assembly      = vadr_passed_submissions.deID_assembly
     File?     vadr_passed_genbank_assembly   = vadr_passed_submissions.genbank_assembly
     File?     vadr_passed_genbank_metadata   = vadr_passed_submissions.genbank_metadata
     File?     vadr_passed_gisaid_assembly    = vadr_passed_submissions.gisaid_assembly
     File?     vadr_passed_gisaid_metadata    = vadr_passed_submissions.gisaid_metadata
 
-    File?     vadr_warning_reads_submission   = vadr_warning_submissions.reads_submission
     File?      vadr_warning_deID_assembly      = vadr_warning_submissions.deID_assembly
     File?     vadr_warning_genbank_assembly   = vadr_warning_submissions.genbank_assembly
     File?     vadr_warning_genbank_metadata   = vadr_warning_submissions.genbank_metadata
