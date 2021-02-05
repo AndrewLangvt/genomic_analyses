@@ -1,6 +1,6 @@
 version 1.0
 
-import "../tasks/task_pub_repo_submission.wdl" as submission
+import "../tasks/task_ont_pub_repo_submission.wdl" as submission
 
 workflow batch_fasta_repo_submission {
 	input {
