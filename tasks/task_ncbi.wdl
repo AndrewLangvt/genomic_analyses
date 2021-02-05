@@ -819,6 +819,7 @@ task vadr {
       cp ~{genome_fasta} "~{samplename}_passed.fasta"
     else
       echo "don't work, man"
+      touch vdr_fail.txt
       echo "cat NUM_ALERTS"
     fi
   >>>
@@ -828,6 +829,7 @@ task vadr {
     File alerts_list = "~{out_base}/~{out_base}.vadr.alt.list"
     Array[Array[String]] alerts = read_tsv("~{out_base}.vadr.alerts.tsv")
     File outputs_tgz = "~{out_base}.vadr.tar.gz"
+    File? vadr_passed = "vadr_fail.txt"
     File? vadr_passed = "~{samplename}_passed.fasta"
   }
   runtime {
