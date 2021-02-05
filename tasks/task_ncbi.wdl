@@ -814,7 +814,7 @@ task vadr {
     # prep alerts into a tsv file for parsing
     cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
     cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
-    if ! awk '{exit $1<1}'; then
+    if ! awk '{exit $1<1}' NUM_ALERTS; then
       echo "if block works"
       cp ~{genome_fasta} "~{samplename}_passed.fasta"
     else
