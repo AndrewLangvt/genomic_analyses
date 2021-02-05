@@ -817,9 +817,10 @@ task vadr {
 
     read -r num < NUM_ALERTS
     if [[ "$num" -lt 1 ]]; then
-      cp ~{genome_fasta} "~{samplename}_passed.fasta"
+      echo true > vadr.result
+      echo
     else
-     cp ~{genome_fasta} "~{samplename}_failed.fasta"
+     echo true > vadr.result
     fi
 
   >>>
@@ -829,8 +830,7 @@ task vadr {
     File alerts_list = "~{out_base}/~{out_base}.vadr.alt.list"
     Array[Array[String]] alerts = read_tsv("~{out_base}.vadr.alerts.tsv")
     File outputs_tgz = "~{out_base}.vadr.tar.gz"
-    File? vadr_failed = "~{samplename}_failed.fasta"
-    File? vadr_passed = "~{samplename}_passed.fasta"
+    Boolean vadr_result = read_boolean("vadr.result")
   }
   runtime {
     docker: "~{docker}"
