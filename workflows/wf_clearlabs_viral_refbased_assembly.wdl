@@ -190,6 +190,9 @@ workflow viral_refbased_assembly {
     File    amp_coverage           = bedtools_cov.amp_coverage
     String  bedtools_version       = bedtools_cov.version
 
+    File vadr_alterts_list = vadr.vadr_alterts_list
+    Int vadr_num_alerts = vadr.num_alerts
+
     File?     vadr_passed_reads_submission   = vadr_passed_submissions.reads_submission
     File?      vadr_passed_deID_assembly      = vadr_passed_submissions.deID_assembly
     File?     vadr_passed_genbank_assembly   = vadr_passed_submissions.genbank_assembly
