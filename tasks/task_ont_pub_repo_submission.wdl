@@ -189,9 +189,6 @@ task compile {
   input {
     Array[File?] single_submission_fasta
     Array[File?] single_submission_meta
-    Array[Int] vadr_num_alerts
-    Int vadr_threshold
-    Int vadr_alerts=0
     String       repository
     String    docker_image = "staphb/seqyclean:1.10.09"
     Int       mem_size_gb = 1
