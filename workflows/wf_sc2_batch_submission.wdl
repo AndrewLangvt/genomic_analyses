@@ -9,7 +9,7 @@ workflow batch_fasta_repo_submission {
 		Array[File] gisaid_single_submission_fasta
 		Array[File] gisaid_single_submission_meta
 		Array[File]	vadr_num_alerts
-		Int					vadr_threshold=1
+		Int					vadr_threshold=0
 
 	}
 

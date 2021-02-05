@@ -191,6 +191,7 @@ task compile {
     Array[File?] single_submission_meta
     Array[Int] vadr_num_alerts
     Int vadr_threshold
+    Int vadr_alerts=0
     String       repository
     String    docker_image = "staphb/seqyclean:1.10.09"
     Int       mem_size_gb = 1
@@ -204,9 +205,11 @@ task compile {
 
   for i in ~{sep=" " vadr_num_alerts}
   do
-    if $i > 0
-    then
-    rm ~{single_submission_meta["$i"]} ~{single_submission_fasta["$i"]}
+    ${vadr_alerts}+=$i
+    if ${vadr_alerts} > 0
+      then
+      rm ~{single_submission_meta["~{vadr_alerts}"]} ~{single_submission_fasta["~{vadr_alerts}"]}
+    fi
   done
 
   for i in ~{sep=" " single_submission_meta}; do
