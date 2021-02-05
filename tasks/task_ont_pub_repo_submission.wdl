@@ -208,7 +208,7 @@ task compile {
     ${vadr_alerts}+=$i
     if ${vadr_alerts} > 0
       then
-      rm ~{single_submission_meta["~{vadr_alerts}"]} ~{single_submission_fasta["~{vadr_alerts}"]}
+      rm ~{single_submission_meta['~{vadr_alerts}']} ~{single_submission_fasta['~{vadr_alerts}']}
     fi
   done
 
