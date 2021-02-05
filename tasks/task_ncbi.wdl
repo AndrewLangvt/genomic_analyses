@@ -813,8 +813,8 @@ task vadr {
     # prep alerts into a tsv file for parsing
     cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
     cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
-    if cat NUM_ALERTS > 0; then
-      mv ~{genome_fasta} ~{genome_fasta}_vadr_fail
+    if cat NUM_ALERTS == 0; then
+      cp ~{genome_fasta} "~{genome_fasta}"
     fi
   >>>
   output {
