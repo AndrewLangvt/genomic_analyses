@@ -818,9 +818,8 @@ task vadr {
     read -r num < NUM_ALERTS
     if [[ "$num" -lt 1 ]]; then
       echo true > vadr.result
-      echo
     else
-     echo true > vadr.result
+     echo false > vadr.result
     fi
 
   >>>
