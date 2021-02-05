@@ -87,13 +87,13 @@ task gisaid {
     echo submitter,fn,covv_virus_name,covv_type,covv_passage,covv_collection_date,covv_location,covv_add_location,covv_host,covv_add_host_info,covv_gender,covv_patient_age,covv_patient_status,covv_specimen,covv_outbreak,covv_last_vaccinated,covv_treatment,covv_seq_technology,covv_assembly_method,covv_coverage,covv_orig_lab,covv_orig_lab_addr,covv_provider_sample_id,covv_subm_lab,covv_subm_lab_addr,covv_subm_sample_id,covv_authors,covv_comment,comment_type >  ${samplename}.gisaidMeta.csv
     echo Submitter,FASTA filename,Virus name,Type,Passage details/history,Collection date,Location,Additional location information,Host,Additional host information,Gender,Patient age,Patient status,Specimen source,Outbreak,Last vaccinated,Treatment,Sequencing technology,Assembly method,Coverage,Originating lab,Address,Sample ID given by the sample provider,Submitting lab,Address,Sample ID given by the submitting laboratory,Authors Comment,Comment Icon >> ${samplename}.gisaidMeta.csv
 
-    echo "\"${gisaid_submitter}\",\"gisaid_upload.fasta\",\"hCoV-19/${iso_country}/${submission_id}/$year\",\"betacoronavirus\",\"Original\",\"${collection_date}\",\"${iso_continent} \ ${iso_country} \ ${iso_state}\",,\"${iso_host}\",,\"unknown\",\"unknown\",\"unknown\",\"${specimen_type}\",,,,\"${seq_platform}\",\"${artic_pipeline_version}\",,\"${originating_lab}\",\"${origLab_address}\",,\"${submitting_lab}\",\"${subLab_address}\",,\"${Authors}\"" >> ${samplename}.gisaidMeta.csv
+    echo "\"${gisaid_submitter}\",\"gisaid_upload.fasta\",\"hCoV-19/${iso_country}/${submission_id}/$year\",\"betacoronavirus\",\"Original\",\"${collection_date}\",\"${iso_continent} \ ${iso_country} \ ${iso_state}\",,\"${iso_host}\",,\"unknown\",\"unknown\",\"unknown\",\"${specimen_type}\",,,,\"${seq_platform}\",\"${artic_pipeline_version}\",,\"${originating_lab}\",\"${origLab_address}\",,\"${submitting_lab}\",\"${subLab_address}\",,\"${Authors}\"" >> ${submission_id}.gisaidMeta.csv
 
   }
 
   output {
     File     gisaid_assembly = "${submission_id}.gisaid.fa"
-    File     gisaid_metadata = "${samplename}.gisaidMeta.csv"
+    File     gisaid_metadata = "${submissino_id}.gisaidMeta.csv"
   }
 
   runtime {
@@ -135,13 +135,13 @@ task genbank {
 
     echo Sequence_ID,Organism,collection-date,country,host,isolate,isolation-source,BioProject,notes > ${samplename}.genbankMeta.csv
 
-    echo "\"${submission_id}\",\"Severe acute respiratory syndrome coronavirus 2\",\"${collection_date}\",\"${iso_country}\",\"${iso_host}\",\"${iso_org}/${iso_host}/${iso_country}/${submission_id}/$year\",\"${specimen_type}\",\"${BioProject}\"," >> ${samplename}.genbankMeta.csv
+    echo "\"${submission_id}\",\"Severe acute respiratory syndrome coronavirus 2\",\"${collection_date}\",\"${iso_country}\",\"${iso_host}\",\"${iso_org}/${iso_host}/${iso_country}/${submission_id}/$year\",\"${specimen_type}\",\"${BioProject}\"," >> ${submission_id}.genbankMeta.csv
 
   }
 
   output {
     File     genbank_assembly = "${submission_id}.genbank.fa"
-    File     genbank_metadata = "${samplename}.genbankMeta.csv"
+    File     genbank_metadata = "${submission_id}.genbankMeta.csv"
   }
 
   runtime {
