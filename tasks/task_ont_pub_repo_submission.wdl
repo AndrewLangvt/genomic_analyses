@@ -202,16 +202,6 @@ task compile {
 
   command {
   head -n -1 ~{single_submission_meta[1]} > ${repository}_upload_meta.csv
-
-  for i in ~{sep=" " vadr_num_alerts}
-  do
-    ${vadr_alerts}+=$i
-    if ${vadr_alerts} > 0
-      then
-      rm ~{single_submission_meta[${vadr_alerts}]} ~{single_submission_fasta[${vadr_alerts}]}
-    fi
-  done
-
   for i in ~{sep=" " single_submission_meta}; do
       tail -n1 $i >> ${repository}_upload_meta.csv
   done

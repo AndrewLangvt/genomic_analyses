@@ -813,6 +813,9 @@ task vadr {
     # prep alerts into a tsv file for parsing
     cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
     cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
+    if cat NUM_ALERTS > 0; then
+      mv ~{genome_fasta} ~{genome_fasta}_vadr_fail
+    fi
   >>>
   output {
     File feature_tbl  = "~{out_base}/~{out_base}.vadr.pass.tbl"
@@ -820,6 +823,7 @@ task vadr {
     File alerts_list = "~{out_base}/~{out_base}.vadr.alt.list"
     Array[Array[String]] alerts = read_tsv("~{out_base}.vadr.alerts.tsv")
     File outputs_tgz = "~{out_base}.vadr.tar.gz"
+    File? vadr_passed = "~{genome_fasta}"
   }
   runtime {
     docker: "~{docker}"

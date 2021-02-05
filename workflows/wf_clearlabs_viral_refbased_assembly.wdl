@@ -166,5 +166,7 @@ workflow viral_refbased_assembly {
 
     File vadr_alterts_list = vadr.alerts_list
     Int  vadr_num_alerts = vadr.num_alerts
+    File? vadr_passed = vadr.vadr_passed
+
   }
 }
