@@ -789,6 +789,7 @@ task vadr {
   }
   input {
     File   genome_fasta
+    String samplename
     String vadr_opts="-s -r --nomisc --mkey NC_045512 --lowsim5term 2 --lowsim3term 2 --fstlowthr 0.0 --alt_fail lowscore,fsthicnf,fstlocnf"
 
     String  docker="staphb/vadr:1.1.2"
@@ -814,7 +815,7 @@ task vadr {
     cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
     cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
     if cat NUM_ALERTS == 0; then
-      cp ~{genome_fasta} "~{genome_fasta}"
+      cp ~{genome_fasta} "~{samplename}_passed.fasta"
     fi
   >>>
   output {
@@ -823,7 +824,7 @@ task vadr {
     File alerts_list = "~{out_base}/~{out_base}.vadr.alt.list"
     Array[Array[String]] alerts = read_tsv("~{out_base}.vadr.alerts.tsv")
     File outputs_tgz = "~{out_base}.vadr.tar.gz"
-    File? vadr_passed = "~{genome_fasta}"
+    File? vadr_passed = "~{samplename}_passed.fasta"
   }
   runtime {
     docker: "~{docker}"
