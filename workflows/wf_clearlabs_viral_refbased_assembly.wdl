@@ -17,6 +17,7 @@ workflow viral_refbased_assembly {
     String  samplename
     String? artic_primer_version="V3"
     File    clear_lab_fastq
+    Int?      normalise=20000
 
     String	   	submission_id
     String 		  collection_date
@@ -44,6 +45,9 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       filtered_reads = clear_lab_fastq,
       artic_primer_version = artic_primer_version
+      normalise=normalise
+
+
   }
   call consensus_call.variant_call {
     input:

@@ -64,7 +64,7 @@ task consensus {
     String    samplename
     File      filtered_reads
     String?    artic_primer_version="V3"
-    Int?      normalise=200
+    Int?      normalise=20000
     Int?      cpu=8
   }
 
