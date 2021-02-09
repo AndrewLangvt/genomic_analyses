@@ -45,7 +45,7 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       filtered_reads = clear_lab_fastq,
       artic_primer_version = artic_primer_version,
-      normalise=normalise
+      normalise = normalise
 
 
   }
