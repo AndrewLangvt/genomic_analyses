@@ -64,14 +64,8 @@ task pangolin {
     date | tee DATE
     pangolin --version | head -n1 | tee VERSION
 
-    pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
+    pangolin --outdir ${samplename} ${fasta}
     pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
-
-    while [ -z "$pangolin_lineage" ]
-    do
-      pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
-      pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
-    done
 
     pangolin_aLRT=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
     pangolin_stats=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 4 -d "," )
@@ -105,6 +99,8 @@ task pangolin2 {
     File        fasta
     String      samplename
     Int?        cpus=40
+    String  docker="staphb/2.2.1-pangolearn-2021-02-06"
+
   }
 
   command{
@@ -112,14 +108,8 @@ task pangolin2 {
     date | tee DATE
     pangolin --version | head -n1 | tee VERSION
 
-    pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
+    pangolin --outdir ${samplename} ${fasta}
     pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
-
-    while [ -z "$pangolin_lineage" ]
-    do
-      pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
-      pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
-    done
 
     pangolin_probability=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
     mv ${samplename}/lineage_report.csv ${samplename}_pango2_lineage.csv
@@ -137,7 +127,7 @@ task pangolin2 {
   }
 
   runtime {
-    docker:       "staphb/pangolin:latest"
+    docker: "~{docker}"
     memory:       "8 GB"
     cpu:          40
     disks:        "local-disk 100 SSD"
