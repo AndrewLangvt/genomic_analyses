@@ -99,7 +99,7 @@ task pangolin2 {
     File        fasta
     String      samplename
     Int?        cpus=40
-    String  docker="staphb/2.2.1-pangolearn-2021-02-06"
+    String  docker="staphb/pangolin:2.1.11-pangolearn-2021-02-05"
 
   }
 
