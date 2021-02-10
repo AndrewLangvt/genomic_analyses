@@ -98,7 +98,7 @@ task pangolin2 {
   input {
     File        fasta
     String      samplename
-    String      docker="staphb/pangolin:2.2.1-pangolearn-2021-02-06"
+    String      docker="staphb/pangolin:2.1.10-pangolearn-2021-02-01"
 
 
   }
@@ -132,10 +132,10 @@ task pangolin2 {
 
   runtime {
     docker:     "~{docker}"
-    memory:       "3 GB"
-    cpu:          2
-    disks: "local-disk 50 HDD"
-    dx_instance_type: "mem1_ssd1_v2_x2"
+    memory:       "8 GB"
+    cpu:          40
+    disks:        "local-disk 100 SSD"
+    preemptible:  0
   }
 }
 
