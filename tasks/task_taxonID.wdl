@@ -107,12 +107,16 @@ task pangolin2 {
     # date and version control
     date | tee DATE
     pangolin --version | head -n1 | tee VERSION
+    set -e
 
-    pangolin --outdir ${samplename} ${fasta}
-    pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
+    pangolin "~{fasta}" \
+       --outfile "~{samplename}.pangolin_report.csv" \
+       --verbose
 
-    pangolin_probability=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
-    mv ${samplename}/lineage_report.csv ${samplename}_pango2_lineage.csv
+    pangolin_lineage=$(tail -n 1 ${samplename}.pangolin_report.csv | cut -f 2 -d "," | grep -v "lineage")
+
+    pangolin_probability=$(tail -n 1 ${samplename}.pangolin_report.csv | cut -f 3 -d "," )
+    mv ${samplename}.pangolin_report.csv ${samplename}_pango2_lineage.csv
 
     echo $pangolin_lineage | tee PANGOLIN_LINEAGE
     echo $pangolin_probability | tee PANGOLIN_PROBABILITY
