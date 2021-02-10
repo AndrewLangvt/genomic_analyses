@@ -132,10 +132,10 @@ task pangolin2 {
 
   runtime {
     docker:     "~{docker}"
-    memory:       "8 GB"
-    cpu:          40
-    disks:        "local-disk 100 SSD"
-    preemptible:  0
+    memory:       "3 GB"
+    cpu:          2
+    disks: "local-disk 50 HDD"
+    dx_instance_type: "mem1_ssd1_v2_x2"
   }
 }
 
