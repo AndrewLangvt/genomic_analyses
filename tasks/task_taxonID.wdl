@@ -99,7 +99,6 @@ task pangolin2 {
     File        fasta
     String      samplename
     Int?        cpus=40
-    String  docker="staphb/pangolin:2.1.11-pangolearn-2021-02-05"
 
   }
 
@@ -131,7 +130,7 @@ task pangolin2 {
   }
 
   runtime {
-    docker: "~{docker}"
+    docker: "staphb/pangolin:2.1.11-pangolearn-2021-02-05"
     memory:       "8 GB"
     cpu:          40
     disks:        "local-disk 100 SSD"
