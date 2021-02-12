@@ -30,6 +30,11 @@ workflow SC2_submission_files {
     String    	subLab_address
     String    	Authors
 
+		String    passage_details="Original"
+		String    gender="unknown"
+		String    patient_age="unknown"
+		String    patient_status="unknown"
+
 	    # Optional inputs/user-defined thresholds for generating submission files
 		Float		coverage = 100.00
 		Float		coverage_threshold = 85.00
@@ -74,7 +79,12 @@ workflow SC2_submission_files {
 					    origLab_address  				= origLab_address,
 					    submitting_lab  				= submitting_lab,
 					    subLab_address 					= subLab_address,
-					    Authors          				= Authors
+					    Authors          				= Authors,
+
+							passage_details = passage_details,
+							gender = gender,
+							patient_age = patient_age,
+							patient_status = patient_status
 
 
 

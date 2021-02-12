@@ -38,6 +38,11 @@ workflow viral_refbased_assembly {
     String    	assembly_or_consensus = "consensus"
     String    	seq_platform = "Nanopore via Clear Labs Dx WGS SARS-CoV-2"
 
+    String    passage_details="Original"
+    String    gender="unknown"
+    String    patient_age="unknown"
+    String    patient_status="unknown"
+
   }
 
   call medaka.consensus {
@@ -114,7 +119,12 @@ workflow viral_refbased_assembly {
       BioProject = BioProject,
     	submitting_lab = submitting_lab,
     	subLab_address = subLab_address,
-    	Authors = Authors
+    	Authors = Authors,
+
+      passage_details = passage_details,
+      gender = gender,
+      patient_age = patient_age,
+      patient_status = patient_status
   }
   }
   if (! vadr.vadr_result) {
@@ -143,7 +153,12 @@ workflow viral_refbased_assembly {
       BioProject = BioProject,
     	submitting_lab = submitting_lab,
     	subLab_address = subLab_address,
-    	Authors = Authors
+    	Authors = Authors,
+
+      passage_details = passage_details,
+      gender = gender,
+      patient_age = patient_age,
+      patient_status = patient_status
   }
   }
 
