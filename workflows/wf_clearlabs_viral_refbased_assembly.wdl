@@ -24,6 +24,7 @@ workflow viral_refbased_assembly {
     String    	gisaid_submitter
     String    	iso_state
     String    	iso_continent
+    String      iso_country
     String    	originating_lab
     String    	origLab_address
     String      BioProject
@@ -33,7 +34,6 @@ workflow viral_refbased_assembly {
     String    	organism = "Severe acute respiratory syndrome coronavirus 2"
     String    	iso_org = "SARS-CoV-2"
     String    	iso_host = "Human"
-    String    	iso_country = "USA"
     String      specimen_type = ""
     String    	assembly_or_consensus = "consensus"
     String    	seq_platform = "Nanopore via Clear Labs Dx WGS SARS-CoV-2"
