@@ -52,23 +52,23 @@ task gisaid {
 
   input {
     String    samplename
-    String    submission_id="REQUIRED"
-    String    collection_date="REQUIRED"
+    String    submission_id
+    String    collection_date
     File      sequence
-    String    iso_host="REQUIRED"
-    String    iso_country="REQUIRED"
+    String    iso_host
+    String    iso_country
     String?   specimen_type
 
-    String    gisaid_submitter="REQUIRED"
-    String    iso_state="REQUIRED"
-    String    iso_continent="REQUIRED"
-    String    seq_platform="REQUIRED"
-    String    artic_pipeline_version="REQUIRED"
-    String    originating_lab="REQUIRED"
-    String    origLab_address="REQUIRED"
-    String    submitting_lab="REQUIRED"
-    String    subLab_address="REQUIRED"
-    String    Authors="REQUIRED"
+    String    gisaid_submitter
+    String    iso_state
+    String    iso_continent
+    String    seq_platform
+    String    artic_pipeline_version
+    String    originating_lab
+    String    origLab_address
+    String    submitting_lab
+    String    subLab_address
+    String    Authors
 
     String    passage_details="Original"
     String    gender="unknown"
@@ -114,16 +114,16 @@ task gisaid {
 task genbank {
 
   input {
-    String    samplename="REQUIRED"
-    String    submission_id="REQUIRED"
-    String    collection_date="REQUIRED"
-    File      sequence="REQUIRED"
-    String    organism="REQUIRED"
-    String    iso_org="REQUIRED"
-    String    iso_host="REQUIRED"
-    String    iso_country="REQUIRED"
-    String    specimen_type="REQUIRED"
-    String    BioProject="REQUIRED"
+    String    samplename
+    String    submission_id
+    String    collection_date
+    File      sequence
+    String    organism
+    String    iso_org
+    String    iso_host
+    String    iso_country
+    String    specimen_type
+    String    BioProject
 
     String    docker_image = "staphb/seqyclean:1.10.09"
     Int       mem_size_gb = 3
