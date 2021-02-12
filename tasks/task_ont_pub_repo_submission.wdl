@@ -52,23 +52,23 @@ task gisaid {
 
   input {
     String    samplename
-    String    submission_id
-    String    collection_date
+    String    submission_id="REQUIRED"
+    String    collection_date="REQUIRED"
     File      sequence
-    String    iso_host
-    String    iso_country
-    String?   specimen_type
+    String    iso_host="REQUIRED"
+    String    iso_country="REQUIRED"
+    String?   specimen_type="REQUIRED"
 
-    String    gisaid_submitter
-    String    iso_state
-    String    iso_continent
-    String    seq_platform
-    String    artic_pipeline_version
-    String    originating_lab
-    String    origLab_address
-    String    submitting_lab
-    String    subLab_address
-    String    Authors
+    String    gisaid_submitter="REQUIRED"
+    String    iso_state="REQUIRED"
+    String    iso_continent="REQUIRED"
+    String    seq_platform="REQUIRED"
+    String    artic_pipeline_version="REQUIRED"
+    String    originating_lab="REQUIRED"
+    String    origLab_address="REQUIRED"
+    String    submitting_lab="REQUIRED"
+    String    subLab_address="REQUIRED"
+    String    Authors="REQUIRED"
 
     String    docker_image = "staphb/seqyclean:1.10.09"
     Int       mem_size_gb = 3
@@ -84,8 +84,9 @@ task gisaid {
     grep -v ">" ${sequence} >> ${submission_id}.gisaid.fa
 
 
-    echo submitter,fn,covv_virus_name,covv_type,covv_passage,covv_collection_date,covv_location,covv_add_location,covv_host,covv_add_host_info,covv_gender,covv_patient_age,covv_patient_status,covv_specimen,covv_outbreak,covv_last_vaccinated,covv_treatment,covv_seq_technology,covv_assembly_method,covv_coverage,covv_orig_lab,covv_orig_lab_addr,covv_provider_sample_id,covv_subm_lab,covv_subm_lab_addr,covv_subm_sample_id,covv_authors,covv_comment,comment_type >  ${samplename}.gisaidMeta.csv
-    echo Submitter,FASTA filename,Virus name,Type,Passage details/history,Collection date,Location,Additional location information,Host,Additional host information,Gender,Patient age,Patient status,Specimen source,Outbreak,Last vaccinated,Treatment,Sequencing technology,Assembly method,Coverage,Originating lab,Address,Sample ID given by the sample provider,Submitting lab,Address,Sample ID given by the submitting laboratory,Authors Comment,Comment Icon >> ${samplename}.gisaidMeta.csv
+    echo submitter,fn,covv_virus_name,covv_type,covv_passage,covv_collection_date,covv_location,covv_add_location,covv_host,covv_add_host_info,covv_gender,covv_patient_age,covv_patient_status,covv_specimen,covv_outbreak,covv_last_vaccinated,covv_treatment,covv_seq_technology,covv_assembly_method,covv_coverage,covv_orig_lab,covv_orig_lab_addr,covv_provider_sample_id,covv_subm_lab,covv_subm_lab_addr,covv_subm_sample_id,covv_authors,covv_comment,comment_type >  ${submission_id}.gisaidMeta.csv
+
+    echo Submitter,FASTA filename,Virus name,Type,Passage details/history,Collection date,Location,Additional location information,Host,Additional host information,Gender,Patient age,Patient status,Specimen source,Outbreak,Last vaccinated,Treatment,Sequencing technology,Assembly method,Coverage,Originating lab,Address,Sample ID given by the sample provider,Submitting lab,Address,Sample ID given by the submitting laboratory,Authors Comment,Comment Icon >> ${submission_id}.gisaidMeta.csv
 
     echo "\"${gisaid_submitter}\",\"gisaid_upload.fasta\",\"hCoV-19/${iso_country}/${submission_id}/$year\",\"betacoronavirus\",\"Original\",\"${collection_date}\",\"${iso_continent} \ ${iso_country} \ ${iso_state}\",,\"${iso_host}\",,\"unknown\",\"unknown\",\"unknown\",\"${specimen_type}\",,,,\"${seq_platform}\",\"${artic_pipeline_version}\",,\"${originating_lab}\",\"${origLab_address}\",,\"${submitting_lab}\",\"${subLab_address}\",,\"${Authors}\"" >> ${submission_id}.gisaidMeta.csv
 
@@ -108,16 +109,16 @@ task gisaid {
 task genbank {
 
   input {
-    String    samplename
-    String    submission_id
-    String    collection_date
-    File      sequence
-    String    organism
-    String    iso_org
-    String    iso_host
-    String    iso_country
-    String    specimen_type
-    String    BioProject
+    String    samplename="REQUIRED"
+    String    submission_id="REQUIRED"
+    String    collection_date="REQUIRED"
+    File      sequence="REQUIRED"
+    String    organism="REQUIRED"
+    String    iso_org="REQUIRED"
+    String    iso_host="REQUIRED"
+    String    iso_country="REQUIRED"
+    String    specimen_type="REQUIRED"
+    String    BioProject="REQUIRED"s
 
     String    docker_image = "staphb/seqyclean:1.10.09"
     Int       mem_size_gb = 3
