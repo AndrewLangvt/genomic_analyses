@@ -133,7 +133,7 @@ task genbank {
     echo ">${submission_id} [organism=${organism}][isolate=${iso_org}/${iso_host}/${iso_country}/${submission_id}/$year)][host=${iso_host}][country=${iso_country}][collection_date=${collection_date}]" > ${submission_id}.genbank.fa
     grep -v ">" ${sequence} | sed 's/^N*N//g' | fold -w 75 >> ${submission_id}.genbank.fa
 
-    echo Sequence_ID,Organism,collection-date,country,host,isolate,isolation-source,BioProject,notes > ${samplename}.genbankMeta.csv
+    echo Sequence_ID,Organism,collection-date,country,host,isolate,isolation-source,BioProject,notes > ${submission_id}.genbankMeta.csv
 
     echo "\"${submission_id}\",\"Severe acute respiratory syndrome coronavirus 2\",\"${collection_date}\",\"${iso_country}\",\"${iso_host}\",\"${iso_org}/${iso_host}/${iso_country}/${submission_id}/$year\",\"${specimen_type}\",\"${BioProject}\"," >> ${submission_id}.genbankMeta.csv
 
