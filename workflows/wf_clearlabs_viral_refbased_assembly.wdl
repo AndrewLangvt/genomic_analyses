@@ -34,7 +34,6 @@ workflow viral_refbased_assembly {
     String    	organism = "Severe acute respiratory syndrome coronavirus 2"
     String    	iso_org = "SARS-CoV-2"
     String    	iso_host = "Human"
-    String      specimen_type = ""
     String    	assembly_or_consensus = "consensus"
     String    	seq_platform = "Nanopore via Clear Labs Dx WGS SARS-CoV-2"
 
@@ -42,6 +41,10 @@ workflow viral_refbased_assembly {
     String    gender="unknown"
     String    patient_age="unknown"
     String    patient_status="unknown"
+    String    specimen_source=""
+    String    outbreak=""
+    String    last_vaccinated=""
+    String    treatment=""
 
   }
 
@@ -106,7 +109,6 @@ workflow viral_refbased_assembly {
 	  	iso_org = iso_org,
 	  	iso_host = iso_host,
 	  	iso_country = iso_country,
-	    specimen_type = specimen_type,
 	  	assembly_or_consensus = assembly_or_consensus,
 
 		 	gisaid_submitter = gisaid_submitter,
@@ -124,7 +126,11 @@ workflow viral_refbased_assembly {
       passage_details = passage_details,
       gender = gender,
       patient_age = patient_age,
-      patient_status = patient_status
+      patient_status = patient_status,
+      specimen_source = specimen_source,
+      outbreak = outbreak,
+      last_vaccinated = last_vaccinated,
+      treatment = treatment
   }
   }
   if (! vadr.vadr_result) {
@@ -140,7 +146,6 @@ workflow viral_refbased_assembly {
 	  	iso_org = iso_org,
 	  	iso_host = iso_host,
 	  	iso_country = iso_country,
-	    specimen_type = specimen_type,
 	  	assembly_or_consensus = assembly_or_consensus,
 
 		 	gisaid_submitter = gisaid_submitter,
@@ -158,7 +163,11 @@ workflow viral_refbased_assembly {
       passage_details = passage_details,
       gender = gender,
       patient_age = patient_age,
-      patient_status = patient_status
+      patient_status = patient_status,
+      specimen_source = specimen_source,
+      outbreak = outbreak,
+      last_vaccinated = last_vaccinated,
+      treatment = treatment
   }
   }
 

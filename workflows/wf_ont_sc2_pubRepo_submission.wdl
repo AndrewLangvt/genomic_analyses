@@ -15,7 +15,6 @@ workflow SC2_submission_files {
 	  String    	iso_org = "SARS-CoV-2"
 	  String    	iso_host = "Human"
 	  String    	iso_country = "USA"
-	  String      specimen_type = ""
 	  String    	assembly_or_consensus = "consensus"
 
 		String    	gisaid_submitter
@@ -34,6 +33,10 @@ workflow SC2_submission_files {
 		String    gender="unknown"
 		String    patient_age="unknown"
 		String    patient_status="unknown"
+		String    specimen_source=""
+		String    outbreak=""
+		String    last_vaccinated=""
+		String    treatment=""
 
 	    # Optional inputs/user-defined thresholds for generating submission files
 		Float		coverage = 100.00
@@ -69,7 +72,6 @@ workflow SC2_submission_files {
 							sequence        				= sequence,
 							iso_host         				= iso_host,
 							iso_country 				    = iso_country,
-							specimen_type    				= specimen_type,
 					    gisaid_submitter 				= gisaid_submitter,
 					    iso_state        				= gisaid_submitter,
 					    iso_continent 					= iso_continent,
@@ -84,7 +86,11 @@ workflow SC2_submission_files {
 							passage_details = passage_details,
 							gender = gender,
 							patient_age = patient_age,
-							patient_status = patient_status
+							patient_status = patient_status,
+				      specimen_source = specimen_source,
+				      outbreak = outbreak,
+				      last_vaccinated = last_vaccinated,
+				      treatment = treatment
 
 
 
@@ -101,7 +107,7 @@ workflow SC2_submission_files {
 							iso_org	        = iso_org,
 							iso_host        = iso_host,
 							iso_country     = iso_country,
-							specimen_type   = specimen_type,
+							specimen_source   = specimen_source,
 					        BioProject      = BioProject
 					}
 				}
