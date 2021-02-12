@@ -193,8 +193,8 @@ task sra {
 task compile {
 
   input {
-    Array[File?] single_submission_fasta
-    Array[File?] single_submission_meta
+    Array[File] single_submission_fasta
+    Array[File] single_submission_meta
     String       repository
     String    docker_image = "staphb/seqyclean:1.10.09"
     Int       mem_size_gb = 1
