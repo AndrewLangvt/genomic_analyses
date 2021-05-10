@@ -2,10 +2,10 @@ version 1.0
 
 task kraken2 {
   input {
-  	File        read1
-	  File? 		  read2
-	  String      samplename
-	  String      kraken2_db = "/kraken2-db"
+    File        read1
+    File?       read2
+    String      samplename
+    String      kraken2_db = "/kraken2-db"
     Int         cpus = 4
     String      docker = "staphb/kraken2:2.0.8-beta_hv"
   }
@@ -39,9 +39,9 @@ task kraken2 {
   output {
     String     date          = read_string("DATE")
     String     version       = read_string("VERSION")
-    File 	     kraken_report = "~{samplename}_kraken2_report.txt"
-    Float 	   percent_human = read_string("PERCENT_HUMAN")
-    Float 	   percent_sc2   = read_string("PERCENT_SC2")
+    File       kraken_report = "~{samplename}_kraken2_report.txt"
+    Float      percent_human = read_string("PERCENT_HUMAN")
+    Float      percent_sc2   = read_string("PERCENT_SC2")
   }
 
   runtime {

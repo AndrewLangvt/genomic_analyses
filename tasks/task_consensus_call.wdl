@@ -173,7 +173,7 @@ task consensus {
     echo $num_total | tee NUM_TOTAL
 
     # clean up fasta header
-    echo ">~{samplename}" > ~{samplename}.ivar.consensus.fasta
+    echo ">"~{samplename} > ~{samplename}.ivar.consensus.fasta
     grep -v ">" ~{samplename}.consensus.fa >> ~{samplename}.ivar.consensus.fasta
   >>>
 
