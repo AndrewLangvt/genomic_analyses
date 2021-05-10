@@ -7,8 +7,10 @@ task bwa {
     File        read2
     String      samplename
     File        reference_genome
-    Int         cpus = 6
     String      docker = "staphb/ivar:1.2.2_artic20200528"
+    Int         mem = 8
+    Int         cpus = 6
+
   }
 
   command {
@@ -48,7 +50,7 @@ task bwa {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "8 GB"
+    memory:       "~{mem} GB"
     cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0      
@@ -59,8 +61,9 @@ task mafft {
   
   input {
     Array[File]   genomes
-    Int           cpus = 16
     String        docker = "staphb/mafft:7.450"
+    Int           mem = 32
+    Int           cpus = 16
   }
   
   command {
@@ -81,7 +84,7 @@ task mafft {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "32 GB"
+    memory:       "~{mem} GB"
     cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0      

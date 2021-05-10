@@ -6,9 +6,11 @@ task stats_n_coverage {
     File        bamfile
     String      samplename
     String      docker = "staphb/samtools:1.10"
+    Int         mem = 8
+    Int         cpus = 2
   }
 
-  command {
+  command <<<
     date | tee DATE
     samtools --version | head -n1 | tee VERSION
 
@@ -32,7 +34,7 @@ task stats_n_coverage {
     echo $depth | tee DEPTH 
     echo $meanbaseq | tee MEANBASEQ 
     echo $meanmapq | tee MEANMAPQ 
-  }
+  >>>
 
   output {
     String     date = read_string("DATE")
@@ -49,8 +51,8 @@ task stats_n_coverage {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "8 GB"
-    cpu:          2
+    memory:       "~{mem} GB"
+    cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0      
   }

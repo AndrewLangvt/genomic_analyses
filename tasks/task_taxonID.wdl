@@ -6,8 +6,9 @@ task kraken2 {
     File?       read2
     String      samplename
     String      kraken2_db = "/kraken2-db"
-    Int         cpus = 4
     String      docker = "staphb/kraken2:2.0.8-beta_hv"
+    Int         cpus = 4
+    Int         mem = 8
   }
 
   command <<<
@@ -46,7 +47,7 @@ task kraken2 {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "8 GB"
+    memory:       "~{mem} GB"
     cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0
@@ -57,7 +58,6 @@ task pangolin {
   input {
     File        fasta
     String      samplename
-
   }
 
   command{
@@ -100,6 +100,7 @@ task pangolin2 {
     File        fasta
     String      samplename
     String      docker = "staphb/pangolin:2.3.8-pangolearn-2021-04-23"
+    Int         mem = 8
     Int         cpus = 4
   }
 
@@ -138,7 +139,7 @@ task pangolin2 {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "8 GB"
+    memory:       "~{mem} GB"
     cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0
@@ -157,7 +158,8 @@ task nextclade_one_sample {
         File?  gene_annotations_json
         File?  pcr_primers_csv
         String docker = "neherlab/nextclade:latest"
-        Int    cpus = 4
+        Int    mem = 3
+        Int    cpus = 2
     }
     String basename = basename(genome_fasta, ".fasta")
     command <<<
@@ -187,7 +189,7 @@ task nextclade_one_sample {
     >>>
     runtime {
         docker: "~{docker}"
-        memory: "3 GB"
+        memory: "~{mem} GB"
         cpu:    "~{cpus}"
         disks:  "local-disk 50 HDD"
         dx_instance_type: "mem1_ssd1_v2_x2"

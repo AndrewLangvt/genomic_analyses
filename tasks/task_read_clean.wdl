@@ -11,8 +11,9 @@ task seqyclean {
     Boolean     compress = true
     Boolean     seqyclean_dup = false
     Boolean     seqyclean_no_adapter_trim = false
-    Int         cpus = 8
     String      docker="staphb/seqyclean:1.10.09"
+    Int         mem = 8
+    Int         cpus = 8
   }
   
   command <<<
@@ -38,17 +39,17 @@ task seqyclean {
   >>>
 
   output {
-    File       read1_clean = "${samplename}_PE1.fastq.gz"
-    File       read2_clean = "${samplename}_PE2.fastq.gz"
-    String     version = read_string("VERSION")
+    File       read1_clean   = "${samplename}_PE1.fastq.gz"
+    File       read2_clean   = "${samplename}_PE2.fastq.gz"
+    String     version       = read_string("VERSION")
     String     pipeline_date = read_string("DATE")
-    Int        seqy_pairs = read_string("PAIRS_KEPT")
-    Float      seqy_percent = read_string("PERCENT_KEPT")
+    Int        seqy_pairs    = read_string("PAIRS_KEPT")
+    Float      seqy_percent  = read_string("PERCENT_KEPT")
   }
 
   runtime {
       docker:       "~{docker}"
-      memory:       "8 GB"
+      memory:       "~{mem} GB"
       cpu:          "~{cpus}"
       disks:        "local-disk 100 SSD"
       preemptible:  0

@@ -5,12 +5,13 @@ task fastqc {
   input {
     File        read1
     File        read2
-    String      read1_name = basename(basename(basename(read1, ".gz"), ".fastq"), ".fq")
-    String      read2_name = basename(basename(basename(read2, ".gz"), ".fastq"), ".fq")
     String      docker = "staphb/fastqc:0.11.8"
-    String      cpus = 2
+    Int         mem = 4
+    Int         cpus = 2
   }
-  
+  String      read1_name = basename(basename(basename(read1, ".gz"), ".fastq"), ".fq")
+  String      read2_name = basename(basename(basename(read2, ".gz"), ".fastq"), ".fq")  
+
   command <<<
     # capture date and version
     date | tee DATE
@@ -33,21 +34,21 @@ task fastqc {
   >>>
 
   output {
-    File       fastqc1_html = "~{read1_name}_fastqc.html"
-    File       fastqc1_zip = "~{read1_name}_fastqc.zip"
-    File       fastqc2_html = "~{read2_name}_fastqc.html"
-    File       fastqc2_zip = "~{read2_name}_fastqc.zip"
-    Int        read1_seq = read_string("READ1_SEQS")
-    Int        read2_seq = read_string("READ2_SEQS")
-    String     read_pairs = read_string("READ_PAIRS")
-    String     version = read_string("VERSION") 
+    File       fastqc1_html  = "~{read1_name}_fastqc.html"
+    File       fastqc1_zip   = "~{read1_name}_fastqc.zip"
+    File       fastqc2_html  = "~{read2_name}_fastqc.html"
+    File       fastqc2_zip   = "~{read2_name}_fastqc.zip"
+    Int        read1_seq     = read_string("READ1_SEQS")
+    Int        read2_seq     = read_string("READ2_SEQS")
+    String     read_pairs    = read_string("READ_PAIRS")
+    String     version       = read_string("VERSION") 
     String     pipeline_date = read_string("DATE")
   }
 
   runtime {
     docker:       "~{docker}"
-    memory:       "4 GB"
-    cpu:          2
+    memory:       "~{mem} GB"
+    cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0      
   }

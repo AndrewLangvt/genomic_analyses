@@ -8,6 +8,8 @@ task primer_trim {
     File        primer_BED
     Boolean     keep_noprimer_reads=true
     String      docker = "staphb/ivar:1.2.2_artic20200528"
+    Int         mem = 8
+    Int         cpus = 2
   }
 
   command <<< 
@@ -47,8 +49,8 @@ task primer_trim {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "8 GB"
-    cpu:          2
+    memory:       "~{mem} GB"
+    cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0      
   }
@@ -69,6 +71,8 @@ task variant_call {
     Float       min_freq = "0.6"
     Int         min_depth = "10"
     String      docker = "staphb/ivar:1.2.2_artic20200528"
+    Int         mem = 8
+    Int         cpus = 4
   }
 
   command <<<
@@ -108,8 +112,8 @@ task variant_call {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "8 GB"
-    cpu:          2
+    memory:       "~{mem} GB"
+    cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0      
   }
@@ -130,6 +134,8 @@ task consensus {
     Int         min_depth = "10"
     String      char_unknown = "N"
     String      docker = "staphb/ivar:1.2.2_artic20200528"
+    Int         mem = 8
+    Int         cpus = 2
   }
   
   command <<<
@@ -191,8 +197,8 @@ task consensus {
 
   runtime {
     docker:       "~{docker}"
-    memory:       "8 GB"
-    cpu:          2
+    memory:       "~{mem} GB"
+    cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0      
   }
