@@ -2,14 +2,14 @@
 
 import sys
 
-def reformat(inputfile):
+def reformat(inputfile, inputconfig):
 	with open(inputfile, 'r') as infile:
 		sample_dict = {}
 		for line in infile:
-			columns = line.strip().split()
+			columns = line.strip().split(',')
 			samplename = columns[0]
 			deidentified = columns[1]
-			collection = columns[2]
+			collection = columns[4]
 			leftread = columns[3]
 			rightread = columns[4]
 #			json_line = f'{"left":{"{samplename}","{deidentified}","{collection}}","right":{"left": "{leftread}", "right": "{rightread}"}}'
@@ -22,10 +22,18 @@ def reformat(inputfile):
 #		outfile.write(f'{sampleinfo},\n')
 		outstring += f'{sampleinfo},\n'
 	outstring = outstring[:-2]
-	outstring += '\n    ]\n}'
+	outstring += '\n    ]'
 	outfile.write(outstring)
+
+	with open(inputconfig, 'r') as configfile:
+		for line in configfile:
+			outfile.write(line)
+	outfile.write('}hello')
+	configfile.close()
 	infile.close()
 	outfile.close()
 
 infile = sys.argv[1]
-reformat(infile)
+config = sys.argv[2]
+
+reformat(infile, config)

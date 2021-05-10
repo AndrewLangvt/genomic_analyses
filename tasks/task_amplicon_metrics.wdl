@@ -3,10 +3,12 @@ version 1.0
 task bedtools_cov {
   
   input {
+    String     samplename
     File       bamfile
     File       baifile
-    String?    primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019_amplicon.bed"
-    String?    fail_threshold = 20
+    File       primer_bed
+    Int        fail_threshold = 20
+    String     docker = "staphb/ivar:1.2.2_artic20200528"
   }
   
   command <<<
@@ -16,19 +18,19 @@ task bedtools_cov {
     cp ~{bamfile} ./
     cp ~{baifile} ./
 
-    bedtools coverage -a ~{primer_bed} -b $(ls *bam) > amplicon_coverage.txt
-    bedtools coverage -a ~{primer_bed} -b $(ls *bam) | cut -f 6 | awk '{if ( $1 < 20 ) print $0 }' | wc -l | tee AMP_FAIL
+    bedtools coverage -a ~{primer_bed} -b $(ls *bam) > ~{samplename}_amplicon_coverage.txt
+    bedtools coverage -a ~{primer_bed} -b $(ls *bam) | cut -f 6 | awk '{if ( $1 < ~{fail_threshold} ) print $0 }' | wc -l | tee AMP_FAIL
   >>>
 
   output {
     String     date = read_string("DATE")
     String     version = read_string("VERSION") 
     Int        amp_fail = read_string("AMP_FAIL")
-    File       amp_coverage = "amplicon_coverage.txt"
+    File       amp_coverage = "~{samplename}_amplicon_coverage.txt"
   }
 
   runtime {
-    docker:       "staphb/ivar:1.2.2_artic20200528"
+    docker:       "~{docker}"
     memory:       "2 GB"
     cpu:          1
     disks:        "local-disk 100 SSD"
@@ -43,21 +45,22 @@ task bedtools_multicov {
     Array[File]  baifiles
     Array[File]  primtrim_bamfiles
     Array[File]  primtrim_baifiles
-    String?      primer_bed = "/artic-ncov2019/primer_schemes/nCoV-2019/V3/nCoV-2019_amplicon.bed"
+    File         primer_bed 
+    String       docker = "staphb/ivar:1.2.2_artic20200528"
   }
   
-  command{
+  command <<<
     # date and version control
     date | tee DATE
     bedtools --version | tee VERSION
-    cp ${sep=" " bamfiles} ./
-    cp ${sep=" " baifiles} ./
-    cp ${sep=" " primtrim_bamfiles} ./
-    cp ${sep=" " primtrim_baifiles} ./
+    cp ~{sep=" " bamfiles} ./
+    cp ~{sep=" " baifiles} ./
+    cp ~{sep=" " primtrim_bamfiles} ./
+    cp ~{sep=" " primtrim_baifiles} ./
 
     echo "primer" $(ls *bam) | tr ' ' '\t' > multicov.txt
-    bedtools multicov -bams $(ls *bam) -bed ${primer_bed} | cut -f 4,6- >> multicov.txt
-  }
+    bedtools multicov -bams $(ls *bam) -bed ~{primer_bed} | cut -f 4,6- >> multicov.txt
+  >>>
 
   output {
     String     date = read_string("DATE")
@@ -66,7 +69,7 @@ task bedtools_multicov {
   }
 
   runtime {
-    docker:       "staphb/ivar:1.2.2_artic20200528"
+    docker:       "~{docker}"
     memory:       "2 GB"
     cpu:          1
     disks:        "local-disk 100 SSD"
