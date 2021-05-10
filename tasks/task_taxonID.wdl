@@ -5,48 +5,49 @@ task kraken2 {
   	File        read1
 	  File? 		  read2
 	  String      samplename
-	  String?     kraken2_db = "/kraken2-db"
-    Int?        cpus=4
+	  String      kraken2_db = "/kraken2-db"
+    Int         cpus = 4
+    String      docker = "staphb/kraken2:2.0.8-beta_hv"
   }
 
-  command{
+  command <<<
     # date and version control
     date | tee DATE
     kraken2 --version | head -n1 | tee VERSION
     num_reads=$(ls *fastq.gz 2> /dev/nul | wc -l)
-    if ! [ -z ${read2} ]; then
+    if ! [ -z ~{read2} ]; then
       mode="--paired"
     fi
     echo $mode
     kraken2 $mode \
       --classified-out cseqs#.fq \
-      --threads ${cpus} \
-      --db ${kraken2_db} \
-      ${read1} ${read2} \
-      --report ${samplename}_kraken2_report.txt
+      --threads ~{cpus} \
+      --db ~{kraken2_db} \
+      ~{read1} ~{read2} \
+      --report ~{samplename}_kraken2_report.txt
 
-    percentage_human=$(grep "Homo sapiens" ${samplename}_kraken2_report.txt | cut -f 1)
+    percentage_human=$(grep "Homo sapiens" ~{samplename}_kraken2_report.txt | cut -f 1)
      # | tee PERCENT_HUMAN
-    percentage_sc2=$(grep "Severe acute respiratory syndrome coronavirus 2" ${samplename}_kraken2_report.txt | cut -f1 )
+    percentage_sc2=$(grep "Severe acute respiratory syndrome coronavirus 2" ~{samplename}_kraken2_report.txt | cut -f1 )
      # | tee PERCENT_COV
     if [ -z "$percentage_human" ] ; then percentage_human="0" ; fi
     if [ -z "$percentage_sc2" ] ; then percentage_sc2="0" ; fi
     echo $percentage_human | tee PERCENT_HUMAN
     echo $percentage_sc2 | tee PERCENT_SC2
-  }
+  >>>
 
   output {
     String     date          = read_string("DATE")
     String     version       = read_string("VERSION")
-    File 	     kraken_report = "${samplename}_kraken2_report.txt"
+    File 	     kraken_report = "~{samplename}_kraken2_report.txt"
     Float 	   percent_human = read_string("PERCENT_HUMAN")
     Float 	   percent_sc2   = read_string("PERCENT_SC2")
   }
 
   runtime {
-    docker:       "staphb/kraken2:2.0.8-beta_hv"
+    docker:       "~{docker}"
     memory:       "8 GB"
-    cpu:          4
+    cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0
   }
@@ -88,7 +89,7 @@ task pangolin {
   runtime {
     docker:       "staphb/pangolin:1.1.14"
     memory:       "8 GB"
-    cpu:          40
+    cpu:          4
     disks:        "local-disk 100 SSD"
     preemptible:  0
   }
@@ -98,42 +99,47 @@ task pangolin2 {
   input {
     File        fasta
     String      samplename
-    String      docker="staphb/pangolin:2.2.1-pangolearn-2021-02-06"
-
-
+    String      docker = "staphb/pangolin:2.3.8-pangolearn-2021-04-23"
+    Int         cpus = 4
   }
 
-  command{
+  command <<<
     # date and version control
     date | tee DATE
     pangolin --version | head -n1 | tee VERSION
     set -e
 
     pangolin "~{fasta}" \
-       --outfile "~{samplename}.pangolin_report.csv" \
+       --outfile "~{samplename}_pango_lineage.csv" \
        --verbose
 
-    pangolin_lineage=$(tail -n 1 ${samplename}.pangolin_report.csv | cut -f 2 -d "," | grep -v "lineage")
+    LINEAGE_COL=$(head -n1 ~{samplename}_pango_lineage.csv | tr ',' '\n' | grep -n lineage | cut -f1 -d ':' | head -n1)
+    pangolin_lineage=$(tail -n 1 ~{samplename}_pango_lineage.csv | cut -f $LINEAGE_COL -d ",")
 
-    pangolin_probability=$(tail -n 1 ${samplename}.pangolin_report.csv | cut -f 3 -d "," )
-    mv ${samplename}.pangolin_report.csv ${samplename}_pango2_lineage.csv
+    PROBABILITY_COL=$(head -n1 ~{samplename}_pango_lineage.csv | tr ',' '\n' | grep -n probability | cut -f1 -d ':' | head -n1)
+    pangolin_probability=$(tail -n 1 ~{samplename}_pango_lineage.csv | cut -f $PROBABILITY_COL -d ",")
+
+    PANGOLEARN_COL=$(head -n1 ~{samplename}_pango_lineage.csv | tr ',' '\n' | grep -n lineage | cut -f1 -d ':' | head -n1)
+    pangoLEARN_version=$(tail -n1 ~{samplename}_pango_lineage.csv | cut -f $PANGOLEARN_COL -d ',')
 
     echo $pangolin_lineage | tee PANGOLIN_LINEAGE
     echo $pangolin_probability | tee PANGOLIN_PROBABILITY
-  }
+    echo $pangoLEARN_version | tee PANGOLEARN_VERSION
+  >>>
 
   output {
     String     date                 = read_string("DATE")
     String     version              = read_string("VERSION")
     String     pangolin_lineage     = read_string("PANGOLIN_LINEAGE")
-    String     pangolin_aLRT        = read_string("PANGOLIN_PROBABILITY")
-    File       pango_lineage_report = "${samplename}_pango2_lineage.csv"
+    Float      pangolin_probability = read_string("PANGOLIN_PROBABILITY")
+    String     pangoLEARN_version   = read_string("PANGOLEARN_VERSION")
+    File       pango_lineage_report = "~{samplename}_pango_lineage.csv"
   }
 
   runtime {
-    docker:     "~{docker}"
+    docker:       "~{docker}"
     memory:       "8 GB"
-    cpu:          40
+    cpu:          "~{cpus}"
     disks:        "local-disk 100 SSD"
     preemptible:  0
   }
@@ -150,9 +156,11 @@ task nextclade_one_sample {
         File?  qc_config_json
         File?  gene_annotations_json
         File?  pcr_primers_csv
+        String docker = "neherlab/nextclade:latest"
+        Int    cpus = 4
     }
     String basename = basename(genome_fasta, ".fasta")
-    command {
+    command <<<
         set -e
         nextclade.js --version > VERSION
         nextclade.js \
@@ -176,12 +184,12 @@ task nextclade_one_sample {
         grep ^clade transposed.tsv | cut -f 2 | grep -v clade > NEXTCLADE_CLADE
         grep ^aaSubstitutions transposed.tsv | cut -f 2 | grep -v aaSubstitutions | sed 's/,/|/g' > NEXTCLADE_AASUBS
         grep ^aaDeletions transposed.tsv | cut -f 2 | grep -v aaDeletions | sed 's/,/|/g' > NEXTCLADE_AADELS
-    }
+    >>>
     runtime {
-        docker: "neherlab/nextclade:latest"
+        docker: "~{docker}"
         memory: "3 GB"
-        cpu:    2
-        disks: "local-disk 50 HDD"
+        cpu:    "~{cpus}"
+        disks:  "local-disk 50 HDD"
         dx_instance_type: "mem1_ssd1_v2_x2"
     }
     output {
