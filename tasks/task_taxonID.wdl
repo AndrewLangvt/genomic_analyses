@@ -57,7 +57,7 @@ task pangolin {
   input {
     File        fasta
     String      samplename
-    Int?        cpus=40
+
   }
 
   command{
@@ -65,14 +65,8 @@ task pangolin {
     date | tee DATE
     pangolin --version | head -n1 | tee VERSION
 
-    pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
+    pangolin --outdir ${samplename} ${fasta}
     pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
-
-    while [ -z "$pangolin_lineage" ]
-    do
-      pangolin --threads ${cpus} --outdir ${samplename} ${fasta}
-      pangolin_lineage=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 2 -d "," | grep -v "lineage")
-    done
 
     pangolin_aLRT=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 3 -d "," )
     pangolin_stats=$(tail -n 1 ${samplename}/lineage_report.csv | cut -f 4 -d "," )
@@ -95,7 +89,7 @@ task pangolin {
   runtime {
     docker:       "staphb/pangolin:1.1.14"
     memory:       "8 GB"
-    cpu:          40
+    cpu:          4
     disks:        "local-disk 100 SSD"
     preemptible:  0
   }
@@ -113,6 +107,7 @@ task pangolin2 {
     # date and version control
     date | tee DATE
     pangolin --version | head -n1 | tee VERSION
+    set -e
 
     pangolin "~{fasta}" \
        --outfile "~{samplename}_pango_lineage.csv" \

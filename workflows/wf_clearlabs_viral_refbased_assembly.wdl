@@ -5,6 +5,8 @@ import "../tasks/task_consensus_call.wdl" as consensus_call
 import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
+import "../tasks/task_ncbi.wdl" as ncbi
+import "wf_ont_sc2_pubRepo_submission.wdl" as submission
 
 workflow viral_refbased_assembly {
   meta {
@@ -15,13 +17,45 @@ workflow viral_refbased_assembly {
     String  samplename
     String? artic_primer_version="V3"
     File    clear_lab_fastq
+    Int?      normalise=20000
+
+    String	   	submission_id
+    String 		  collection_date
+    String    	gisaid_submitter
+    String    	iso_state
+    String    	iso_continent
+    String      iso_country
+    String    	originating_lab
+    String    	origLab_address
+    String      BioProject
+    String    	submitting_lab
+    String    	subLab_address
+    String    	Authors
+    String    	organism = "Severe acute respiratory syndrome coronavirus 2"
+    String    	iso_org = "SARS-CoV-2"
+    String    	iso_host = "Human"
+    String    	assembly_or_consensus = "consensus"
+    String    	seq_platform = "Nanopore via Clear Labs Dx WGS SARS-CoV-2"
+
+    String    passage_details="Original"
+    String    gender="unknown"
+    String    patient_age="unknown"
+    String    patient_status="unknown"
+    String    specimen_source=""
+    String    outbreak=""
+    String    last_vaccinated=""
+    String    treatment=""
+
   }
 
   call medaka.consensus {
     input:
       samplename = samplename,
       filtered_reads = clear_lab_fastq,
-      artic_primer_version = artic_primer_version
+      artic_primer_version = artic_primer_version,
+      normalise = normalise
+
+
   }
   call consensus_call.variant_call {
     input:
@@ -57,6 +91,86 @@ workflow viral_refbased_assembly {
       bamfile = consensus.trim_sorted_bam,
       baifile = consensus.trim_sorted_bai
   }
+  call ncbi.vadr {
+    input:
+      genome_fasta = consensus.consensus_seq,
+      samplename = samplename
+  }
+  if (vadr.vadr_result) {
+  call submission.SC2_submission_files as vadr_passed_submissions{
+  	input:
+      samplename = samplename,
+		 	submission_id = submission_id,
+		  collection_date = collection_date,
+		  sequence = consensus.consensus_seq,
+		  reads = clear_lab_fastq,
+
+	  	organism = organism,
+	  	iso_org = iso_org,
+	  	iso_host = iso_host,
+	  	iso_country = iso_country,
+	  	assembly_or_consensus = assembly_or_consensus,
+
+		 	gisaid_submitter = gisaid_submitter,
+     	iso_state = iso_state,
+     	iso_continent = iso_continent,
+     	seq_platform = seq_platform,
+     	artic_pipeline_version = consensus.artic_pipeline_version,
+    	originating_lab = originating_lab,
+    	origLab_address = origLab_address,
+      BioProject = BioProject,
+    	submitting_lab = submitting_lab,
+    	subLab_address = subLab_address,
+    	Authors = Authors,
+
+      passage_details = passage_details,
+      gender = gender,
+      patient_age = patient_age,
+      patient_status = patient_status,
+      specimen_source = specimen_source,
+      outbreak = outbreak,
+      last_vaccinated = last_vaccinated,
+      treatment = treatment
+  }
+  }
+  if (! vadr.vadr_result) {
+  call submission.SC2_submission_files as vadr_warning_submissions{
+  	input:
+      samplename = samplename,
+		 	submission_id = submission_id,
+		  collection_date = collection_date,
+      sequence = consensus.consensus_seq,
+ 		  reads = clear_lab_fastq,
+
+	  	organism = organism,
+	  	iso_org = iso_org,
+	  	iso_host = iso_host,
+	  	iso_country = iso_country,
+	  	assembly_or_consensus = assembly_or_consensus,
+
+		 	gisaid_submitter = gisaid_submitter,
+     	iso_state = iso_state,
+     	iso_continent = iso_continent,
+     	seq_platform = seq_platform,
+     	artic_pipeline_version = consensus.artic_pipeline_version,
+    	originating_lab = originating_lab,
+    	origLab_address = origLab_address,
+      BioProject = BioProject,
+    	submitting_lab = submitting_lab,
+    	subLab_address = subLab_address,
+    	Authors = Authors,
+
+      passage_details = passage_details,
+      gender = gender,
+      patient_age = patient_age,
+      patient_status = patient_status,
+      specimen_source = specimen_source,
+      outbreak = outbreak,
+      last_vaccinated = last_vaccinated,
+      treatment = treatment
+  }
+  }
+
   output {
 
     Float   kraken_human       = kraken2.percent_human
@@ -103,5 +217,21 @@ workflow viral_refbased_assembly {
     Int     amp_fail               = bedtools_cov.amp_fail
     File    amp_coverage           = bedtools_cov.amp_coverage
     String  bedtools_version       = bedtools_cov.version
+
+    File vadr_alterts_list = vadr.alerts_list
+    Int vadr_num_alerts = vadr.num_alerts
+
+    File?      vadr_passed_deID_assembly      = vadr_passed_submissions.deID_assembly
+    File?     vadr_passed_genbank_assembly   = vadr_passed_submissions.genbank_assembly
+    File?     vadr_passed_genbank_metadata   = vadr_passed_submissions.genbank_metadata
+    File?     vadr_passed_gisaid_assembly    = vadr_passed_submissions.gisaid_assembly
+    File?     vadr_passed_gisaid_metadata    = vadr_passed_submissions.gisaid_metadata
+
+    File?      vadr_warning_deID_assembly      = vadr_warning_submissions.deID_assembly
+    File?     vadr_warning_genbank_assembly   = vadr_warning_submissions.genbank_assembly
+    File?     vadr_warning_genbank_metadata   = vadr_warning_submissions.genbank_metadata
+    File?     vadr_warning_gisaid_assembly    = vadr_warning_submissions.gisaid_assembly
+    File?     vadr_warning_gisaid_metadata    = vadr_warning_submissions.gisaid_metadata
+
   }
 }
