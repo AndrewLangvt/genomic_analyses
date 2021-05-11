@@ -3,8 +3,8 @@ version 1.0
 task stats_n_coverage {
 
   input {
-    File        bamfile
     String      samplename
+    File        bamfile
     String      docker = "staphb/samtools:1.10"
     Int         mem = 8
     Int         cpus = 2

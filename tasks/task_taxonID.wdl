@@ -97,8 +97,8 @@ task pangolin {
 
 task pangolin2 {
   input {
-    File        fasta
     String      samplename
+    File        fasta
     String      docker = "staphb/pangolin:2.3.8-pangolearn-2021-04-23"
     Int         mem = 8
     Int         cpus = 4

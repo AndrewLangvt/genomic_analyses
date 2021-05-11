@@ -3,8 +3,8 @@ version 1.0
 task primer_trim {
 
   input {
-    File        bamfile
     String      samplename
+    File        bamfile
     File        primer_BED
     Boolean     keep_noprimer_reads=true
     String      docker = "staphb/ivar:1.2.2_artic20200528"
@@ -59,8 +59,8 @@ task primer_trim {
 task variant_call {
 
   input {
-    File        bamfile
     String      samplename
+    File        bamfile
     File        ref_genome
     File        ref_gff
     Boolean     count_orphans = true
@@ -122,8 +122,8 @@ task variant_call {
 task consensus {
     
   input {
-    File        bamfile
     String      samplename
+    File        bamfile
     File        ref_genome
     Boolean     count_orphans = true
     Int         max_depth = "600000"
@@ -137,7 +137,7 @@ task consensus {
     Int         mem = 8
     Int         cpus = 2
   }
-  
+
   command <<<
     # date and version control
     date | tee DATE
@@ -179,12 +179,13 @@ task consensus {
     echo $num_total | tee NUM_TOTAL
 
     # clean up fasta header
-    echo ">"~{samplename} > ~{samplename}.ivar.consensus.fasta
-    grep -v ">" ~{samplename}.consensus.fa >> ~{samplename}.ivar.consensus.fasta
+    echo ">"~{samplename} > ~{samplename}.consensus.fasta
+    grep -v ">" ~{samplename}.consensus.fa >> ~{samplename}.consensus.fasta
+
   >>>
 
   output {
-    File      consensus_seq = "~{samplename}.ivar.consensus.fasta"
+    File      consensus_seq = "~{samplename}.consensus.fasta"
     Int       number_N = read_string("NUM_N")
     Int       number_ATCG = read_string("NUM_ACTG")
     Int       number_Degenerate = read_string("NUM_DEGENERATE")
