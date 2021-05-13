@@ -48,19 +48,6 @@ workflow viral_refbased_assembly {
         file_URL  = select_first([primer_PCR_BED_URL])
     }
   }  
-  # call ops_utils.get_ref_files {
-  #   input:
-  #     ref_genome_URL = ref_genome_URL,
-  #     ref_gff_URL    = ref_gff_URL
-  # }
-  # call ops_utils.get_single_file as primer_BEDf {
-  #   input:
-  #     file_URL  = primer_BED_URL
-  # }
-  # call ops_utils.get_single_file as primer_PCR_BED {
-  #   input:
-  #     file_URL  = primer_PCR_BED_URL
-  # } 
   call read_qc.read_QC_trim {
     input:
       samplename = samplename,
@@ -103,27 +90,10 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       bamfile    = primer_trim.trim_sorted_bam
   } 
-  # call taxon_ID.pangolin2 {
-  #   input:
-  #     samplename = samplename,
-  #     fasta      = consensus.consensus_seq
-  # }
-  # call taxon_ID.nextclade_one_sample {
-  #   input:
-  #     genome_fasta = consensus.consensus_seq
-  # }
   call SC2_identification.sc2_variantID {
     input:
       samplename = samplename, 
       fasta      = consensus.consensus_seq
-  }
-
-  call amplicon_metrics.bedtools_cov {
-    input:
-      samplename = samplename,
-      bamfile    = bwa.sorted_bam,
-      baifile    = bwa.sorted_bai,
-      primer_bed = select_first([primer_PCR_BEDfile, primer_PCR_BED.outfile])
   }
   call ncbi.vadr {
     input:
@@ -157,10 +127,8 @@ workflow viral_refbased_assembly {
     File    aligned_bai                 = primer_trim.trim_sorted_bai
     Float   primer_trimmed_read_percent = primer_trim.primer_trimmed_read_percent
     String  ivar_version_primtrim       = primer_trim.ivar_version
-    String  samtools_version_primtrim   = primer_trim.samtools_version
 
     File    ivar_tsv                    = variant_call.sample_variants
-    Int     variant_num                 = variant_call.variant_num
     String  ivar_version_variants       = variant_call.ivar_version
     String  samtools_version_variants   = variant_call.samtools_version
 
@@ -200,10 +168,5 @@ workflow viral_refbased_assembly {
 
     File    vadr_alerts_list       = vadr.alerts_list
     Int     vadr_num_alerts        = vadr.num_alerts
-
-    Int     amp_fail               = bedtools_cov.amp_fail
-    File    amp_coverage           = bedtools_cov.amp_coverage
-    String  bedtools_version       = bedtools_cov.version
-
   }
 }

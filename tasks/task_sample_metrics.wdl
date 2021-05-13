@@ -92,7 +92,6 @@ task sample_metrics {
     Float     primer_trimmed_read_percent
     Float?    kraken_human
     Float?    kraken_sc2
-    Int       variant_num
     Int       number_N
     Int       number_ATCG
     Int       number_Degenerate
@@ -101,7 +100,6 @@ task sample_metrics {
     Float     meanmapq_trim
     Float     coverage_trim
     Float     depth_trim
-    Int       amp_fail
     Float?    coverage_threshold = 95.00
     Float?    meanbaseq_threshold = 30.00
     Float?    meanmapq_threshold = 30.00
@@ -121,7 +119,7 @@ task sample_metrics {
   ~{nextclade_clade},~{nextclade_aa_subs},~{nextclade_aa_dels},\
   ~{fastqc_raw_pairs},~{fastqc_clean_pairs},~{primer_trimmed_read_percent},\
   ~{depth_trim},~{coverage_trim},\
-  ~{kraken_human},~{kraken_sc2},~{amp_fail},~{variant_num},\
+  ~{kraken_human},~{kraken_sc2},\
   ~{number_N},~{number_Degenerate},~{number_ATCG},~{number_Total},\
   ~{meanbaseq_trim},~{meanmapq_trim}," + assembly_status
 
@@ -157,7 +155,7 @@ task merge_metrics {
     nextclade_lineage,nextclade_aaSubstitutions,nextclade_aaDeletions,\
     raw_pairs,cleaned_pairs,primer_trimmed_read_percent,\
     depth_after_trimming,coverage_after_trimming,\
-    %_human_reads,%_SARS-COV-2_reads,num_failed_amplicons,num_variants,\
+    %_human_reads,%_SARS-COV-2_reads,\
     num_N,num_degenerate,num_ACTG,num_total,\
     meanbaseq_trim,meanmapq_trim,assembly_status" >> run_results.csv
 

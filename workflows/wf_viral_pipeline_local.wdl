@@ -49,23 +49,16 @@ workflow nCoV19_pipeline {
         nextclade_clade             = viral_refbased_assembly.nextclade_clade,
         nextclade_aa_subs           = viral_refbased_assembly.nextclade_aa_subs,
         nextclade_aa_dels           = viral_refbased_assembly.nextclade_aa_dels,
-#        fastqc_raw_pairs            = viral_refbased_assembly.fastqc_raw_pairs,
-#        seqy_pairs                  = viral_refbased_assembly.seqy_pairs,
-#        seqy_percent                = viral_refbased_assembly.seqy_percent,
         kraken_human                = viral_refbased_assembly.kraken_human,
         kraken_sc2                  = viral_refbased_assembly.kraken_sc2,
-        variant_num                 = viral_refbased_assembly.variant_num,
         number_N                    = viral_refbased_assembly.number_N,
         number_ATCG                 = viral_refbased_assembly.assembly_length_unambiguous,
         number_Degenerate           = viral_refbased_assembly.number_Degenerate,
         number_Total                = viral_refbased_assembly.number_Total,
-#        coverage                    = viral_refbased_assembly.coverage,
-#        depth                       = viral_refbased_assembly.depth,
         meanbaseq_trim              = viral_refbased_assembly.meanbaseq_trim,
         meanmapq_trim               = viral_refbased_assembly.meanmapq_trim,
         coverage_trim               = viral_refbased_assembly.coverage_trim, 
-        depth_trim                  = viral_refbased_assembly.depth_trim,
-        amp_fail                    = viral_refbased_assembly.amp_fail
+        depth_trim                  = viral_refbased_assembly.depth_trim
     }
 
     call submission.SC2_submission_files {
@@ -111,7 +104,7 @@ workflow nCoV19_pipeline {
     Array[File]    cov_stats            = viral_refbased_assembly.cov_stats
     Array[File]    samtools_flagstat    = viral_refbased_assembly.consensus_flagstat
     Array[File]    pango_lineage_report = viral_refbased_assembly.pango_lineage_report
-    Array[File]    amp_coverage         = viral_refbased_assembly.amp_coverage
+#    Array[File]    amp_coverage         = viral_refbased_assembly.amp_coverage
     File           merged_metrics       = merge_metrics.run_results
 
     Array[File?]   read1_submission     = SC2_submission_files.read1_submission
