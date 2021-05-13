@@ -8,6 +8,7 @@ import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
 import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
 import "../tasks/task_ncbi.wdl" as ncbi
+import "wf_sc2_utils.wdl" as SC2_identification
 
 workflow viral_refbased_assembly {
   meta {
@@ -102,15 +103,21 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       bamfile    = primer_trim.trim_sorted_bam
   } 
-  call taxon_ID.pangolin2 {
+  # call taxon_ID.pangolin2 {
+  #   input:
+  #     samplename = samplename,
+  #     fasta      = consensus.consensus_seq
+  # }
+  # call taxon_ID.nextclade_one_sample {
+  #   input:
+  #     genome_fasta = consensus.consensus_seq
+  # }
+  call SC2_identification.sc2_variantID {
     input:
-      samplename = samplename,
+      samplename = samplename, 
       fasta      = consensus.consensus_seq
   }
-  call taxon_ID.nextclade_one_sample {
-    input:
-      genome_fasta = consensus.consensus_seq
-  }
+
   call amplicon_metrics.bedtools_cov {
     input:
       samplename = samplename,
@@ -177,19 +184,19 @@ workflow viral_refbased_assembly {
     Float   depth_trim             = stats_n_coverage_primtrim.depth
     String  samtools_version_stats = stats_n_coverage.samtools_version
 
-    String  pangolin_lineage       = pangolin2.pangolin_lineage
-    String  pangolin_probability   = pangolin2.pangolin_probability
-    File    pango_lineage_report   = pangolin2.pango_lineage_report
-    String  pangolin_version       = pangolin2.version
-    String  pangoLEARN_version     = pangolin2.pangoLEARN_version
+    String  pangolin_lineage       = sc2_variantID.pangolin_lineage
+    String  pangolin_probability   = sc2_variantID.pangolin_probability
+    File    pango_lineage_report   = sc2_variantID.pango_lineage_report
+    String  pangolin_version       = sc2_variantID.pangolin_version
+    String  pangoLEARN_version     = sc2_variantID.pangoLEARN_version
 
-    File    nextclade_json         = nextclade_one_sample.nextclade_json
-    File    auspice_json           = nextclade_one_sample.auspice_json
-    File    nextclade_tsv          = nextclade_one_sample.nextclade_tsv
-    String  nextclade_clade        = nextclade_one_sample.nextclade_clade
-    String  nextclade_aa_subs      = nextclade_one_sample.nextclade_aa_subs
-    String  nextclade_aa_dels      = nextclade_one_sample.nextclade_aa_dels
-    String  nextclade_version      = nextclade_one_sample.nextclade_version
+    File    nextclade_json         = sc2_variantID.nextclade_json
+    File    auspice_json           = sc2_variantID.auspice_json
+    File    nextclade_tsv          = sc2_variantID.nextclade_tsv
+    String  nextclade_clade        = sc2_variantID.nextclade_clade
+    String  nextclade_aa_subs      = sc2_variantID.nextclade_aa_subs
+    String  nextclade_aa_dels      = sc2_variantID.nextclade_aa_dels
+    String  nextclade_version      = sc2_variantID.nextclade_version
 
     File    vadr_alerts_list       = vadr.alerts_list
     Int     vadr_num_alerts        = vadr.num_alerts
