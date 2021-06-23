@@ -11,7 +11,8 @@ workflow genomic_cluster_analysis {
 
   input {
     Array[File]   genomes
-    String          cluster_name="SC2_Cluster_Analysis"
+    String        cluster_name="Cluster_Analysis"
+    File          specimen_status
     File?         render_template
   }
 
@@ -21,24 +22,29 @@ workflow genomic_cluster_analysis {
   }
   call phylo.snp_dists {
     input:
-      cluster_name = cluster_name,
-      alignment = mafft.msa
+      cluster_name    = cluster_name,
+      alignment       = mafft.msa
   }
   call phylo.iqtree {
     input:
-      cluster_name = cluster_name,
-      alignment = mafft.msa
+      cluster_name    = cluster_name,
+      alignment       = mafft.msa
   }
   call vis.cluster_render {
     input:
-      cluster_name = cluster_name,
-      snp_matrix = snp_dists.snp_matrix,
-      ml_tree = iqtree.ml_tree,
+      cluster_name    = cluster_name,
+      snp_matrix      = snp_dists.snp_matrix,
+      ml_tree         = iqtree.ml_tree,
+      specimen_status = specimen_status,
       render_template = render_template
   }
 
   output {
     File      analysis_doc = cluster_render.analysis_doc
     File      snp_list     = cluster_render.snp_list
+    File      snp_heatmap  = cluster_render.snp_heatmap
+    File      ml_tree      = iqtree.ml_tree
+    File      msa          = mafft.msa
+    File      snp_matrix   = snp_dists.snp_matrix
   }
 }

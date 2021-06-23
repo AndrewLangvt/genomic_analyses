@@ -34,15 +34,17 @@ task fastqc {
   >>>
 
   output {
-    File       fastqc1_html  = "~{read1_name}_fastqc.html"
-    File       fastqc1_zip   = "~{read1_name}_fastqc.zip"
-    File       fastqc2_html  = "~{read2_name}_fastqc.html"
-    File       fastqc2_zip   = "~{read2_name}_fastqc.zip"
-    Int        read1_seq     = read_string("READ1_SEQS")
-    Int        read2_seq     = read_string("READ2_SEQS")
-    String     read_pairs    = read_string("READ_PAIRS")
-    String     version       = read_string("VERSION") 
-    String     pipeline_date = read_string("DATE")
+    String  version       = read_string("VERSION") 
+    String  date          = read_string("DATE")
+    String  container     = docker
+    File    fastqc1_html  = "~{read1_name}_fastqc.html"
+    File    fastqc1_zip   = "~{read1_name}_fastqc.zip"
+    File    fastqc2_html  = "~{read2_name}_fastqc.html"
+    File    fastqc2_zip   = "~{read2_name}_fastqc.zip"
+    Int     read1_seq     = read_string("READ1_SEQS")
+    Int     read2_seq     = read_string("READ2_SEQS")
+    String  read_pairs    = read_string("READ_PAIRS")
+
   }
 
   runtime {

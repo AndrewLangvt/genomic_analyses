@@ -24,7 +24,7 @@ task bwa {
 
     if [ "$(cat assembly_length)" != "0" ]; then
 
-      # Index referenge FASTA if provided reference is not empty 
+      # Index reference FASTA if provided reference is not empty 
       bwa index assembly.fasta
 
       # Map with BWA MEM
@@ -42,10 +42,12 @@ task bwa {
   }
 
   output {
-    String     bwa_version = read_string("BWA_VERSION")
-    String     sam_version = read_string("SAMTOOLS_VERSION")
-    File       sorted_bam = "~{samplename}.sorted.bam"
-    File       sorted_bai = "~{samplename}.sorted.bam.bai"
+    String     date             = read_string("DATE")
+    String     bwa_version      = read_string("BWA_VERSION")
+    String     samtools_version = read_string("SAMTOOLS_VERSION")
+    String     container        = docker
+    File       sorted_bam       = "~{samplename}.sorted.bam"
+    File       sorted_bai       = "~{samplename}.sorted.bam.bai"
   }
 
   runtime {
@@ -72,14 +74,15 @@ task mafft {
     mafft_vers=$(mafft --version)
     echo Mafft $(mafft_vers) | tee VERSION
 
-    cat ~{sep=" " genomes} > assemblies.fasta
+    cat ${sep=" " genomes} | sed 's/Consensus_//;s/.consensus_threshold.*//' > assemblies.fasta
     mafft --thread -~{cpus} assemblies.fasta > msa.fasta
   }
 
   output {
-    String        date = read_string("DATE")
-    String        version = read_string("VERSION")
-    File          msa = "msa.fasta"
+    String        date      = read_string("DATE")
+    String        version   = read_string("VERSION")
+    String        container = docker
+    File          msa       = "msa.fasta"
   }
 
   runtime {
@@ -90,4 +93,6 @@ task mafft {
     preemptible:  0      
   }
 }
+
+
 

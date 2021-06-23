@@ -38,12 +38,13 @@ task primer_trim {
   >>>
 
   output {
+    String    ivar_version = read_string("IVAR_VERSION") 
+    String    samtools_version = read_string("SAMTOOLS_VERSION")
+    String    date = read_string("DATE")
+    String    container = docker 
     File      trimmed_bam = "~{samplename}.primertrim.bam"
     File      trim_sorted_bam = "~{samplename}.primertrim.sorted.bam"
     File      trim_sorted_bai = "~{samplename}.primertrim.sorted.bam.bai"
-    String    ivar_version = read_string("IVAR_VERSION") 
-    String    samtools_version = read_string("SAMTOOLS_VERSION")
-    String    pipeline_date = read_string("DATE")
     Float     primer_trimmed_read_percent = read_float("IVAR_TRIM_PCT")
   }
 
@@ -103,11 +104,12 @@ task variant_call {
   >>>
 
   output {
- 	Int       variant_num = read_string("VARIANT_NUM")
- 	File  	  sample_variants = "~{samplename}.variants.tsv"
     String    ivar_version = read_string("IVAR_VERSION") 
     String    samtools_version = read_string("SAMTOOLS_VERSION")
-    String    pipeline_date = read_string("DATE")	
+    String    date = read_string("DATE")   
+    String    container = docker
+ 	Int       variant_num = read_string("VARIANT_NUM")
+ 	File  	  sample_variants = "~{samplename}.variants.tsv"
   }
 
   runtime {
@@ -185,15 +187,17 @@ task consensus {
   >>>
 
   output {
+    String    ivar_version = read_string("IVAR_VERSION") 
+    String    samtools_version = read_string("SAMTOOLS_VERSION")
+    String    date = read_string("DATE")
+    String    container = docker
     File      consensus_seq = "~{samplename}.consensus.fasta"
     Int       number_N = read_string("NUM_N")
     Int       number_ATCG = read_string("NUM_ACTG")
     Int       number_Degenerate = read_string("NUM_DEGENERATE")
     Int       number_Total = read_string("NUM_TOTAL")
     Float     percent_reference_coverage = read_float("PERCENT_REF_COVERAGE")
-    String    ivar_version = read_string("IVAR_VERSION") 
-    String    samtools_version = read_string("SAMTOOLS_VERSION")
-    String    pipeline_date = read_string("DATE")
+
   }
 
   runtime {

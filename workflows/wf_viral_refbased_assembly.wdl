@@ -1,14 +1,13 @@
 version 1.0
 
-import "../tasks/task_ops_utils.wdl" as ops_utils
-import "wf_read_QC_trim.wdl" as read_qc
+import "../tasks/task_qc_utils.wdl" as qc_utils
+import "../tasks/task_read_clean.wdl" as read_clean 
+import "../tasks/task_taxonID.wdl" as taxon_ID
 import "../tasks/task_alignment.wdl" as align
 import "../tasks/task_consensus_call.wdl" as consensus_call
 import "../tasks/task_assembly_metrics.wdl" as assembly_metrics
-import "../tasks/task_taxonID.wdl" as taxon_ID
-import "../tasks/task_amplicon_metrics.wdl" as amplicon_metrics
 import "../tasks/task_ncbi.wdl" as ncbi
-import "wf_sc2_utils.wdl" as SC2_identification
+import "../tasks/task_qa.wdl" as qa
 
 workflow viral_refbased_assembly {
   meta {
@@ -19,109 +18,193 @@ workflow viral_refbased_assembly {
     String    samplename
     File      read1_raw
     File      read2_raw 
-    File?     reference_genome
-    File?     reference_gff
-    File?     primer_BEDfile
-    File?     primer_PCR_BEDfile
-    String?   ref_genome_URL
-    String?   ref_gff_URL
-    String?   primer_BED_URL
-    String?   primer_PCR_BED_URL
+    File      reference_genome
+    File      reference_gff
+    File      primer_BEDfile
+    String    analyst = "Unknown"
+    String    ncbi_scrub_docker = "ncbi/sra-human-scrubber:1.0.2021-05-05"
+    String    seqyclean_docker  = "staphb/seqyclean:1.10.09"
+    String    fastqc_docker     = "staphb/fastqc:0.11.9"
+    String    kraken_docker     = "staphb/kraken2:2.0.8-beta_hv"
+    String    bwa_docker        = "staphb/ivar:1.3.1"
+    String    ivar_docker       = "staphb/ivar:1.3.1"
+    String    samtools_docker   = "staphb/ivar:1.3.1"
+    String    pangolin_docker   = "staphb/pangolin:3.1.3-pangolearn-2021-06-15"
+    String    nextclade_docker  = "neherlab/nextclade:0.14.4"
+    String    vadr_docker       = "staphb/vadr:1.2.1"
+    String    utiltiy_docker    = "quay.io/broadinstitute/viral-baseimage@sha256:340c0a673e03284212f539881d8e0fb5146b83878cbf94e4631e8393d4bc6753"
   }
+  String reference_genome_fn = basename(reference_genome)
+  String reference_gff_fn    = basename(reference_gff)
+  String primer_BEDfile_fn   = basename(primer_BEDfile)
 
-  if (!defined(reference_genome)){
-    call ops_utils.get_ref_files {
-      input:
-        ref_genome_URL = select_first([ref_genome_URL]),
-        ref_gff_URL    = select_first([ref_gff_URL])
-    }
+  call qa.version_capture {
+    input:
   }
-  if (!defined(primer_BEDfile)) {
-    call ops_utils.get_single_file as primer_BED {
-      input:
-        file_URL  = select_first([primer_BED_URL])
-    }
-  }
-  if (!defined(primer_PCR_BEDfile)) {
-    call ops_utils.get_single_file as primer_PCR_BED {
-      input:
-        file_URL  = select_first([primer_PCR_BED_URL])
-    }
-  }  
-  call read_qc.read_QC_trim {
+  call read_clean.ncbi_scrub_pe {
     input:
       samplename = samplename,
-      read1_raw  = read1_raw,
-      read2_raw  = read2_raw
+      read1      = read1_raw,
+      read2      = read2_raw,
+      docker     = ncbi_scrub_docker
+  }  
+  call read_clean.seqyclean {
+    input:
+      samplename = samplename,
+      read1      = ncbi_scrub_pe.read1_dehosted,
+      read2      = ncbi_scrub_pe.read2_dehosted,
+      docker     = seqyclean_docker
+  }
+  call qc_utils.fastqc as fastqc_raw {
+    input:
+      read1  = ncbi_scrub_pe.read1_dehosted,
+      read2  = ncbi_scrub_pe.read2_dehosted,
+      docker = fastqc_docker
+  }
+  call qc_utils.fastqc as fastqc_clean {
+    input:
+      read1  = seqyclean.read1_clean,
+      read2  = seqyclean.read2_clean,
+      docker = fastqc_docker
+  }
+  call taxon_ID.kraken2 {
+    input:
+      samplename = samplename,
+      read1      = seqyclean.read1_clean, 
+      read2      = seqyclean.read2_clean,
+      docker     = kraken_docker
   }
   call align.bwa {
     input:
       samplename       = samplename,
-      read1            = read_QC_trim.read1_clean, 
-      read2            = read_QC_trim.read2_clean,
-      reference_genome = select_first([reference_genome, get_ref_files.ref_genome])
+      read1            = seqyclean.read1_clean, 
+      read2            = seqyclean.read2_clean,
+      reference_genome = reference_genome
   }
   call consensus_call.primer_trim {
     input:
       samplename = samplename,
       bamfile    = bwa.sorted_bam,
-      primer_BED = select_first([primer_BED.outfile])
+      primer_BED = primer_BEDfile,
+      docker     = ivar_docker
   }
   call consensus_call.variant_call {
     input:
       samplename = samplename,
       bamfile    = primer_trim.trim_sorted_bam,
-      ref_genome = select_first([reference_genome, get_ref_files.ref_genome]),
-      ref_gff    = select_first([reference_gff, get_ref_files.ref_gff])
+      ref_genome = reference_genome,
+      ref_gff    = reference_gff,
+      docker     = ivar_docker
   }
   call consensus_call.consensus {
     input:
       samplename = samplename,
       bamfile    = primer_trim.trim_sorted_bam,
-      ref_genome = select_first([reference_genome, get_ref_files.ref_genome]),
+      ref_genome = reference_genome,
+      docker     = ivar_docker
   }
   call assembly_metrics.stats_n_coverage {
     input:
       samplename = samplename,
-      bamfile    = bwa.sorted_bam
+      bamfile    = bwa.sorted_bam,
+      docker     = samtools_docker
   }
   call assembly_metrics.stats_n_coverage as stats_n_coverage_primtrim {
     input:
       samplename = samplename,
-      bamfile    = primer_trim.trim_sorted_bam
+      bamfile    = primer_trim.trim_sorted_bam,
+      docker     = samtools_docker
   } 
-  call SC2_identification.sc2_variantID {
+  call taxon_ID.pangolin3 {
     input:
-      samplename = samplename, 
-      fasta      = consensus.consensus_seq
+      samplename = samplename,
+      fasta      = consensus.consensus_seq,
+      docker     = pangolin_docker
   }
+  call taxon_ID.nextclade_one_sample {
+    input:
+      genome_fasta = consensus.consensus_seq,
+      docker       = nextclade_docker
+  }  
   call ncbi.vadr {
     input:
       genome_fasta = consensus.consensus_seq,
+      assembly_length_unambiguous = consensus.number_ATCG,
+      docker       = vadr_docker
+  }
+  call qa.audit_trail {
+    input:
+      analyst             = analyst,
+      workflow_version    = version_capture.repo_version,
+      workflow_date       = version_capture.date,
+      reference_genome_fn = reference_genome_fn,
+      reference_gff_fn    = reference_gff_fn,
+      primer_BEDfile_fn   = primer_BEDfile_fn,
+
+      specimen_id = samplename,
+
+      fastqc_container = fastqc_raw.container,
+      fastqc_version   = fastqc_raw.version,
+
+      ncbi_scrub_container = ncbi_scrub_pe.container,
+
+      seqyclean_container   = seqyclean.container,
+      seqyclean_version     = seqyclean.version,
+      seqyclean_adapterfile = seqyclean.adapterfile,
+
+      kraken_container = kraken2.container,
+      kraken_version   = kraken2.version,
+
+      bwa_container          = bwa.container,
+      align_bwa_version      = bwa.bwa_version,
+      align_samtools_version = bwa.samtools_version,
+
+      ivar_container             = consensus.container,
+      primertrim_ivar_version    = primer_trim.ivar_version,
+      variants_ivar_version      = variant_call.ivar_version,
+      variants_samtools_version  = variant_call.samtools_version,
+      consensus_ivar_version     = consensus.ivar_version,
+      consensus_samtools_version = consensus.samtools_version,
+
+      samtools_container         = stats_n_coverage.container,
+      statsNcov_samtools_version = stats_n_coverage.version,
+
+      pangolin_container  = pangolin3.container,
+      pangolin_version    = pangolin3.version,
+      pangoLEARN_version  = pangolin3.pangolin_usher_version,
+      nextclade_container = nextclade_one_sample.container,
+      nextclade_version   = nextclade_one_sample.version,
+      vadr_container      = vadr.container,
+      utiltiy_container   = utiltiy_docker
   }
 
   output {
-    File    read1_clean        = read_QC_trim.read1_clean
-    File    read2_clean        = read_QC_trim.read2_clean
-    Int     fastqc_raw1        = read_QC_trim.fastqc_raw1
-    Int     fastqc_raw2        = read_QC_trim.fastqc_raw2
-    String  fastqc_raw_pairs   = read_QC_trim.fastqc_raw_pairs
-    String  fastqc_version     = read_QC_trim.fastqc_version
- 
-    Int     fastqc_clean1      = read_QC_trim.fastqc_clean1
-    Int     fastqc_clean2      = read_QC_trim.fastqc_clean2
-    String  fastqc_clean_pairs = read_QC_trim.fastqc_clean_pairs
-    String  seqyclean_version  = read_QC_trim.seqyclean_version
+    File    read1_dehosted = ncbi_scrub_pe.read1_dehosted
+    File    read2_dehosted = ncbi_scrub_pe.read2_dehosted
+    Int     read1_human_spots_removed = ncbi_scrub_pe.read1_human_spots_removed
+    Int     read2_human_spots_removed = ncbi_scrub_pe.read2_human_spots_removed
+
+    File    read1_clean        = seqyclean.read1_clean
+    File    read2_clean        = seqyclean.read2_clean
+    String  seqyclean_version  = seqyclean.version
+
+    Int     fastqc_raw1        = fastqc_raw.read1_seq
+    Int     fastqc_raw2        = fastqc_raw.read2_seq
+    String  fastqc_raw_pairs   = fastqc_raw.read_pairs
+    Int     fastqc_clean1      = fastqc_clean.read1_seq
+    Int     fastqc_clean2      = fastqc_clean.read2_seq
+    String  fastqc_clean_pairs = fastqc_clean.read_pairs
+    String  fastqc_version     = fastqc_raw.version
    
-    Float   kraken_human       = read_QC_trim.kraken_human
-    Float   kraken_sc2         = read_QC_trim.kraken_sc2
-    String  kraken_version     = read_QC_trim.kraken_version
-    File    kraken_report      = read_QC_trim.kraken_report
+    Float   kraken_human       = kraken2.percent_human
+    Float   kraken_sc2         = kraken2.percent_sc2
+    String  kraken_version     = kraken2.version
+    File    kraken_report      = kraken2.kraken_report
 
     File    sorted_bam         = bwa.sorted_bam
     File    sorted_bai         = bwa.sorted_bai
     String  bwa_version        = bwa.bwa_version
-    String  sam_version        = bwa.sam_version
+    String  sam_version        = bwa.samtools_version
 
     File    aligned_bam                 = primer_trim.trim_sorted_bam
     File    aligned_bai                 = primer_trim.trim_sorted_bai
@@ -142,31 +225,32 @@ workflow viral_refbased_assembly {
     String  samtools_version_consensus  = consensus.samtools_version    
     String  assembly_method             = "~{bwa.bwa_version}; ~{primer_trim.ivar_version}"
 
-    File    consensus_stats        = stats_n_coverage.stats
-    File    cov_hist               = stats_n_coverage.cov_hist
-    File    cov_stats              = stats_n_coverage.cov_stats
-    File    consensus_flagstat     = stats_n_coverage.flagstat
-    Float   meanbaseq_trim         = stats_n_coverage_primtrim.meanbaseq
-    Float   meanmapq_trim          = stats_n_coverage_primtrim.meanmapq
-    Float   coverage_trim          = stats_n_coverage_primtrim.coverage
-    Float   depth_trim             = stats_n_coverage_primtrim.depth
-    String  samtools_version_stats = stats_n_coverage.samtools_version
+    File    consensus_stats            = stats_n_coverage.stats
+    File    cov_hist                   = stats_n_coverage.cov_hist
+    File    cov_stats                  = stats_n_coverage.cov_stats
+    File    consensus_flagstat         = stats_n_coverage.flagstat
+    Float   meanbaseq_trim             = stats_n_coverage_primtrim.meanbaseq
+    Float   meanmapq_trim              = stats_n_coverage_primtrim.meanmapq
+    Float   depth_trim                 = stats_n_coverage_primtrim.depth
+    String  statsNcov_samtools_version = stats_n_coverage.version
 
-    String  pangolin_lineage       = sc2_variantID.pangolin_lineage
-    String  pangolin_probability   = sc2_variantID.pangolin_probability
-    File    pango_lineage_report   = sc2_variantID.pango_lineage_report
-    String  pangolin_version       = sc2_variantID.pangolin_version
-    String  pangoLEARN_version     = sc2_variantID.pangoLEARN_version
+    String  pangolin_lineage       = pangolin3.pangolin_lineage
+    String  pangolin_conflicts     = pangolin3.pangolin_conflicts
+    String  pangolin_version       = pangolin3.version
+    String  pangolin_usher_version = pangolin3.pangolin_usher_version
+    File    pango_lineage_report   = pangolin3.pango_lineage_report
 
-    File    nextclade_json         = sc2_variantID.nextclade_json
-    File    auspice_json           = sc2_variantID.auspice_json
-    File    nextclade_tsv          = sc2_variantID.nextclade_tsv
-    String  nextclade_clade        = sc2_variantID.nextclade_clade
-    String  nextclade_aa_subs      = sc2_variantID.nextclade_aa_subs
-    String  nextclade_aa_dels      = sc2_variantID.nextclade_aa_dels
-    String  nextclade_version      = sc2_variantID.nextclade_version
+    File    nextclade_json       = nextclade_one_sample.nextclade_json
+    File    auspice_json         = nextclade_one_sample.auspice_json
+    File    nextclade_tsv        = nextclade_one_sample.nextclade_tsv
+    String  nextclade_clade      = nextclade_one_sample.nextclade_clade
+    String  nextclade_aa_subs    = nextclade_one_sample.nextclade_aa_subs
+    String  nextclade_aa_dels    = nextclade_one_sample.nextclade_aa_dels
+    String  nextclade_version    = nextclade_one_sample.version
 
-    File    vadr_alerts_list       = vadr.alerts_list
-    Int     vadr_num_alerts        = vadr.num_alerts
+    File?   vadr_alerts_list     = vadr.alerts_list
+    String  vadr_num_alerts      = vadr.num_alerts
+
+    File    audit_file           = audit_trail.audit_file
   }
 }
