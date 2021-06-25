@@ -122,7 +122,7 @@ workflow viral_pipeline_local {
     Array[File]  pangolin         = viral_refbased_assembly.pango_lineage_report
     Array[File]  nextclade        = viral_refbased_assembly.nextclade_tsv
     File         merged_metrics   = merge_metrics.run_results
-    Array[File?] vadr             = viral_refbased_assembly.vadr_alerts_list
+    Array[File?] vadr             = select_al(viral_refbased_assembly.vadr_alerts_list)
     Array[File]  audit_files      = viral_refbased_assembly.audit_file
     Array[File?] submission_files = flatten([SC2_submission_files.read1_submission, SC2_submission_files.read2_submission, select_all(SC2_submission_files.deID_assembly), select_all(SC2_submission_files.genbank_assembly), select_all(SC2_submission_files.genbank_metadata), select_all(SC2_submission_files.gisaid_assembly), select_all(SC2_submission_files.gisaid_metadata)])
     Array[File]  submission_docs  = [batch_fasta_repo_submission.GenBank_upload_meta, batch_fasta_repo_submission.GenBank_upload_fasta, batch_fasta_repo_submission.GISIAD_upload_meta, batch_fasta_repo_submission.GISAID_upload_fasta]
