@@ -275,7 +275,7 @@ task compile2 {
     assembly_header=$(grep -e ">" $assembly | sed 's/\s.*$//' | sed 's/>//g' )
     echo $assembly_header
     meta=${meta_array[$index]}
-    samplename=${echo $assembly_header}
+    samplename=$assembly_header
     vadr=${vadr_array[$index]}
 
     # remove samples from array if vadr_num exceedes threshold
