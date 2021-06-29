@@ -804,31 +804,31 @@ task vadr {
 
   if [ ~{assembly_length_unambiguous} -gt ~{skip_length} ]; then 
 
-      # remove terminal ambiguous nucleotides
-      /opt/vadr/vadr/miniscripts/fasta-trim-terminal-ambigs.pl \
-        "~{genome_fasta}" \
-        --minlen ~{minlen} \
-        --maxlen ~{maxlen} \
-        > "~{out_base}_trimmed.fasta"
+    # remove terminal ambiguous nucleotides
+    /opt/vadr/vadr/miniscripts/fasta-trim-terminal-ambigs.pl \
+      "~{genome_fasta}" \
+      --minlen ~{minlen} \
+      --maxlen ~{maxlen} \
+      > "~{out_base}_trimmed.fasta"
 
-      # run VADR
-      v-annotate.pl \
-        ~{vadr_opts} \
-        "~{out_base}_trimmed.fasta" \
-        "~{out_base}"
+    # run VADR
+    v-annotate.pl \
+      ~{vadr_opts} \
+      "~{out_base}_trimmed.fasta" \
+      "~{out_base}"
 
 
-      # package everything for output
-      tar -C "~{out_base}" -czvf "~{out_base}.vadr.tar.gz" .
+    # package everything for output
+    tar -C "~{out_base}" -czvf "~{out_base}.vadr.tar.gz" .
 
-      # prep alerts into a tsv file for parsing
-      cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
-      cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
-      
-    else
-      echo "VADR skipped due to poor assembly; assembly length (unambiguous) = ~{assembly_length_unambiguous}" > NUM_ALERTS
+    # prep alerts into a tsv file for parsing
+    cat "~{out_base}/~{out_base}.vadr.alt.list" | cut -f 2 | tail -n +2 > "~{out_base}.vadr.alerts.tsv"
+    cat "~{out_base}.vadr.alerts.tsv" | wc -l > NUM_ALERTS
+    
+  else
+    echo "VADR skipped due to poor assembly; assembly length (unambiguous) = ~{assembly_length_unambiguous}" > NUM_ALERTS
 
-    fi
+  fi
 
   >>>
   output {
