@@ -18,7 +18,7 @@ workflows:
  - name: sc2_batch_submission
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_sc2_batch_submission.wdl
- - name: terr_data_pull
+ - name: terra_data_pull
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_terra_data_pull.wdl
 
