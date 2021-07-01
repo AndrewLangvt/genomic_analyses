@@ -7,8 +7,12 @@ task zip {
   }
 
   command <<<
+    file_array=(~{sep=' ' files})
     mkdir ziped_files
-    cp ~{sep=" " files} ./zipped_files
+    for index in ${!file_array[@]}; do
+      file=${file_array[$index]}
+      echo ${file}
+      cp ${file} ./zipped_files
     ls 
     ls ./zipped_files
     zip -r $(date +%Y-%m-%d)_zipped_files.zip ./zipped_files
