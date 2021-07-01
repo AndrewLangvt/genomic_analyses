@@ -7,11 +7,9 @@ task zip {
   }
 
   command <<<
-
-    echo $(date)_zipped_files.zip | tee OUTFILE
     mkdir ziped_files
     cp ~{sep=" " files} ./zipped_files
-    zip -r $(date)_zipped_files.zip ./zipped_files
+    zip -r $(date +%Y-%m-%d)_zipped_files.zip ./zipped_files
   >>>
   output {
     File    zipped_files = glob("*.zip")
