@@ -6,8 +6,9 @@ task zip {
     Array[File]   files
   }
 
-  command {
+  command <<<
     file_array=(~{sep=' ' files})
+    echo $(file_array)
     mkdir ziped_files
     for index in ${!file_array[@]}; do
       file=${file_array[$index]}
@@ -16,7 +17,7 @@ task zip {
     ls 
     ls ./zipped_files
     zip -r $(date +%Y-%m-%d)_zipped_files.zip ./zipped_files
-  }
+  >>>
   output {
     File    zipped_files = glob("*.zip")
   }
