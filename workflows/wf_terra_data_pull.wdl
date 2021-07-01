@@ -9,6 +9,8 @@ task zip {
   command <<<
     mkdir ziped_files
     cp ~{sep=" " files} ./zipped_files
+    ls 
+    ls ./zipped_files
     zip -r $(date +%Y-%m-%d)_zipped_files.zip ./zipped_files
   >>>
   output {
