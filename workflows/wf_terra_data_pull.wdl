@@ -7,9 +7,12 @@ task zip {
   }
 
   command <<<
-    echo ~{sep=' ' files}
-    # file_array=(~{sep=' ' files})
-    # echo $(file_array)
+    file_array=(~{sep=' ' files})
+    echo $(file_array)
+
+    for file in ${!file_array[@]}; do
+      echo ${file_array[$file]}
+    done    
     # mkdir ziped_files
     # for file in $file_array;do
     #   echo $file
