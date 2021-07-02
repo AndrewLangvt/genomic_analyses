@@ -10,12 +10,12 @@ task zip {
     file_array=(~{sep=' ' files})
     echo $(file_array)
     mkdir ziped_files
-    for index in $file_array;do
-      echo ${file}
-      cp ${file} ./zipped_files
+    for file in $file_array;do
+      echo $file
+      cp $file ./zipped_files
     ls 
     ls ./zipped_files
-    zip -r $(date +%Y-%m-%d)_zipped_files.zip ./zipped_files
+    zip -r zipped_files.zip ./zipped_files
   >>>
   output {
     File    zipped_files = glob("*.zip")
