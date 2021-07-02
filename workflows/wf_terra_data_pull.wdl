@@ -8,23 +8,15 @@ task zip {
 
   command <<<
     file_array=(~{sep=' ' files})
-    echo $(file_array)
-    echo ~{sep=',' files}
-
-    for file in ${!file_array[@]}; do
-      echo ${file_array[$file]}
+    mkdir ziped_files
+    for file in ${file_array[*]}; do
+      cp $file ./zipped_files
     done    
-    # mkdir ziped_files
-    # for file in $file_array;do
-    #   echo $file
-    #   cp $file ./zipped_files
-    # ls 
-    # ls ./zipped_files
-    # zip -r zipped_files.zip ./zipped_files
-    touch test.zip
+    ls ./zipped_files
+    zip -r zipped_files.zip ./zipped_files
   >>>
   output {
-    File    zipped_files = "test.zip"
+    File    zipped_files = "zipped_files.zip"
   }
 
   runtime {
