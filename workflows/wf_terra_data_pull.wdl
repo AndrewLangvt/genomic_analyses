@@ -9,6 +9,7 @@ task zip {
   command <<<
     file_array=(~{sep=' ' files})
     echo $(file_array)
+    echo ~{files}
 
     for file in ${!file_array[@]}; do
       echo ${file_array[$file]}
