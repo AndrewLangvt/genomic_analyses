@@ -24,7 +24,7 @@ task zip {
     touch test.zip
   >>>
   output {
-    File    zipped_files = select_first(glob("*.zip"))
+    File    zipped_files = "test.zip"
   }
 
   runtime {
