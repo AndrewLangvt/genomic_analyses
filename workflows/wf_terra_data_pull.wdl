@@ -22,7 +22,7 @@ task zip {
   }
 
   runtime {
-      docker:       "quay.io/broadinstitute/viral-baseimage@sha256:340c0a673e03284212f539881d8e0fb5146b83878cbf94e4631e8393d4bc6753"
+      docker:       "staphb/abricate:0.8.7"
       memory:       "1 GB"
       cpu:          1
       disks:        "local-disk 100 SSD"
