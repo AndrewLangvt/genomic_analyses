@@ -6,15 +6,14 @@ task zip {
     Array[File]   files
   }
 
-  command {
+  command <<<
     mkdir zipped_files
-    file_array=(~{sep=' ' files})
-    for file in ${file_array[*]}; do
+    for file in ~{sep=' ' files}; do
       cp $file zipped_files
     done    
     ls zipped_files
     zip -r zipped_files.zip zipped_files
-  >
+  >>>
   output {
     File    zipped_files = "zipped_files.zip"
   }
