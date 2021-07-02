@@ -10,8 +10,7 @@ task zip {
     file_array=(~{sep=' ' files})
     echo $(file_array)
     mkdir ziped_files
-    for index in ${!file_array[@]}; do
-      file=${file_array[$index]}
+    for index in $file_array;do
       echo ${file}
       cp ${file} ./zipped_files
     ls 
