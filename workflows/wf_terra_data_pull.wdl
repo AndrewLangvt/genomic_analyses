@@ -7,15 +7,17 @@ task zip {
   }
 
   command <<<
-    file_array=(~{sep=' ' files})
-    echo $(file_array)
-    mkdir ziped_files
-    for file in $file_array;do
-      echo $file
-      cp $file ./zipped_files
-    ls 
-    ls ./zipped_files
-    zip -r zipped_files.zip ./zipped_files
+    echo ~{sep=' ' files}
+    # file_array=(~{sep=' ' files})
+    # echo $(file_array)
+    # mkdir ziped_files
+    # for file in $file_array;do
+    #   echo $file
+    #   cp $file ./zipped_files
+    # ls 
+    # ls ./zipped_files
+    # zip -r zipped_files.zip ./zipped_files
+    touch test.zip
   >>>
   output {
     File    zipped_files = glob("*.zip")
