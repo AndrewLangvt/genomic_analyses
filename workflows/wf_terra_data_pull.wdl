@@ -33,11 +33,11 @@ task zip {
 
 workflow terra_data_pull {
   input {
-    Array[File]          flatened_files = flatten(files)
+    Array[File]   flatened_files = flatten(files)
   }
   call zip {
     input:
-      files = first_fileset
+      files = flatened_files
   }
   output {
     File    zipped_files  = zip.zipped_files
