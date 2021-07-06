@@ -4,7 +4,7 @@ task zip {
 
   input {
     String        setname = "todaysDATE"
-    Array[File]   file_array
+    Array[File]   files
   }
 
   command <<<
@@ -33,12 +33,12 @@ task zip {
 
 workflow terra_data_pull {
   input {
-    Array[Array[File]]  files
-    Array[File]         file_array = flatten(files)
+    Array[Array[File]]  file_arrays
+    Array[File]         file_array = flatten(file_arrays)
   }
   call zip {
     input:
-      files = flatened_files
+      files = file_array
   }
   output {
     File    zipped_files  = zip.zipped_files
