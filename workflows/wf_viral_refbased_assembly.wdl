@@ -207,7 +207,7 @@ workflow viral_refbased_assembly {
     String  fastqc_version     = fastqc_raw.version
    
     Float   kraken_human       = kraken2.percent_human
-    Float   kraken_sc2         = kraken2.percent_sc2
+    Float   kraken_sc2         = kraken2.percent_virus
     String  kraken_version     = kraken2.version
     File    kraken_report      = kraken2.kraken_report
 
