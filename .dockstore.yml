@@ -21,5 +21,8 @@ workflows:
  - name: terra_data_pull
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_terra_data_pull.wdl
+ - name: WNV_refbased_assembly
+   subclass: WDL
+   primaryDescriptorPath: /workflows/wf_WNV_refbased_assembly.wdl
 
 
