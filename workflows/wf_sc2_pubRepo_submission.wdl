@@ -4,7 +4,6 @@ import "../tasks/task_pub_repo_submission.wdl" as submission
 
 workflow SC2_submission_files {
   input {
-    String  samplename
     String	submission_id
     String 	collection_date
     File    sequence
@@ -112,6 +111,3 @@ workflow SC2_submission_files {
     File?     gisaid_metadata    = gisaid.gisaid_metadata
   }
 }
-
-
-#coverage >= coverage_gisaid && number_N <= number_N_gisaid && 

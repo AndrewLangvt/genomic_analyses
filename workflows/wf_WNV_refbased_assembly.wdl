@@ -11,7 +11,7 @@ import "../tasks/task_qa.wdl" as qa
 
 workflow viral_refbased_assembly {
   meta {
-    description: "Reference-based consensus calling for viral amplicon sequencing data"
+    description: "Reference-based consensus calling for West Nile Virus amplicon sequencing data"
   }
 
   input {
@@ -80,6 +80,7 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       read1      = seqyclean.read1_clean, 
       read2      = seqyclean.read2_clean,
+      virus_name = "West Nile Virus"
       docker     = kraken_docker
   }
   call align.bwa {
@@ -122,18 +123,7 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       bamfile    = primer_trim.trim_sorted_bam,
       docker     = samtools_docker
-  } 
-  call taxon_ID.pangolin3 {
-    input:
-      samplename = samplename,
-      fasta      = consensus.consensus_seq,
-      docker     = pangolin_docker
   }
-  call taxon_ID.nextclade_one_sample {
-    input:
-      genome_fasta = consensus.consensus_seq,
-      docker       = nextclade_docker
-  }  
   call ncbi.vadr {
     input:
       genome_fasta = consensus.consensus_seq,
@@ -179,11 +169,11 @@ workflow viral_refbased_assembly {
       samtools_container         = stats_n_coverage.container,
       statsNcov_samtools_version = stats_n_coverage.version,
 
-      pangolin_container  = pangolin3.container,
-      pangolin_version    = pangolin3.version,
-      pangoLEARN_version  = pangolin3.pangolin_usher_version,
-      nextclade_container = nextclade_one_sample.container,
-      nextclade_version   = nextclade_one_sample.version,
+      pangolin_container  = analyst,
+      pangolin_version    = analyst,
+      pangoLEARN_version  = analyst,
+      nextclade_container = analyst,
+      nextclade_version   = analyst,
       vadr_container      = vadr.container,
       utiltiy_container   = utiltiy_docker
   }
@@ -207,7 +197,7 @@ workflow viral_refbased_assembly {
     String  fastqc_version     = fastqc_raw.version
    
     Float   kraken_human       = kraken2.percent_human
-    Float   kraken_sc2         = kraken2.percent_sc2
+    Float   kraken_wnv         = kraken2.percent_virus
     String  kraken_version     = kraken2.version
     File    kraken_report      = kraken2.kraken_report
 
@@ -243,20 +233,6 @@ workflow viral_refbased_assembly {
     Float   meanmapq_trim              = stats_n_coverage_primtrim.meanmapq
     Float   depth_trim                 = stats_n_coverage_primtrim.depth
     String  statsNcov_samtools_version = stats_n_coverage.version
-
-    String  pangolin_lineage       = pangolin3.pangolin_lineage
-    String  pangolin_conflicts     = pangolin3.pangolin_conflicts
-    String  pangolin_version       = pangolin3.version
-    String  pangolin_usher_version = pangolin3.pangolin_usher_version
-    File    pango_lineage_report   = pangolin3.pango_lineage_report
-
-    File    nextclade_json       = nextclade_one_sample.nextclade_json
-    File    auspice_json         = nextclade_one_sample.auspice_json
-    File    nextclade_tsv        = nextclade_one_sample.nextclade_tsv
-    String  nextclade_clade      = nextclade_one_sample.nextclade_clade
-    String  nextclade_aa_subs    = nextclade_one_sample.nextclade_aa_subs
-    String  nextclade_aa_dels    = nextclade_one_sample.nextclade_aa_dels
-    String  nextclade_version    = nextclade_one_sample.version
 
     File?   vadr_alerts_list     = vadr.alerts_list
     String  vadr_num_alerts      = vadr.num_alerts

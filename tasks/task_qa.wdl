@@ -32,11 +32,13 @@ task audit_trail {
     String    analyst
     String    workflow_version
     String    workflow_date
+
+    String    specimen_id
+    String    lineage
+
     String    reference_genome_fn
     String    reference_gff_fn
     String    primer_BEDfile_fn
-
-    String    specimen_id
 
     String    fastqc_container
     String    fastqc_version
@@ -82,6 +84,7 @@ task audit_trail {
     with open('~{specimen_id}_audit.json', 'w', encoding='utf-8') as auditf:
       samp_trail = {
         "specimen_id": "~{specimen_id}",
+        "lineage": "~{lineage}",
         "analyst": "~{analyst}",
         "workflow_version": "~{workflow_version}",
         "workflow_date": "~{workflow_date}",

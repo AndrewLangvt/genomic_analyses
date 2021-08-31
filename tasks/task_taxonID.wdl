@@ -5,6 +5,7 @@ task kraken2 {
     File        read1
     File?       read2
     String      samplename
+    String      virus_name = "Severe acute respiratory syndrome coronavirus 2"
     String      kraken2_db = "/kraken2-db"
     String      docker = "staphb/kraken2:2.0.8-beta_hv"
     Int         cpus = 8
@@ -30,12 +31,12 @@ task kraken2 {
 
     percentage_human=$(grep "Homo sapiens" ~{samplename}_kraken2_report.txt | cut -f 1)
      # | tee PERCENT_HUMAN
-    percentage_sc2=$(grep "Severe acute respiratory syndrome coronavirus 2" ~{samplename}_kraken2_report.txt | cut -f1 )
+    percentage_virus=$(grep "~{virus_name}" ~{samplename}_kraken2_report.txt | cut -f1 )
      # | tee PERCENT_COV
     if [ -z "$percentage_human" ] ; then percentage_human="0" ; fi
-    if [ -z "$percentage_sc2" ] ; then percentage_sc2="0" ; fi
+    if [ -z "$percentage_sc2" ] ; then percentage_virus="0" ; fi
     echo $percentage_human | tee PERCENT_HUMAN
-    echo $percentage_sc2 | tee PERCENT_SC2
+    echo $percentage_virus | tee PERCENT_VIRUS
   >>>
 
   output {
@@ -44,7 +45,7 @@ task kraken2 {
     String     container     = docker
     File       kraken_report = "~{samplename}_kraken2_report.txt"
     Float      percent_human = read_string("PERCENT_HUMAN")
-    Float      percent_sc2   = read_string("PERCENT_SC2")
+    Float      percent_virus = read_string("PERCENT_VIRUS")
   }
 
   runtime {

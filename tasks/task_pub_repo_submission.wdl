@@ -233,7 +233,6 @@ task compile2 {
   input {
     Array[File] single_submission_fasta
     Array[File] single_submission_meta
-#    Array[String] samplename
     Array[Int]  vadr_num_alerts
     Int         vadr_threshold=0
     String       repository
@@ -286,105 +285,6 @@ task compile2 {
       passed_meta=( "${passed_meta[@]}" "$meta")
       echo "$assembly added to batch:  vadr_num_alerts (${vadr}) within vadr_threshold (~{vadr_threshold})"
       echo -e "$assembly_header\t$vadr" >> ~{repository}_batched_samples.tsv
-    fi
-
-  done
-
-  count=0
-  for i in ${passed_meta[*]}; do
-      # grab header from first sample in meta_array
-      while [ "$count" -lt 1 ]; do
-        head -n -1 $i > ~{repository}_upload_meta.csv
-        count+=1
-      done
-      #populate csv with each samples metadata
-      sed 's+",\".*\.gisaid\.fa+\",\"GISAID_upload.fasta+g' $i | tail -n1  >> ~{repository}_upload_meta.csv
-  done
-
-  cat ${passed_assemblies[*]} > ~{repository}_upload.fasta
-
-  >>>
-
-  output {
-    File?    upload_meta   = "${repository}_upload_meta.csv"
-    File?    upload_fasta  = "${repository}_upload.fasta"
-    File    batched_samples = "${repository}_batched_samples.tsv"
-    File    excluded_samples = "${repository}_excluded_samples.tsv"
-
-  }
-
-  runtime {
-      docker:       docker_image
-      memory:       "~{mem_size_gb} GB"
-      cpu:          CPUs
-      disks:        "local-disk ~{disk_size} SSD"
-      preemptible:  preemptible_tries
-  }
-}
-
-
-task mercury_compile {
-
-  input {
-    Array[File] single_submission_fasta
-    Array[File] single_submission_meta
-    Array[String] samplename
-    Array[String]  vadr_num_alerts
-    Int         vadr_threshold=0
-    String       repository
-    String    docker_image = "theiagen/utility:1.0"
-    Int       mem_size_gb = 1
-    Int       CPUs = 1
-    Int       disk_size = 25
-    Int       preemptible_tries = 0
-  }
-
-  command <<<
-
-  assembly_array=(~{sep=' ' single_submission_fasta})
-  assembly_array_len=$(echo "${#assembly_array[@]}")
-  meta_array=(~{sep=' ' single_submission_meta})
-  meta_array_len=$(echo "${#meta_array[@]}")
-  vadr_array=(~{sep=' ' vadr_num_alerts})
-  vadr_array_len=$(echo "${#vadr_array[@]}")
-  samplename_array=(~{sep=' ' samplename})
-  vadr_array_len=$(echo "${#vadr_array[@]}")
-  passed_assemblies=""
-  passed_meta=""
-
-  #Create files to capture batched and excluded samples
-  echo -e "GISAID Virus Name\tSamplename\tNumber of Vadr Alerts" > ~{repository}_batched_samples.tsv
-  echo -e "GISAID Virus Name\tSamplename\tNumber of Vadr Alerts" > ~{repository}_excluded_samples.tsv
-
-  # Ensure assembly, meta, and vadr arrays are of equal length
-  if [ "$assembly_array_len" -ne "$meta_array_len" ]; then
-    echo "Assembly array (length: $assembly_array_len) and metadata array (length: $meta_array_len) are of unequal length." >&2
-    exit 1
-  elif [ "$assembly_array_len" -ne "$vadr_array_len" ]; then
-    echo "Assembly array (length: $assembly_array_len) and vadr array (length: $vadr_array_len) are of unequal length." >&2
-    exit 1
-  fi
-
-  # remove samples that excede vadr threshold
-  for index in ${!assembly_array[@]}; do
-    assembly=${assembly_array[$index]}
-    assembly_header=$(grep -e ">" $assembly | sed 's/\s.*$//' | sed 's/>//g' )
-    echo $assembly_header
-    meta=${meta_array[$index]}
-    samplename=${samplename_array[$index]}
-    vadr=${vadr_array[$index]}
-
-    # remove samples from array if vadr_num exceedes threshold
-    if [ "${vadr}" -gt "~{vadr_threshold}" ]; then
-      echo "$assembly removed: vadr_num_alerts (${vadr}) exceeds vadr_threshold (~{vadr_threshold})"
-      echo -e "$assembly_header\t$samplename\t$vadr" >> ~{repository}_excluded_samples.tsv
-    elif [ "${vadr}" == "VADR skipped"* ]; then
-      echo "VADR was not run on $assembly due to poor assembly length"
-    else
-      passed_assemblies=( "${passed_assemblies[@]}" "$assembly")
-      passed_meta=( "${passed_meta[@]}" "$meta")
-      echo "$assembly added to batch:  vadr_num_alerts (${vadr}) within vadr_threshold (~{vadr_threshold})"
-      echo -e "$assembly_header\t$samplename\t$vadr" >> ~{repository}_batched_samples.tsv
     fi
 
   done

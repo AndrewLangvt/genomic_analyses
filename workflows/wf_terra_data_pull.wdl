@@ -8,17 +8,16 @@ task zip {
   }
 
   command <<<
-    mkdir zipped_files
+    mkdir ~{setname}_zipped_files
     for file in ~{sep=' ' files}; do
-      cp $file zipped_files
+      cp $file ~{setname}zipped_files
       echo $file 
-      ls zipped_files
     done    
-    ls zipped_files
-    zip -r zipped_files.zip zipped_files
+    ls ~{setname}_zipped_files
+    zip -r ~{setname}_zipped_files.zip ~{setname}_zipped_files
   >>>
   output {
-    File    zipped_files = "zipped_files.zip"
+    File    zipped_files = "~{setname}_zipped_files.zip"
   }
 
   runtime {
@@ -33,7 +32,7 @@ task zip {
 
 workflow terra_data_pull {
   input {
-    Array[Array[File]]  file_arrays
+    Array[File]  file_array1
   }
   Array[File]         file_array = flatten(file_arrays)
   call zip {

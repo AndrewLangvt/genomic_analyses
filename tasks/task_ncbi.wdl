@@ -827,7 +827,6 @@ task vadr {
     
   else
     echo "VADR skipped due to poor assembly; assembly length (unambiguous) = ~{assembly_length_unambiguous}" > NUM_ALERTS
-
   fi
 
   >>>

@@ -4,6 +4,7 @@ import "wf_viral_refbased_assembly.wdl" as assembly
 import "../tasks/task_sample_metrics.wdl" as summary
 import "wf_sc2_pubRepo_submission.wdl" as submission
 import "wf_sc2_batch_submission.wdl" as submission_batch
+#import "wf_mercury_batch.wdl" as submission_batch
 
 struct Samplestruct {
     String    samplename
@@ -74,43 +75,55 @@ workflow viral_pipeline_local {
         vadr_num_alerts             = viral_refbased_assembly.vadr_num_alerts
     }
 
-    call submission.SC2_submission_files {
-      input:
-        samplename      = sample.samplename,
-        submission_id   = sample.deidentified,
-        collection_date = sample.collection,
-        specimen_type   = sample.iso_source,
-        iso_state       = sample.iso_state,
-        iso_country     = sample.iso_country,
-        iso_continent   = sample.iso_continent,
-        sequence        = viral_refbased_assembly.consensus_seq,
-        read1           = viral_refbased_assembly.read1_dehosted,
-        read2           = viral_refbased_assembly.read2_dehosted,
-        bwa_version     = viral_refbased_assembly.bwa_version,
-        ivar_version    = viral_refbased_assembly.ivar_version_consensus,
-        gisaid_submitter= gisaid_submitter,
-        seq_platform    = seq_platform,
-        originating_lab = originating_lab,
-        origLab_address = origLab_address,
-        BioProject      = BioProject,
-        submitting_lab  = submitting_lab,
-        subLab_address  = subLab_address,
-        Authors         = Authors     
+    if(defined(sample.deidentified)) {
+      call submission.SC2_submission_files {
+        input:
+          submission_id   = sample.deidentified,
+          collection_date = sample.collection,
+          specimen_type   = sample.iso_source,
+          iso_state       = sample.iso_state,
+          iso_country     = sample.iso_country,
+          iso_continent   = sample.iso_continent,
+          sequence        = viral_refbased_assembly.consensus_seq,
+          read1           = viral_refbased_assembly.read1_dehosted,
+          read2           = viral_refbased_assembly.read2_dehosted,
+          bwa_version     = viral_refbased_assembly.bwa_version,
+          ivar_version    = viral_refbased_assembly.ivar_version_consensus,
+          gisaid_submitter= gisaid_submitter,
+          seq_platform    = seq_platform,
+          originating_lab = originating_lab,
+          origLab_address = origLab_address,
+          BioProject      = BioProject,
+          submitting_lab  = submitting_lab,
+          subLab_address  = subLab_address,
+          Authors         = Authors     
+        }
+      }
     }
-  }
 
   call summary.merge_metrics {
     input:
       all_metrics = sample_metrics.single_metrics
   }
 
-  call submission_batch.batch_fasta_repo_submission { 
-    input:
-      genbank_single_submission_fasta = select_all(SC2_submission_files.genbank_assembly),
-      genbank_single_submission_meta = select_all(SC2_submission_files.genbank_metadata),
-      gisaid_single_submission_fasta = select_all(SC2_submission_files.gisaid_assembly),
-      gisaid_single_submission_meta = select_all(SC2_submission_files.gisaid_metadata)
-  }
+  # call submission_batch.batch_fasta_repo_submission { 
+  #   input:
+  #     genbank_single_submission_fasta = select_all(SC2_submission_files.genbank_assembly),
+  #     genbank_single_submission_meta  = select_all(SC2_submission_files.genbank_metadata),
+  #     gisaid_single_submission_fasta  = select_all(SC2_submission_files.gisaid_assembly),
+  #     gisaid_single_submission_meta   = select_all(SC2_submission_files.gisaid_metadata),
+  #     vadr_num_alerts = select_all(viral_refbased_assembly.vadr_num_alerts)
+  # }
+
+  # call submission_batch.batch_fasta_repo_submission { 
+  #   input:
+  #     genbank_single_submission_fasta = select_all(SC2_submission_files.genbank_assembly),
+  #     genbank_single_submission_meta  = select_all(SC2_submission_files.genbank_metadata),
+  #     gisaid_single_submission_fasta  = select_all(SC2_submission_files.gisaid_assembly),
+  #     gisaid_single_submission_meta   = select_all(SC2_submission_files.gisaid_metadata),
+  #     samplename = SC2_submission_files.sample,
+  #     vadr_num_alerts = viral_refbased_assembly.vadr_num_alerts
+  # }
 
   output {
     Array[File]  trimmed_reads    = flatten([viral_refbased_assembly.read1_clean, viral_refbased_assembly.read2_clean])
@@ -122,9 +135,9 @@ workflow viral_pipeline_local {
     Array[File]  pangolin         = viral_refbased_assembly.pango_lineage_report
     Array[File]  nextclade        = viral_refbased_assembly.nextclade_tsv
     File         merged_metrics   = merge_metrics.run_results
-    Array[File?] vadr             = select_al(viral_refbased_assembly.vadr_alerts_list)
+    Array[File?] vadr             = select_all(viral_refbased_assembly.vadr_alerts_list)
     Array[File]  audit_files      = viral_refbased_assembly.audit_file
     Array[File?] submission_files = flatten([SC2_submission_files.read1_submission, SC2_submission_files.read2_submission, select_all(SC2_submission_files.deID_assembly), select_all(SC2_submission_files.genbank_assembly), select_all(SC2_submission_files.genbank_metadata), select_all(SC2_submission_files.gisaid_assembly), select_all(SC2_submission_files.gisaid_metadata)])
-    Array[File]  submission_docs  = [batch_fasta_repo_submission.GenBank_upload_meta, batch_fasta_repo_submission.GenBank_upload_fasta, batch_fasta_repo_submission.GISIAD_upload_meta, batch_fasta_repo_submission.GISAID_upload_fasta]
+    # Array[File]  submission_docs  = select_all([batch_fasta_repo_submission.GenBank_upload_meta, batch_fasta_repo_submission.GenBank_upload_fasta, batch_fasta_repo_submission.GISAID_upload_meta, batch_fasta_repo_submission.GISAID_upload_fasta])
   }
 }

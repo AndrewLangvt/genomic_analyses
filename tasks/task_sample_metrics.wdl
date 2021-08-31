@@ -60,6 +60,7 @@ task sample_metrics {
 
   output {
     String  single_metrics = read_string(stdout())
+    String  samp_name      = samplename
   }
 
   runtime {
