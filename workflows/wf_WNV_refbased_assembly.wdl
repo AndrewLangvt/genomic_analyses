@@ -80,7 +80,7 @@ workflow viral_refbased_assembly {
       samplename = samplename,
       read1      = seqyclean.read1_clean, 
       read2      = seqyclean.read2_clean,
-      virus_name = "West Nile Virus"
+      virus_name = "West Nile Virus",
       docker     = kraken_docker
   }
   call align.bwa {
