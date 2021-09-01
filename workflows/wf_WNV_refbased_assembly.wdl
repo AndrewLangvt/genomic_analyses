@@ -137,7 +137,7 @@ workflow viral_refbased_assembly {
       workflow_date       = version_capture.date,
 
       specimen_id = samplename,
-      lineage     = pangolin3.pangolin_lineage,
+      lineage     = samplename,
 
       reference_genome_fn = reference_genome_fn,
       reference_gff_fn    = reference_gff_fn,
