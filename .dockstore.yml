@@ -27,4 +27,3 @@ workflows:
  - name: sphl_lims_prep
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_sphl_lims_prep.wdl
-
