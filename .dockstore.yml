@@ -24,5 +24,7 @@ workflows:
  - name: WNV_refbased_assembly
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_WNV_refbased_assembly.wdl
-
+ - name: sphl_lims_prep
+   subclass: WDL
+   primaryDescriptorPath: /workflows/wf_sphl_lims_prep.wdl
 
