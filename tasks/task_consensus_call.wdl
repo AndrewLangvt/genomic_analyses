@@ -169,9 +169,6 @@ task consensus {
     if [ -z "$num_ACTG" ] ; then num_ACTG="0" ; fi
     echo $num_ACTG | tee NUM_ACTG
 
-    # calculate percent coverage (Wu Han-1 genome length: 29903bp)
-    python3 -c "print ( round( ($num_ACTG / 29903 ) * 100, 2 ) )" | tee PERCENT_REF_COVERAGE
-
     num_degenerate=$( grep -v ">" ~{samplename}.consensus.fa | grep -o -E "B|D|E|F|H|I|J|K|L|M|O|P|Q|R|S|U|V|W|X|Y|Z" | wc -l )
     if [ -z "$num_degenerate" ] ; then num_degenerate="0" ; fi
     echo $num_degenerate | tee NUM_DEGENERATE
@@ -179,6 +176,9 @@ task consensus {
     num_total=$( grep -v ">" ~{samplename}.consensus.fa | grep -o -E '[A-Z]' | wc -l )
     if [ -z "$num_total" ] ; then num_total="0" ; fi
     echo $num_total | tee NUM_TOTAL
+
+    # calculate percent coverage of reference
+    python3 -c "print ( round( ($num_ACTG / $num_total ) * 100, 2 ) )" | tee PERCENT_REF_COVERAGE
 
     # clean up fasta header
     echo ">"~{samplename} > ~{samplename}.consensus.fasta
