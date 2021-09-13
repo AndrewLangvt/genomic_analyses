@@ -34,7 +34,7 @@ task kraken2 {
     percentage_virus=$(grep "~{virus_name}" ~{samplename}_kraken2_report.txt | cut -f1 )
      # | tee PERCENT_COV
     if [ -z "$percentage_human" ] ; then percentage_human="0" ; fi
-    if [ -z "$percentage_sc2" ] ; then percentage_virus="0" ; fi
+    if [ -z "$percentage_virus" ] ; then percentage_virus="0" ; fi
     echo $percentage_human | tee PERCENT_HUMAN
     echo $percentage_virus | tee PERCENT_VIRUS
     echo perc human is $percentage_human
