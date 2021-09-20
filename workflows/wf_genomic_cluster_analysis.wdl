@@ -12,7 +12,6 @@ workflow genomic_cluster_analysis {
   input {
     Array[File]   genomes
     String        cluster_name="Cluster_Analysis"
-    File          specimen_status
     File?         render_template
   }
 
@@ -35,7 +34,6 @@ workflow genomic_cluster_analysis {
       cluster_name    = cluster_name,
       snp_matrix      = snp_dists.snp_matrix,
       ml_tree         = iqtree.ml_tree,
-      specimen_status = specimen_status,
       render_template = render_template
   }
 

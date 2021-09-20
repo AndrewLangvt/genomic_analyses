@@ -6,7 +6,6 @@ task cluster_render {
     File      snp_matrix
     File      ml_tree
     String    cluster_name
-    File      specimen_status
     File?     render_template
   }
 
@@ -17,7 +16,6 @@ task cluster_render {
 
     cp ~{snp_matrix} snp_matrix.tsv
     cp ~{ml_tree} ml_tree.tree
-    cp ~{specimen_status} specimen_status.csv
 
     if [[ -f "~{render_template}" ]]; then cp ~{render_template} render_template.Rmd
     else wget -O render_template.Rmd https://raw.githubusercontent.com/AndrewLangvt/genomic_report/master/cluster_report_template.Rmd; fi
@@ -27,9 +25,6 @@ task cluster_render {
     tinytex::reinstall_tinytex()
     library(rmarkdown)
     library(tools)
-
-    status_table <- read.csv("specimen_status.csv")
-    colnames(status_table) <- c("Samplename", "Status")
 
     snp_mat <- read.table("snp_matrix.tsv", header = T, check.names = FALSE, sep = "\t", row.names = 1)
     nwk <- "ml_tree.tree"
