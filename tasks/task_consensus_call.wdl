@@ -177,8 +177,9 @@ task consensus {
     if [ -z "$num_total" ] ; then num_total="0" ; fi
     echo $num_total | tee NUM_TOTAL
 
+    reference_total=$( grep -v ">" ~{ref_genome} | grep -o -E '[A-Z]' | wc -l )
     # calculate percent coverage of reference
-    python3 -c "print ( round( ($num_ACTG / $num_total ) * 100, 2 ) )" | tee PERCENT_REF_COVERAGE
+    python3 -c "print ( round( ($num_ACTG / $reference_total ) * 100, 2 ) )" | tee PERCENT_REF_COVERAGE
 
     # clean up fasta header
     echo ">"~{samplename} > ~{samplename}.consensus.fasta
