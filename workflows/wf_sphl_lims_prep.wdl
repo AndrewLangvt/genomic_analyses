@@ -14,6 +14,7 @@ workflow sphl_lims_prep {
     String    analysis_method
     String    analysis_version
     String    batchid
+    Float     cov_threshold
     String    utiltiy_docker  = "quay.io/broadinstitute/viral-baseimage@sha256:340c0a673e03284212f539881d8e0fb5146b83878cbf94e4631e8393d4bc6753"
   }
   call lims_prep {
@@ -22,7 +23,8 @@ workflow sphl_lims_prep {
       percent_reference_coverage = percent_reference_coverage, 
       meanbaseq                  = meanbaseq, 
       meanmapq                   = meanmapq, 
-      pango_lineage              = pango_lineage, 
+      pango_lineage              = pango_lineage,
+      cov_threshold              = cov_threshold,
       docker                     = utiltiy_docker
   }  
   output {
@@ -45,15 +47,16 @@ task lims_prep {
     Float     meanbaseq
     Float     meanmapq
     String    pango_lineage
+    Float     cov_threshold
     String    docker
   }
   command <<<
     python3 <<CODE
-    if ~{percent_reference_coverage} >= 0.95 and ~{meanbaseq} >= 30 and ~{meanmapq} >= 30:
+    if ~{percent_reference_coverage} >= ~{cov_threshold} and ~{meanbaseq} >= 30 and ~{meanmapq} >= 30:
       with open("STATUS", 'wt') as thing: thing.write("PASS")
       with open("TOOL_LIN", 'wt') as thing: thing.write("~{pango_lineage}")
       with open("MAV_LIN", 'wt') as thing: thing.write("~{pango_lineage}")
-    elif ~{percent_reference_coverage} < 0.95 or ~{meanbaseq} < 30 or ~{meanmapq} < 30:
+    elif ~{percent_reference_coverage} < ~{cov_threshold} or ~{meanbaseq} < 30 or ~{meanmapq} < 30:
       with open("STATUS", 'wt') as thing: thing.write("FAIL")
       with open("TOOL_LIN", 'wt') as thing: thing.write("INVALID")
       with open("MAV_LIN", 'wt') as thing: thing.write("INVALID")
