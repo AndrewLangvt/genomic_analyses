@@ -109,7 +109,8 @@ task lims_file_gen {
     pango_version_array=['~{sep="','" pango_version}']
     pango_version_array_len=len(pango_version_array)
 
-    outfile = open('lims_file.csv', 'w')
+    import datetime
+    outfile = open(f'{datetime.datetime.now().strftime("%d-%M-%Y")}.lims_file.csv', 'w')
     if samplename_array_len == assembly_status_array_len == tool_lineage_array_len == lineage_maven_array_len == pango_version_array_len:
       outfile.write('sample_id,assembly_status,tool_lineage,lineage_to_maven,pango_version,organism,test\n')
       index = 0
@@ -129,7 +130,7 @@ task lims_file_gen {
     CODE
   >>>
   output {
-    File    lims_file = 'lims_file.csv'
+    File    lims_file = select_first[glob('*lims_file.csv')]
   }
   runtime {
     docker: docker
