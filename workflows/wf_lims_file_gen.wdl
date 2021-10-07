@@ -247,7 +247,7 @@ task run_results_file_gen {
     else: 
       print(f'Input arrays are of unequal length.')
       outfile.write(f'Input arrays are of unequal length.\n')
-      outfile.write(f'len(samplename_array):\t{samplename_array}'')
+      outfile.write(f'{len(samplename_array)}:\t{samplename_array}')
       for field in fields:
         outfile.write(f'{len(field)}:\t{field}\n')
     CODE
