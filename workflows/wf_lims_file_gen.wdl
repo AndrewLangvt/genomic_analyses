@@ -130,7 +130,7 @@ task lims_file_gen {
     CODE
   >>>
   output {
-    File    lims_file = select_first[glob('*lims_file.csv')]
+    File    lims_file = select_first(glob('*lims_file.csv'))
   }
   runtime {
     docker: docker
