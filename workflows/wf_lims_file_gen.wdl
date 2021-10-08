@@ -207,7 +207,7 @@ task run_results_file_gen {
     unequal = 0
     print(f'samplename_array : {len(samplename_array)}')
     for field in fields:
-      print(f'len({field}) : {field}')
+      print(f'{len(field)} : {field}')
       if len(field) != len(samplename_array):
         unequal += 1
 
