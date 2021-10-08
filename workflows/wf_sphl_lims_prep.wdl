@@ -13,7 +13,7 @@ workflow sphl_lims_prep {
     String    pangolin_version
     String    analysis_method
     String    analysis_version
-    String    batchid
+    String    batch_id
     Float     cov_threshold
     String    utiltiy_docker  = "quay.io/broadinstitute/viral-baseimage@sha256:340c0a673e03284212f539881d8e0fb5146b83878cbf94e4631e8393d4bc6753"
   }
@@ -36,7 +36,7 @@ workflow sphl_lims_prep {
     String    test             = "SARS-CoV-2 Sequencing"
     String    method           = analysis_method
     String    method_version   = analysis_version
-    String    batch_id         = batchid
+    String    batchid          = batch_id
   }
 }
 
