@@ -205,10 +205,13 @@ task run_results_file_gen {
 
     # count number of elements in each list. If not all equal, will not populate into table. 
     unequal = 0
+    print(f'samplename_array : {len(samplename_array)})
     for field in fields:
+      print(f'field : {len(field)})
       if len(field) != len(samplename_array):
         unequal += 1
 
+    print(f'Number unequal to samplename_array {unequal}')
     outfile = open('run_results.csv', 'w')
     if unequal == 0:
       outfile.write('sample_id,batch_id,seq_date,assembly_status,pangolin_lineage,pangolin_conflict,pangolin_version,nextclade_lineage,AA_substitutions,AA_deletions,fastqc_raw_reads_1,fastqc_raw_reads_2,fastqc_clean_reads_PE1,fastqc_clean_reads_PE2,mean_depth,percent_reference_coverage,%_human_reads,%_SARS-COV-2_reads,dehosted_%human,dehosted_%SC2,%_trimmed_primer_reads,num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim\n')
