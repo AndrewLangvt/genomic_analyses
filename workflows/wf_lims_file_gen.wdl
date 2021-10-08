@@ -205,7 +205,7 @@ task run_results_file_gen {
 
     # count number of elements in each list. If not all equal, will not populate into table. 
     unequal = 0
-    print(f'samplename_array : {len(samplename_array)})
+    print(f'samplename_array : {len(samplename_array)}'')
     for field in fields:
       print(f'field : {len(field)})
       if len(field) != len(samplename_array):
