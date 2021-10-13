@@ -8,10 +8,8 @@ workflow sphl_lims_file_gen {
     Array[String]    samplename
     Array[String]    batchid
     Array[String]    assembly_status
-    Array[Int]       fastqc_raw1
-    Array[Int]       fastqc_raw2
-    Array[Int]       fastqc_clean1
-    Array[Int]       fastqc_clean2
+    Array[Int]       fastqc_raw
+    Array[Int]       fastqc_clean
     Array[Float]     kraken_human
     Array[Float]     kraken_sc2
     Array[Float]     kraken_human_dehosted
@@ -54,10 +52,8 @@ workflow sphl_lims_file_gen {
       batchid                     = batchid,
       assembly_status             = assembly_status,
       pango_lineage               = pango_lineage,
-      fastqc_raw1                 = fastqc_raw1,
-      fastqc_raw2                 = fastqc_raw2,
-      fastqc_clean1               = fastqc_clean1,
-      fastqc_clean2               = fastqc_clean2,
+      fastqc_raw                  = fastqc_raw,
+      fastqc_clean                = fastqc_clean,
       kraken_human                = kraken_human,
       kraken_sc2                  = kraken_sc2,
       kraken_human_dehosted       = kraken_human_dehosted, 
@@ -110,7 +106,7 @@ task lims_file_gen {
     pango_version_array_len=len(pango_version_array)
 
     import datetime
-    outfile = open(f'{datetime.datetime.now().strftime("%d-%M-%Y")}.lims_file.csv', 'w')
+    outfile = open(f'{datetime.datetime.now().strftime("%Y-%m-%d")}.lims_file.csv', 'w')
     if samplename_array_len == assembly_status_array_len == tool_lineage_array_len == lineage_maven_array_len == pango_version_array_len:
       outfile.write('sample_id,assembly_status,tool_lineage,lineage_to_maven,pango_version,organism,test\n')
       index = 0
@@ -146,10 +142,8 @@ task run_results_file_gen {
     Array[String]    batchid
     Array[String]    assembly_status
     Array[String]    pango_lineage
-    Array[Int]       fastqc_raw1
-    Array[Int]       fastqc_raw2
-    Array[Int]       fastqc_clean1
-    Array[Int]       fastqc_clean2
+    Array[Int]       fastqc_raw
+    Array[Int]       fastqc_clean
     Array[Float]     kraken_human
     Array[Float]     kraken_sc2
     Array[Float]     kraken_human_dehosted
@@ -177,10 +171,8 @@ task run_results_file_gen {
     batchid_array=['~{sep="','" batchid}']
     assembly_status_array=['~{sep="','" assembly_status}']
     pango_lineage_array=['~{sep="','" pango_lineage}']
-    fastqc_raw1_array=['~{sep="','" fastqc_raw1}']
-    fastqc_raw2_array=['~{sep="','" fastqc_raw2}']
-    fastqc_clean1_array=['~{sep="','" fastqc_clean1}']
-    fastqc_clean2_array=['~{sep="','" fastqc_clean2}']
+    fastqc_raw_array=['~{sep="','" fastqc_raw}']
+    fastqc_clean_array=['~{sep="','" fastqc_clean}']
     kraken_human_array=['~{sep="','" kraken_human}']
     kraken_sc2_array=['~{sep="','" kraken_sc2}']
     kraken_human_dehosted_array=['~{sep="','" kraken_human_dehosted}']
@@ -201,7 +193,7 @@ task run_results_file_gen {
     nextclade_clade_array=['~{sep="','" nextclade_clade}']
     pango_version_array=['~{sep="','" pango_version}']
 
-    fields = [batchid_array,assembly_status_array,pango_lineage_array,fastqc_raw1_array,fastqc_raw2_array,fastqc_clean1_array,fastqc_clean2_array,kraken_human_array,kraken_sc2_array,kraken_human_dehosted_array,kraken_sc2_dehosted_array,kraken_report_dehosted_array,primer_trimmed_read_percent_array,number_N_array,assembly_length_unambiguous_array,number_Degenerate_array,number_Total_array,percent_reference_coverage_array,meanbaseq_trim_array,meanmapq_trim_array,assembly_mean_coverage_array,pangolin_conflicts_array,nextclade_aa_subs_array,nextclade_aa_dels_array,nextclade_clade_array,pango_version_array]
+    fields = [batchid_array,assembly_status_array,pango_lineage_array,fastqc_raw_array,fastqc_clean_array,kraken_human_array,kraken_sc2_array,kraken_human_dehosted_array,kraken_sc2_dehosted_array,kraken_report_dehosted_array,primer_trimmed_read_percent_array,number_N_array,assembly_length_unambiguous_array,number_Degenerate_array,number_Total_array,percent_reference_coverage_array,meanbaseq_trim_array,meanmapq_trim_array,assembly_mean_coverage_array,pangolin_conflicts_array,nextclade_aa_subs_array,nextclade_aa_dels_array,nextclade_clade_array,pango_version_array]
 
     # count number of elements in each list. If not all equal, will not populate into table. 
     unequal = 0
@@ -213,9 +205,9 @@ task run_results_file_gen {
 
     print(f'Number unequal to samplename_array {unequal}')
     import datetime
-    outfile = open(f'{datetime.datetime.now().strftime("%d-%M-%Y")}.run_results.csv', 'w')
+    outfile = open(f'{datetime.datetime.now().strftime("%Y-%m-%d")}.run_results.csv', 'w')
     if unequal == 0:
-      outfile.write('sample_id,batch_id,seq_date,assembly_status,pangolin_lineage,pangolin_conflict,pangolin_version,nextclade_lineage,AA_substitutions,AA_deletions,fastqc_raw_reads_1,fastqc_raw_reads_2,fastqc_clean_reads_PE1,fastqc_clean_reads_PE2,mean_depth,percent_reference_coverage,%_human_reads,%_SARS-COV-2_reads,dehosted_%human,dehosted_%SC2,%_trimmed_primer_reads,num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim\n')
+      outfile.write('sample_id,batch_id,seq_date,assembly_status,pangolin_lineage,pangolin_conflict,pangolin_version,nextclade_lineage,AA_substitutions,AA_deletions,fastqc_raw_reads,fastqc_clean_reads,mean_depth,percent_reference_coverage,%_human_reads,%_SARS-COV-2_reads,dehosted_%human,dehosted_%SC2,%_trimmed_primer_reads,num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim\n')
 
       index = 0
       while index < len(samplename_array):
@@ -223,10 +215,8 @@ task run_results_file_gen {
         batchid = batchid_array[index]
         assembly_status = assembly_status_array[index]
         pango_lineage = pango_lineage_array[index]
-        fastqc_raw1 = fastqc_raw1_array[index]
-        fastqc_raw2 = fastqc_raw2_array[index]
-        fastqc_clean1 = fastqc_clean1_array[index]
-        fastqc_clean2 = fastqc_clean2_array[index]
+        fastqc_raw = fastqc_raw_array[index]
+        fastqc_clean = fastqc_clean_array[index]
         kraken_human = kraken_human_array[index]
         kraken_sc2 = kraken_sc2_array[index]
         kraken_human_dehosted = kraken_human_dehosted_array[index]
