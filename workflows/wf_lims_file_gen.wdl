@@ -14,8 +14,6 @@ workflow sphl_lims_file_gen {
     Array[Float]     kraken_sc2
     Array[Float]     kraken_human_dehosted
     Array[Float]     kraken_sc2_dehosted
-    Array[String]    kraken_report_dehosted
-    Array[Float]     primer_trimmed_read_percent
     Array[Int]       number_N
     Array[Int]       assembly_length_unambiguous
     Array[Int]       number_Degenerate
@@ -58,8 +56,6 @@ workflow sphl_lims_file_gen {
       kraken_sc2                  = kraken_sc2,
       kraken_human_dehosted       = kraken_human_dehosted, 
       kraken_sc2_dehosted         = kraken_sc2_dehosted,
-      kraken_report_dehosted      = kraken_report_dehosted,
-      primer_trimmed_read_percent = primer_trimmed_read_percent,
       number_N                    = number_N,
       assembly_length_unambiguous = assembly_length_unambiguous,
       number_Degenerate           = number_Degenerate,
@@ -148,8 +144,6 @@ task run_results_file_gen {
     Array[Float]     kraken_sc2
     Array[Float]     kraken_human_dehosted
     Array[Float]     kraken_sc2_dehosted
-    Array[String]    kraken_report_dehosted
-    Array[Float]     primer_trimmed_read_percent
     Array[Int]       number_N
     Array[Int]       assembly_length_unambiguous
     Array[Int]       number_Degenerate
@@ -177,8 +171,6 @@ task run_results_file_gen {
     kraken_sc2_array=['~{sep="','" kraken_sc2}']
     kraken_human_dehosted_array=['~{sep="','" kraken_human_dehosted}']
     kraken_sc2_dehosted_array=['~{sep="','" kraken_sc2_dehosted}']
-    kraken_report_dehosted_array=['~{sep="','" kraken_report_dehosted}']
-    primer_trimmed_read_percent_array=['~{sep="','" primer_trimmed_read_percent}']
     number_N_array=['~{sep="','" number_N}']
     assembly_length_unambiguous_array=['~{sep="','" assembly_length_unambiguous}']
     number_Degenerate_array=['~{sep="','" number_Degenerate}']
@@ -193,7 +185,7 @@ task run_results_file_gen {
     nextclade_clade_array=['~{sep="','" nextclade_clade}']
     pango_version_array=['~{sep="','" pango_version}']
 
-    fields = [batchid_array,assembly_status_array,pango_lineage_array,fastqc_raw_array,fastqc_clean_array,kraken_human_array,kraken_sc2_array,kraken_human_dehosted_array,kraken_sc2_dehosted_array,kraken_report_dehosted_array,primer_trimmed_read_percent_array,number_N_array,assembly_length_unambiguous_array,number_Degenerate_array,number_Total_array,percent_reference_coverage_array,meanbaseq_trim_array,meanmapq_trim_array,assembly_mean_coverage_array,pangolin_conflicts_array,nextclade_aa_subs_array,nextclade_aa_dels_array,nextclade_clade_array,pango_version_array]
+    fields = [batchid_array,assembly_status_array,pango_lineage_array,fastqc_raw_array,fastqc_clean_array,kraken_human_array,kraken_sc2_array,kraken_human_dehosted_array,kraken_sc2_dehosted_array,number_N_array,assembly_length_unambiguous_array,number_Degenerate_array,number_Total_array,percent_reference_coverage_array,meanbaseq_trim_array,meanmapq_trim_array,assembly_mean_coverage_array,pangolin_conflicts_array,nextclade_aa_subs_array,nextclade_aa_dels_array,nextclade_clade_array,pango_version_array]
 
     # count number of elements in each list. If not all equal, will not populate into table. 
     unequal = 0
@@ -207,7 +199,7 @@ task run_results_file_gen {
     import datetime
     outfile = open(f'{datetime.datetime.now().strftime("%Y-%m-%d")}.run_results.csv', 'w')
     if unequal == 0:
-      outfile.write('sample_id,batch_id,seq_date,assembly_status,pangolin_lineage,pangolin_conflict,pangolin_version,nextclade_lineage,AA_substitutions,AA_deletions,fastqc_raw_reads,fastqc_clean_reads,mean_depth,percent_reference_coverage,%_human_reads,%_SARS-COV-2_reads,dehosted_%human,dehosted_%SC2,%_trimmed_primer_reads,num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim\n')
+      outfile.write('sample_id,batch_id,seq_date,assembly_status,pangolin_lineage,pangolin_conflict,pangolin_version,nextclade_lineage,AA_substitutions,AA_deletions,fastqc_raw_reads,fastqc_clean_reads,mean_depth,percent_reference_coverage,%_human_reads,%_SARS-COV-2_reads,dehosted_%human,dehosted_%SC2,num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim\n')
 
       index = 0
       while index < len(samplename_array):
@@ -221,8 +213,6 @@ task run_results_file_gen {
         kraken_sc2 = kraken_sc2_array[index]
         kraken_human_dehosted = kraken_human_dehosted_array[index]
         kraken_sc2_dehosted = kraken_sc2_dehosted_array[index]
-        kraken_report_dehosted = kraken_report_dehosted_array[index]
-        primer_trimmed_read_percent = primer_trimmed_read_percent_array[index]
         number_N = number_N_array[index]
         assembly_length_unambiguous = assembly_length_unambiguous_array[index]
         number_Degenerate = number_Degenerate_array[index]
@@ -236,7 +226,7 @@ task run_results_file_gen {
         nextclade_aa_dels = nextclade_aa_dels_array[index]
         nextclade_clade = nextclade_clade_array[index]
         pango_version = pango_version_array[index]
-        outfile.write(f'{samplename},{batchid},seq_date,{assembly_status},{pango_lineage},{pangolin_conflicts},{pango_version},{nextclade_clade},{nextclade_aa_subs},{nextclade_aa_dels},{fastqc_raw1},{fastqc_raw2},{fastqc_clean1},{fastqc_clean2},{assembly_mean_coverage},{percent_reference_coverage},{kraken_human},{kraken_sc2},{kraken_human_dehosted},{kraken_sc2_dehosted},{primer_trimmed_read_percent},{number_N},{number_Degenerate},{assembly_length_unambiguous},{number_Total},{meanbaseq_trim},{meanmapq_trim}\n')
+        outfile.write(f'{samplename},{batchid},seq_date,{assembly_status},{pango_lineage},{pangolin_conflicts},{pango_version},{nextclade_clade},{nextclade_aa_subs},{nextclade_aa_dels},{fastqc_raw1},{fastqc_raw2},{fastqc_clean1},{fastqc_clean2},{assembly_mean_coverage},{percent_reference_coverage},{kraken_human},{kraken_sc2},{kraken_human_dehosted},{kraken_sc2_dehosted},{number_N},{number_Degenerate},{assembly_length_unambiguous},{number_Total},{meanbaseq_trim},{meanmapq_trim}\n')
         index += 1
     else: 
       print(f'Input arrays are of unequal length.')
