@@ -30,3 +30,7 @@ workflows:
  - name: sphl_lims_file_gen
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_lims_file_gen.wdl
+ - name: terra_table_to_csv
+   subclass: WDL
+   primaryDescriptorPath: /workflows/wf_terra_table_to_csv.wdl
+
