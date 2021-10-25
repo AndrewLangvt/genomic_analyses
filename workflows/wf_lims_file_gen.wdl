@@ -7,6 +7,7 @@ workflow sphl_lims_file_gen {
   input {
     Array[String]    samplename
     Array[String]    batchid
+    Array[String]    seqdate
     Array[String]    assembly_status
     Array[Int]       fastqc_raw
     Array[Int]       fastqc_clean
@@ -48,6 +49,7 @@ workflow sphl_lims_file_gen {
     input:
       samplename                  = samplename,
       batchid                     = batchid,
+      seqdate                     = seqdate,
       assembly_status             = assembly_status,
       pango_lineage               = pango_lineage,
       fastqc_raw                  = fastqc_raw,
@@ -101,8 +103,8 @@ task lims_file_gen {
     pango_version_array=['~{sep="','" pango_version}']
     pango_version_array_len=len(pango_version_array)
 
-    import datetime
-    outfile = open(f'{datetime.datetime.now().strftime("%Y-%m-%d")}.lims_file.csv', 'w')
+    from datetime import datetime, timezone, timedelta
+    outfile = open(f'{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}.lims_file.csv', 'w')
     if samplename_array_len == assembly_status_array_len == tool_lineage_array_len == lineage_maven_array_len == pango_version_array_len:
       outfile.write('sample_id,assembly_status,tool_lineage,lineage_to_maven,pango_version,organism,test\n')
       index = 0
@@ -136,6 +138,7 @@ task run_results_file_gen {
   input {
     Array[String]    samplename
     Array[String]    batchid
+    Array[String]    seqdate
     Array[String]    assembly_status
     Array[String]    pango_lineage
     Array[Int]       fastqc_raw
@@ -163,6 +166,7 @@ task run_results_file_gen {
     python3 <<CODE
     samplename_array=['~{sep="','" samplename}']
     batchid_array=['~{sep="','" batchid}']
+    seq_date_array=['~{sep="','" seqdate}']
     assembly_status_array=['~{sep="','" assembly_status}']
     pango_lineage_array=['~{sep="','" pango_lineage}']
     fastqc_raw_array=['~{sep="','" fastqc_raw}']
@@ -196,8 +200,8 @@ task run_results_file_gen {
         unequal += 1
 
     print(f'Number unequal to samplename_array {unequal}')
-    import datetime
-    outfile = open(f'{datetime.datetime.now().strftime("%Y-%m-%d")}.run_results.csv', 'w')
+    from datetime import datetime, timezone, timedelta
+    outfile = open(f'{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}.run_results.csv', 'w')
     if unequal == 0:
       outfile.write('sample_id,batch_id,seq_date,assembly_status,pangolin_lineage,pangolin_conflict,pangolin_version,nextclade_lineage,AA_substitutions,AA_deletions,fastqc_raw_reads,fastqc_clean_reads,mean_depth,percent_reference_coverage,%_human_reads,%_SARS-COV-2_reads,dehosted_%human,dehosted_%SC2,num_N,num_degenerate,num_ACTG,num_total,meanbaseq_trim,meanmapq_trim\n')
 
@@ -205,6 +209,7 @@ task run_results_file_gen {
       while index < len(samplename_array):
         samplename = samplename_array[index]
         batchid = batchid_array[index]
+        seq_date = seq_date_array[index]
         assembly_status = assembly_status_array[index]
         pango_lineage = pango_lineage_array[index]
         fastqc_raw = fastqc_raw_array[index]
@@ -222,11 +227,11 @@ task run_results_file_gen {
         meanmapq_trim = meanmapq_trim_array[index]
         assembly_mean_coverage = assembly_mean_coverage_array[index]
         pangolin_conflicts = pangolin_conflicts_array[index]
-        nextclade_aa_subs = nextclade_aa_subs_array[index]
-        nextclade_aa_dels = nextclade_aa_dels_array[index]
+        nextclade_aa_subs = nextclade_aa_subs_array[index].replace(',','|')
+        nextclade_aa_dels = nextclade_aa_dels_array[index].replace(',','|')
         nextclade_clade = nextclade_clade_array[index]
         pango_version = pango_version_array[index]
-        outfile.write(f'{samplename},{batchid},seq_date,{assembly_status},{pango_lineage},{pangolin_conflicts},{pango_version},{nextclade_clade},{nextclade_aa_subs},{nextclade_aa_dels},{fastqc_raw1},{fastqc_raw2},{fastqc_clean1},{fastqc_clean2},{assembly_mean_coverage},{percent_reference_coverage},{kraken_human},{kraken_sc2},{kraken_human_dehosted},{kraken_sc2_dehosted},{number_N},{number_Degenerate},{assembly_length_unambiguous},{number_Total},{meanbaseq_trim},{meanmapq_trim}\n')
+        outfile.write(f'{samplename},{batchid},{seq_date},{assembly_status},{pango_lineage},{pangolin_conflicts},{pango_version},{nextclade_clade},{nextclade_aa_subs},{nextclade_aa_dels},{fastqc_raw},{fastqc_clean},{assembly_mean_coverage},{percent_reference_coverage},{kraken_human},{kraken_sc2},{kraken_human_dehosted},{kraken_sc2_dehosted},{number_N},{number_Degenerate},{assembly_length_unambiguous},{number_Total},{meanbaseq_trim},{meanmapq_trim}\n')
         index += 1
     else: 
       print(f'Input arrays are of unequal length.')
