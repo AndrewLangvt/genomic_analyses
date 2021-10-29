@@ -3,8 +3,6 @@ version 1.0
 workflow terra_table_to_csv {
     
     input {
-      String	gcs_uri
-      String	outname
       String	date_string
       String	id_column
     }
@@ -23,7 +21,6 @@ task download_entities_csv {
     String  workspace_name
     String  table_name
     String  id_column
-    String  outname
     String  docker = "schaluvadi/pathogen-genomic-surveillance:api-wdl"
   }
 
@@ -38,11 +35,12 @@ task download_entities_csv {
     import collections
 
     from firecloud import api as fapi
+    from datetime import datetime, timezone, timedelta
 
     workspace_project = '~{terra_project}'
     workspace_name = '~{workspace_name}'
     table_name = '~{table_name}'
-    out_fname = '~{outname}'+'.csv'
+    out_fname = '~{outname}'+f'{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}'+'.csv'
 
     table = json.loads(fapi.get_entities(workspace_project, workspace_name, table_name).text)
     headers = collections.OrderedDict()
@@ -97,36 +95,6 @@ task download_entities_csv {
   output {
     File csv_file = "~{outname}.csv"
     File json_file = "~{outname}.json"
-  }
-}
-
-
-task gcs_copy {
-  input {
-    File		infile
-    File		infile_json
-    String      gcs_uri_prefix
-    String		date_string
-  }
-  
-  meta {
-    volatile: true
-  }
-  
-  command <<<
-    set -e
-    gsutil -m cp ~{infile} ~{gcs_uri_prefix+"backup/"+date_string+"/"}
-    gsutil -m cp ~{infile_json} ~{gcs_uri_prefix} 
-  >>>
-  
-  output {
-    File logs = stdout()
-  }
-  runtime {
-    docker: "quay.io/broadinstitute/viral-baseimage:0.1.20"
-    memory: "32 GB"
-    cpu: 8
-    disks:        "local-disk 500 SSD"
   }
 }
 
