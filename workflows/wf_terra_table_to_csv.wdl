@@ -40,7 +40,7 @@ task download_entities_csv {
     workspace_project = '~{terra_project}'
     workspace_name = '~{workspace_name}'
     table_name = '~{table_name}'
-    out_fname = '~{outname}'+f'{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}'+'.csv'
+    out_fname = '~{table_name}'+f'{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}'+'.csv'
 
     table = json.loads(fapi.get_entities(workspace_project, workspace_name, table_name).text)
     headers = collections.OrderedDict()
@@ -64,7 +64,7 @@ task download_entities_csv {
       headers = infile.readline()
       headers_array = headers.strip().split('\t')
       headers_array[0] = "specimen_id"
-      with open('~{outname}'+'.json', 'w') as outfile:
+      with open('~{table_name}'+'.json', 'w') as outfile:
         for line in infile:
           outfile.write('{')
           line_array=line.strip().split('\t')
@@ -93,8 +93,8 @@ task download_entities_csv {
   }
   
   output {
-    File csv_file = "~{outname}.csv"
-    File json_file = "~{outname}.json"
+    File csv_file = select_first(glob("~{table_name}*.csv"))
+    File json_file = "~{table_name}.json"
   }
 }
 
