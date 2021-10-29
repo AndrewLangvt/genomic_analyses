@@ -3,14 +3,18 @@ version 1.0
 workflow terra_table_to_csv {
     
     input {
-      String	date_string
-      String	id_column
+    String  terra_project
+    String  workspace_name
+    String  table_name
+    String  id_column
     }
 
     call download_entities_csv {
       input:
-        outname=outname,
-        id_column=id_column
+        terra_project  = terra_project, 
+        workspace_name = workspace_name,
+        table_name     = table_name,
+        id_column      = id_column
     }
   
 }
