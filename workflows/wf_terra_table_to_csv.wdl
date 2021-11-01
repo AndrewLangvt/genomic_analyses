@@ -47,7 +47,7 @@ task download_entities_csv {
     workspace_project = '~{terra_project}'
     workspace_name = '~{workspace_name}'
     table_name = '~{table_name}'
-    out_fname = '~{table_name}'+f'{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}'+'.csv'
+    out_fname = '~{table_name}'+f'{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}'+'.tsv'
 
     table = json.loads(fapi.get_entities(workspace_project, workspace_name, table_name).text)
     headers = collections.OrderedDict()
