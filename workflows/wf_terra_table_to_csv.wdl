@@ -95,12 +95,12 @@ task download_entities_csv {
   
   runtime {
     docker: docker
-    memory: "16 GB"
+    memory: "8 GB"
     cpu: 4
   }
   
   output {
-    File csv_file = select_first(glob("~{table_name}*.csv"))
+    File tsv_file = select_first(glob("~{table_name}*.tsv"))
     File json_file = "~{table_name}.json"
   }
 }
