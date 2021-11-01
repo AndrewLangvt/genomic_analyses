@@ -9,7 +9,7 @@ workflow terra_table_to_csv {
   String  id_column
   }
 
-  call download_entities_csv {
+  call download_entities_tsv {
     input:
       terra_project  = terra_project, 
       workspace_name = workspace_name,
@@ -18,11 +18,11 @@ workflow terra_table_to_csv {
   }
   
   output {
-    File table_file = download_entities_csv.csv_file
+    File table_file = download_entities_tsv.tsv_file
   }
 }
 
-task download_entities_csv {
+task download_entities_tsv {
   input {
     String  terra_project
     String  workspace_name
