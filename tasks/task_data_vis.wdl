@@ -6,6 +6,8 @@ task cluster_render {
     File      snp_matrix
     File      ml_tree
     String    cluster_name
+    String    facility=""
+    String    timezone="America/New_York"
     File?     render_template
   }
 
@@ -18,11 +20,13 @@ task cluster_render {
     cp ~{ml_tree} ml_tree.tree
 
     if [[ -f "~{render_template}" ]]; then cp ~{render_template} render_template.Rmd
-    else wget -O render_template.Rmd https://raw.githubusercontent.com/AndrewLangvt/genomic_report/master/cluster_report_template.Rmd; fi
+    else wget -O render_template.Rmd https://raw.githubusercontent.com/MASPHL/templates/v1.0/cluster_report_template.Rmd; fi
 
+    sed -i "s/Genomic\ Analysis/~{facility}\ Genomic\ Analysis/" render_template.Rmd
+    grep "Genomic Analysis" render_template.Rmd
+ 
     R --no-save <<CODE
 
-    tinytex::reinstall_tinytex()
     library(rmarkdown)
     library(tools)
 
@@ -41,20 +45,22 @@ task cluster_render {
     render(report, output_file='report.pdf')
     CODE
 
-    cp pairwise_snp_list.csv ~{cluster_name}_pairwise_snp_list.csv
-    cp report.pdf ~{cluster_name}_cluster_analysis.pdf
+    ~{default='' 'export TZ=' + timezone}
+        
+    cp pairwise_snp_list.csv ~{cluster_name}_pairwise_snp_list_$(date +"%Y-%m-%d").csv
+    cp report.pdf ~{cluster_name}_cluster_analysis_$(date +"%Y-%m-%d").pdf
     cp SNP_heatmap.png ~{cluster_name}_SNP_heatmap.png      
   >>>
   output {
     String     date = read_string("DATE")
     String     r_version = read_string("R_VERSION")
-    File       analysis_doc = "${cluster_name}_cluster_analysis.pdf"
-    File       snp_heatmap = "${cluster_name}_SNP_heatmap.png"
-    File       snp_list = "${cluster_name}_pairwise_snp_list.csv"
+    File       analysis_doc = select_first(glob("*_cluster_analysis*pdf"))
+    File       snp_heatmap = select_first(glob("*_SNP_heatmap*png"))
+    File       snp_list = select_first(glob("*_pairwise_snp_list*csv"))
   }
 
   runtime {
-    docker:       "andrewlangvt/cluster_report_ma:1"
+    docker:       "staphb/cluster-report-env:1.0"
     memory:       "2 GB"
     cpu:          2
     disks:        "local-disk 100 SSD"
