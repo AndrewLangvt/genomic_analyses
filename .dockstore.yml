@@ -36,4 +36,4 @@ workflows:
  - name: seq_run_report
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_run_report.wdl
-
+   
