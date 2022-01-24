@@ -63,7 +63,7 @@ task seqreport_render {
   }
 
   runtime {
-    docker:       ### EDIT
+    docker:       bmtalbot/sc2-seq-report:0.3
     memory:       "2 GB"
     cpu:          2
     disks:        "local-disk 100 SSD"
