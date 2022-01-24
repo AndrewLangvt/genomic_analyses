@@ -2,7 +2,7 @@ version 1.0
 
 workflow seq_run_report {
   meta {
-    description: "Generates PDF with basic metrics from an Illumina Sequencing run."
+    description: "Generates PDF with basic metrics from a Sequencing run."
   }
 
   input {
