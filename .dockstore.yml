@@ -33,4 +33,7 @@ workflows:
  - name: terra_table_to_csv
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_terra_table_to_csv.wdl
+ - name: seq_run_report
+   subclass: WDL
+   primaryDescriptorPath: /workflows/wf_run_report.wdl
 
