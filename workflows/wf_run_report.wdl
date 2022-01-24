@@ -14,7 +14,7 @@ workflow seq_run_report {
   call seqreport_render {
     input:
       seq_output      = metrics_file,
-      batch_ID        = facility,
+      batch_ID        = batch_id,
       render_template = render_template
   }
 
