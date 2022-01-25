@@ -68,14 +68,18 @@ task download_entities_csv {
     for row in table:
       outrow = row['attributes']
       for x in outrow.keys():
-        if x == "titan_illumina_pe_analysis_date" or x == "titan_cleralabs_analysis_date":
-           x = "seq_date"
         headers[x] = 0
         if type(outrow[x]) == dict and set(outrow[x].keys()) == set(('itemsType', 'items')):
           outrow[x] = outrow[x]['items']
       outrow[table_name + "_id"] = row['name']
       rows.append(outrow)
 
+    for key,value in headers.items():
+      if key == "titan_illumina_pe_analysis_date" or key == "titan_cleralabs_analysis_date":
+        newheaders["seq_date"] = value
+      else:
+        newheaders[key] = value 
+        
     with open(out_fname, 'wt') as outf:
       writer = csv.DictWriter(outf, headers.keys(), delimiter=',', dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL)
       writer.writeheader()
