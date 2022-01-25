@@ -132,7 +132,7 @@ task seqreport_render {
 
     cp ~{seq_output} sequencerun_data.csv
     
-    sed -i 's/titan_illumina_pe_analysis_date/seq_date/;s/titan_clearlabs_analysis_date/seq_date/' sequencerun_data.csv
+    sed -i 's/titan_illumina_pe_analysis_date/seq_date/;s/titan_clearlabs_analysis_date/seq_date/;s/kraken_sc2/percent_SC2_reads/' sequencerun_data.csv
     
     if [[ -f "~{render_template}" ]]; then cp ~{render_template} render_template.Rmd
     else wget -O render_template.Rmd https://raw.githubusercontent.com/bmtalbot/APHL_COVID_Genomics/main/Sars-Cov-2-Seq_Report.Rmd; fi
