@@ -81,13 +81,13 @@ task download_entities_csv {
         newheaders[key] = value 
         
     with open(out_fname, 'wt') as outf:
-      writer = csv.DictWriter(outf, headers.keys(), delimiter=',', dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL)
+      writer = csv.DictWriter(outf, newheaders.keys(), delimiter=',', dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL)
       writer.writeheader()
       writer.writerows(rows)
 
     with open(out_fname, 'r') as infile:
       headers = infile.readline()
-      headers_array = headers.strip().split('\t')
+      headers_array = headers.strip().split(',')
       headers_array[0] = "specimen_id"
       with open('~{table_name}'+'.json', 'w') as outfile:
         for line in infile:
