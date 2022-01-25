@@ -14,7 +14,7 @@ workflow seq_run_report {
     File?     render_template
   }
 
-  call download_entities_tsv {
+  call download_entities_csv {
     input:
       terra_project  = terra_project, 
       workspace_name = workspace_name,
@@ -53,14 +53,13 @@ task download_entities_csv {
     import csv
     import json
     import collections
-
     from firecloud import api as fapi
     from datetime import datetime, timezone, timedelta
 
     workspace_project = '~{terra_project}'
     workspace_name = '~{workspace_name}'
     table_name = '~{table_name}'
-    out_fname = '~{table_name}'+f'_table_{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}'+'.tsv'
+    out_fname = '~{table_name}'+f'_table_{datetime.now(timezone(timedelta(hours=-4))).strftime("%Y-%m-%d")}'+'.csv'
 
     table = json.loads(fapi.get_entities(workspace_project, workspace_name, table_name).text)
     headers = collections.OrderedDict()
