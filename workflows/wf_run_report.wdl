@@ -73,16 +73,9 @@ task download_entities_csv {
           outrow[x] = outrow[x]['items']
       outrow[table_name + "_id"] = row['name']
       rows.append(outrow)
-
-    newheaders = collections.OrderedDict()
-    for key,value in headers.items():
-      if key == "titan_illumina_pe_analysis_date" or key == "titan_cleralabs_analysis_date":
-        newheaders["seq_date"] = value
-      else:
-        newheaders[key] = value 
-        
+       
     with open(out_fname, 'wt') as outf:
-      writer = csv.DictWriter(outf, newheaders.keys(), delimiter=',', dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL)
+      writer = csv.DictWriter(outf, headers.keys(), delimiter=',', dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL)
       writer.writeheader()
       writer.writerows(rows)
 
@@ -138,6 +131,8 @@ task seqreport_render {
     R --version | head -n1 | sed 's/).*/)/' | tee R_VERSION
 
     cp ~{seq_output} sequencerun_data.csv
+    
+    sed -i 's/titan_illumina_pe_analysis_date/seq_date/;s/titan_clearlabs_analysis_date/seq_date/' sequencerun_data.csv
     
     if [[ -f "~{render_template}" ]]; then cp ~{render_template} render_template.Rmd
     else wget -O render_template.Rmd https://raw.githubusercontent.com/bmtalbot/APHL_COVID_Genomics/main/Sars-Cov-2-Seq_Report.Rmd; fi
