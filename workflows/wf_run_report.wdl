@@ -36,7 +36,7 @@ task seqreport_render {
     date | tee DATE
     R --version | head -n1 | sed 's/).*/)/' | tee R_VERSION
 
-    cp ~{seq_output} ###INSERT THE BATCH OUTPUT HERE?
+    cp ~{seq_output} sequencerun_data.csv
     
     if [[ -f "~{render_template}" ]]; then cp ~{render_template} render_template.Rmd
     else wget -O render_template.Rmd https://raw.githubusercontent.com/bmtalbot/APHL_COVID_Genomics/main/Sars-Cov-2-Seq_Report.Rmd; fi
