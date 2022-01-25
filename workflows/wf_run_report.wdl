@@ -68,6 +68,8 @@ task download_entities_csv {
     for row in table:
       outrow = row['attributes']
       for x in outrow.keys():
+        if x == "titan_illumina_pe_analysis_date" or x == "titan_cleralabs_analysis_date":
+           x = "seq_date"
         headers[x] = 0
         if type(outrow[x]) == dict and set(outrow[x].keys()) == set(('itemsType', 'items')):
           outrow[x] = outrow[x]['items']
@@ -90,8 +92,6 @@ task download_entities_csv {
           for x,y in zip(headers_array, line_array):
             if x == "nextclade_aa_dels" or x == "nextclade_aa_subs":
               y = y.replace("|", ",")
-            if x == "titan_illumina_pe_analysis_date" or x == "titan_cleralabs_analysis_date":
-              x = "seq_date"
             if y == "NA":
               y = ""
             if y == "required_for_submission":
