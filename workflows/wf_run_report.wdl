@@ -74,6 +74,7 @@ task download_entities_csv {
       outrow[table_name + "_id"] = row['name']
       rows.append(outrow)
 
+    newheaders = collections.OrderedDict()
     for key,value in headers.items():
       if key == "titan_illumina_pe_analysis_date" or key == "titan_cleralabs_analysis_date":
         newheaders["seq_date"] = value
