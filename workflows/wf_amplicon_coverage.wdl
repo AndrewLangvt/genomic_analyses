@@ -40,13 +40,13 @@ task bedtools_multicov {
     cp ~{sep=" " baifiles} ./
 
     echo "primer" $(ls *bam) | tr ' ' '\t' > multicov.txt
-    bedtools multicov -bams $(ls *bam) -bed ~{primer_bed} | cut -f 4,7- >> multicov.txt
+    bedtools multicov -bams $(ls *bam) -bed ~{primer_bed} | cut -f 4,7- >> amplicon_coverage_$(date +"%Y-%m-%d").txt
   >>>
 
   output {
     String     date = read_string("DATE")
     String     version = read_string("VERSION") 
-    File       amp_coverage = "multicov.txt"
+    File       amp_coverage = select_first(glob("amlicon_coverage*.txt")
   }
 
   runtime {
