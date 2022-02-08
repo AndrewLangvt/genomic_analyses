@@ -38,7 +38,7 @@ task bedtools_multicov {
     cp ~{sep=" " bamfiles} ./
     cp ~{sep=" " baifiles} ./
 
-    echo "primer" $(ls *bam) | tr ' ' '\t' > multicov.txt
+    echo "primer" $(ls *bam | cut -f 1 -d '.') | tr ' ' '\t' > amplicon_coverage_$(date +"%Y-%m-%d").txt
     bedtools multicov -bams $(ls *bam) -bed ~{primer_bed} | cut -f 4,7- >> amplicon_coverage_$(date +"%Y-%m-%d").txt
   >>>
 
