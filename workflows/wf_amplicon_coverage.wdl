@@ -40,7 +40,7 @@ task bedtools_multicov {
     cp ~{sep=" " baifiles} ./
 
     echo "primer" $(ls *bam) | tr ' ' '\t' > multicov.txt
-    bedtools multicov -bams $(ls *bam) -bed ~{primer_bed} | cut -f 4,6- >> multicov.txt
+    bedtools multicov -bams $(ls *bam) -bed ~{primer_bed} | cut -f 4,7- >> multicov.txt
   >>>
 
   output {
