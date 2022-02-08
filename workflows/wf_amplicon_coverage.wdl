@@ -46,7 +46,7 @@ task bedtools_multicov {
   output {
     String     date = read_string("DATE")
     String     version = read_string("VERSION") 
-    File       amp_coverage = select_first(glob("amlicon_coverage*.txt")
+    File       amp_coverage = select_first(glob("amplicon_coverage*.txt"))
   }
 
   runtime {
