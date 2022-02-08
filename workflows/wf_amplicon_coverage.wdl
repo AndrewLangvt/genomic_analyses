@@ -10,7 +10,7 @@ workflow amplicon_coverage {
     File           primer_bed
     String         docker = "staphb/ivar:1.2.2_artic20200528"
   }
-  call lims_prep {
+  call bedtools_multicov {
     input:
       bamfiles   = bamfiles,
       baifiles   = baifiles,
