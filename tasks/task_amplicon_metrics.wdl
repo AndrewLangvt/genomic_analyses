@@ -46,8 +46,6 @@ task bedtools_multicov {
   input {
     Array[File]  bamfiles
     Array[File]  baifiles
-    Array[File]  primtrim_bamfiles
-    Array[File]  primtrim_baifiles
     File         primer_bed 
     String       docker = "staphb/ivar:1.2.2_artic20200528"
     Int          mem = 2
@@ -61,8 +59,6 @@ task bedtools_multicov {
     bedtools --version | tee VERSION
     cp ~{sep=" " bamfiles} ./
     cp ~{sep=" " baifiles} ./
-    cp ~{sep=" " primtrim_bamfiles} ./
-    cp ~{sep=" " primtrim_baifiles} ./
 
     echo "primer" $(ls *bam) | tr ' ' '\t' > multicov.txt
     bedtools multicov -bams $(ls *bam) -bed ~{primer_bed} | cut -f 4,6- >> multicov.txt
