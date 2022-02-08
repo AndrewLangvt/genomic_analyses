@@ -22,7 +22,6 @@ workflow amplicon_coverage {
   }
 }
 
-
 task bedtools_multicov {
   
   input {
