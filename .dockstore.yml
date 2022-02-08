@@ -36,4 +36,6 @@ workflows:
  - name: seq_run_report
    subclass: WDL
    primaryDescriptorPath: /workflows/wf_run_report.wdl
-   
+ - name: amplicon_coverage
+   subclass: WDL
+   primaryDescriptorPath: /workflows/wf_amplicon_coverage.wdl
